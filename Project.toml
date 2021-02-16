@@ -1,6 +1,6 @@
 name = "OutlierDetection"
 uuid = "262411bb-c475-4342-ba9e-03b8c0183ca6"
-authors = ["David Muhr <muhrdavid@gmail.com> and contributors"]
+authors = ["David Muhr <muhrdavid+github@gmail.com> and contributors"]
 version = "0.1.0"
 
 [compat]
