@@ -1,4 +1,7 @@
 <h1 align="center">OutlierDetection.jl</h1>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 <p align="center">
   <a href="https://discord.gg/5ErtExMV">
     <img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true" alt="Chat">
@@ -59,3 +62,23 @@ We are excited to make Julia a first-class citizen in the outlier detection comm
 We consider well-established algorithms for inclusion. A rule of thumb is at least 2 years since publication, 100+ citations, and wide use and usefulness. Algorithms that do not meet the inclusion criteria can simply extend our API. External algorithm can also be listed in our documentation, if the authors wish so.
 
 Additionally, algorithms that implement functionality that is useful on its own should live in their own package, wrapped by OutlierDetection.jl. Algorithms that build largely on top of existing packages can be implemented directly in OutlierDetection.jl.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://fastpaced.com"><img src="https://avatars.githubusercontent.com/u/1233304?v=4?s=100" width="100px;" alt=""/><br /><sub><b>David Muhr</b></sub></a><br /><a href="https://github.com/davnn/OutlierDetection.jl/commits?author=davnn" title="Code">💻</a> <a href="https://github.com/davnn/OutlierDetection.jl/commits?author=davnn" title="Tests">⚠️</a> <a href="https://github.com/davnn/OutlierDetection.jl/commits?author=davnn" title="Documentation">📖</a> <a href="#maintenance-davnn" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
