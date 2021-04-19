@@ -57,4 +57,4 @@ roc_auc(y_test, scores_test)
 
 ## Notice
 
-Typically, you do not use the *raw* `OutlierDetection` API directly, but instead use [MLJ](https://github.com/alan-turing-institute/MLJ.jl) to interface with `OutlierDetection.jl`. This way you can easily integrate and extend Julia's machine learning ecosystem with outlier detection algorithms. To learn more about the usage of MLJ, check out the [../../documentation/guide/](/documentation/guide/)!
+Typically, you do not use the *raw* `OutlierDetection` API directly, but instead use [MLJ](https://github.com/alan-turing-institute/MLJ.jl) to interface with `OutlierDetection.jl`. This way you can easily integrate and extend Julia's machine learning ecosystem with outlier detection algorithms. To learn more about the usage of MLJ, check out the [guide](../../documentation/guide/)!
