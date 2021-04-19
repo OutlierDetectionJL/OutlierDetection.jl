@@ -2,7 +2,7 @@ using Documenter
 
 deploydocs(;
     repo="github.com/davnn/OutlierDetection.jl",
-    target = "site",
+    target = "build",
     push_preview = true,
-    deps = Deps.pip("pygments", "mkdocs", "mkdocs-material")
+    deps = Deps.pip("mkdocs", "mkdocs-material", "pymdown-extensions", "pygments")
 )
