@@ -1,0 +1,48 @@
+site_name:        OutlierDetection.jl
+repo_url:         https://github.com/davnn/OutlierDetection.jl
+site_description: Fast, scalable and flexible outlier detection with Julia.
+site_author:      David Muhr <muhrdavid@gmail.com> and contributors
+
+docs_dir: 'build'
+
+theme:
+  name: material
+  custom_dir: _overrides
+  icon:
+    logo: material/blur
+  palette:
+    scheme: default
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - navigation.sections
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+extra_css:
+  - _assets/custom.css
+
+nav:
+  - Home: index.markdown
+  - Getting started:
+    - Installation: getting-started/installation.md
+    - Example: getting-started/example.md
+    - Contributing: getting-started/contributing.md
+  - Documentation:
+    - Guide: documentation/guide.md
+    - Tutorials:
+      - Using MLJ: documentation/using-mlj.md
+      - Ensemble Learning: documentation/ensemble-learning.md
+      - Benchmark Datasets: documentation/benchmark-datasets.md
+    - For Developers:
+      - Architecture: documentation/architecture.md
+      - Detector Creation: documentation/detector-creation.md
+      - Performance Tips: documentation/performance-tips.md
+  - API:
+    - Base: API/base.md
+    - Models: API/models.md
+    - Evaluation: API/evaluation.md

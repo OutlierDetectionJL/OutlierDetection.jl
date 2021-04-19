@@ -1,3 +1,5 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterMarkdown = "997ab1e6-3595-5248-9280-8efb232c3433"
 OutlierDetection = "262411bb-c475-4342-ba9e-03b8c0183ca6"
+OutlierDetectionData = "128abb87-8f03-48fe-b7ad-0e2a52164fda"

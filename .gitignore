@@ -2,4 +2,8 @@
 *.jl.cov
 *.jl.mem
 /Manifest.toml
+/benchmark/*.md
 /docs/build/
+/docs/site/
+*.info
+*.dev.jl

@@ -1,21 +1,13 @@
 using OutlierDetection
 using Documenter
+using DocumenterMarkdown
 
+DocMeta.setdocmeta!(OutlierDetection, :DocTestSetup, :(using OutlierDetection, OutlierDetectionData); recursive=true)
 makedocs(;
-    modules=[OutlierDetection],
+    doctest = VERSION == v"1.6",
+    sitename="OutlierDetection.jl",
     authors="David Muhr <muhrdavid@gmail.com> and contributors",
     repo="https://github.com/davnn/OutlierDetection.jl/blob/{commit}{path}#L{line}",
-    sitename="OutlierDetection.jl",
-    format=Documenter.HTML(;
-        prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://davnn.github.io/OutlierDetection.jl",
-        assets=String[],
-    ),
-    pages=[
-        "Home" => "index.md",
-    ],
-)
-
-deploydocs(;
-    repo="github.com/davnn/OutlierDetection.jl",
+    format = Markdown(),
+    clean=true
 )

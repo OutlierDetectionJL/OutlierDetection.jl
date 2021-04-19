@@ -1,0 +1,50 @@
+.mdx-container {
+    min-height: 80vh;
+}
+
+.mdx-hero__content p {
+    max-width: 100%;
+    width: 400px;
+}
+
+.mdx-hero .md-button {
+    margin-top: .5rem;
+    margin-right: .5rem;
+    color: var(--md-primary-bg-color)
+}
+
+.mdx-hero .md-button:focus, .mdx-hero .md-button:hover {
+    color: var(--md-accent-bg-color);
+    background-color: var(--md-accent-fg-color);
+    border-color: var(--md-accent-fg-color)
+}
+
+.mdx-hero .md-button--primary {
+    color: var(--md-primary-fg-color);
+    background-color: var(--md-primary-bg-color);
+    border-color: var(--md-primary-bg-color)
+}
+
+.mdx-container {
+    padding-top: 1rem;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1123 258'><path d='M1124,2c0,0 0,256 0,256l-1125,0l0,-48c0,0 16,5 55,5c116,0 197,-92 325,-92c121,0 114,46 254,46c140,0 214,-167 572,-166Z' style='fill: hsla(0, 0%, 100%, 1)' /></svg>") no-repeat bottom, linear-gradient(180deg, var(--md-primary-fg-color), #89B3C4 99%, var(--md-default-bg-color) 0)
+}
+
+.mdx-hero {
+    margin: 0 .8rem;
+    color: var(--md-primary-bg-color)
+}
+
+.mdx-hero h1 {
+    max-width: 100%;
+    width: 500px;
+    margin-bottom: 1rem;
+    color: currentColor;
+    font-weight: 700;
+}
+
+.mdx-hero svg {
+    width: 70px;
+    height: 45px;
+    margin-bottom: -8px;
+}
