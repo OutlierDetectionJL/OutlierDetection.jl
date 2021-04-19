@@ -1,3 +1,4 @@
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
+OutlierDetection = "262411bb-c475-4342-ba9e-03b8c0183ca6"
