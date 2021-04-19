@@ -7,7 +7,7 @@ docs_dir: 'build'
 
 theme:
   name: material
-  custom_dir: _overrides
+  custom_dir: overrides
   icon:
     logo: material/blur
   palette:
@@ -24,7 +24,7 @@ markdown_extensions:
   - pymdownx.superfences
 
 extra_css:
-  - _assets/custom.css
+  - styles/custom.css
 
 nav:
   - Home: index.markdown
