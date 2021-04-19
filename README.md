@@ -1,7 +1,4 @@
 <h1 align="center">OutlierDetection.jl</h1>
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 <p align="center">
   <a href="https://discord.gg/5ErtExMV">
     <img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true" alt="Chat">
@@ -18,6 +15,11 @@
   <a href="https://codecov.io/gh/davnn/OutlierDetection.jl">
     <img src="https://codecov.io/gh/davnn/OutlierDetection.jl/branch/master/graph/badge.svg" alt="Coverage">
   </a>
+  <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+  <a href="#contributors-">
+    <img src="https://img.shields.io/badge/all_contributors-1-green.svg?style=flat-square" alt="All Contributors">
+  </a>
+  <!-- ALL-CONTRIBUTORS-BADGE:END -->  
 </p>
 
 *OutlierDetection.jl* is a Julia toolkit for detecting outlying objects, also known as *anomalies*. This package is an effort to make Julia a first-class citizen in the Outlier- and Anomaly-Detection community. *Why should you use this package?*
