@@ -43,11 +43,11 @@ MMI.@mlj_model struct AE <: UnsupervisedDetector
     loss::Function = mse
 end
 
-struct AEModel <: DetectorModel
+struct AEModel <: Model
     chain::Chain
 end
 
-function fit(detector::AE, X::Data)::Tuple{AEModel, Scores}
+function fit(detector::AE, X::Data)::Fit
     loader = DataLoader(X, batchsize=detector.batchsize, shuffle=detector.shuffle, partial=detector.partial)
 
     # Create the autoencoder
@@ -57,9 +57,9 @@ function fit(detector::AE, X::Data)::Tuple{AEModel, Scores}
     train!(x -> detector.loss(model(x), x), params(model), ncycle(loader, detector.epochs), detector.opt)
 
     scores = detector.loss(model(X), X, agg=instance_mean)
-    AEModel(model), scores
+    Fit(AEModel(model), scores)
 end
 
-function transform(detector::AE, model::AEModel, X::Data)::Scores
+@unscorify function transform(detector::AE, model::Fit, X::Data)::Result
     detector.loss(model.chain(X), X, agg=instance_mean)
 end

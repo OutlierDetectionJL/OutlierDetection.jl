@@ -30,7 +30,7 @@ MMI.@mlj_model mutable struct COF <: UnsupervisedDetector
     parallel::Bool = false
 end
 
-struct COFModel <: DetectorModel
+struct COFModel <: Model
     # An efficient COF prediction requires us to store the full pairwise distance matrix of the training examples in
     # addition to the learned tree as well as the ACDs of the training examples.
     tree::NN.NNTree
@@ -38,7 +38,7 @@ struct COFModel <: DetectorModel
     acds::AbstractVector
 end
 
-function fit(detector::COF, X::Data)::Tuple{COFModel, Scores}
+function fit(detector::COF, X::Data)::Fit
     # calculate pairwise distances in addition to building the tree; we could remove this once NearestNeighbors.jl
     # exports something like `allpairs`
     pdists = DI.pairwise(detector.metric, X, dims=2)
@@ -50,10 +50,10 @@ function fit(detector::COF, X::Data)::Tuple{COFModel, Scores}
     idxs, _ = NN.knn(tree, X, detector.k + 1, true)
     acds = _calc_acds(idxs, pdists, detector.k)
     scores = _cof(idxs, acds, detector.k)
-    COFModel(tree, pdists, acds), scores
+    Fit(COFModel(tree, pdists, acds), scores)
 end
 
-function transform(detector::COF, model::COFModel, X::Data)::Scores
+@unscorify function transform(detector::COF, model::Fit, X::Data)::Result
     if detector.parallel
         idxs, _ = knn_parallel(model.tree, X, detector.k + 1, true)
         return _cof(idxs, model.pdists, model.acds, detector.k)

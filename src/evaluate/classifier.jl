@@ -38,7 +38,7 @@ MMI.@mlj_model mutable struct Classifier <: MMI.Static
     classify::Union{Function, Nothing} = classify
 end
 
-function transform(clf::Classifier, scores::Tuple{Scores, Scores}...)::Scores
+function transform(clf::Classifier, scores::Result...)::Scores
     # transforms a variable number of equal-length scores into classes, where each input tuple represents the
     # train scores and test scores of a detector.
 

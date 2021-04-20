@@ -5,12 +5,15 @@ module OutlierDetection
     const MMI = MLJModelInterface
     const NN = NearestNeighbors
     const DI = Distances
+    const CLASS_NORMAL = 1
+    const CLASS_OUTLIER = -1
+    const CLASS_UNKNOWN = 0
 
     # base
     export Detector,
            UnsupervisedDetector,
            SupervisedDetector,
-           DetectorModel,
+           Model,
            Scores,
            Data,
            Labels,

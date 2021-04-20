@@ -33,7 +33,7 @@ MMI.@mlj_model mutable struct LOF <: UnsupervisedDetector
     parallel::Bool = false
 end
 
-struct LOFModel <: DetectorModel
+struct LOFModel <: Model
     # For efficient prediction, we need to store the learned tree, the distances of each training sample to its
     # k-nearest neighbors, as well as the training lrds.
     tree::NN.NNTree
@@ -41,7 +41,7 @@ struct LOFModel <: DetectorModel
     lrds::AbstractVector
 end
 
-function fit(detector::LOF, X::Data)::Tuple{LOFModel, Scores}
+function fit(detector::LOF, X::Data)::Fit
     # create the specified tree
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
 
@@ -57,10 +57,10 @@ function fit(detector::LOF, X::Data)::Tuple{LOFModel, Scores}
     # reduce distances to outlier score
     scores = _lof_from_lrd(idxs, lrds)
 
-    LOFModel(tree, ndists, lrds), scores
+    Fit(LOFModel(tree, ndists, lrds), scores)
 end
 
-function transform(detector::LOF, model::LOFModel, X::Data)::Scores
+@unscorify function transform(detector::LOF, model::Fit, X::Data)::Result
     if detector.parallel
         idxs, dists = knn_parallel(model.tree, X, detector.k, true)
         return _lof(idxs, dists, model.ndists, model.lrds, detector.k)

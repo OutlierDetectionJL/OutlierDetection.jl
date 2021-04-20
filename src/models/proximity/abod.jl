@@ -1,6 +1,6 @@
-using Combinatorics: combinations
+using Combinatorics:combinations
 using LinearAlgebra: dot, norm
-using Statistics: var
+using Statistics:var
 
 """
     ABOD(k = 5,
@@ -45,22 +45,22 @@ MMI.@mlj_model mutable struct ABOD <: UnsupervisedDetector
     enhanced::Bool = false
 end
 
-struct ABODModel <: DetectorModel
+struct ABODModel <: Model
     # We have to store the tree to efficiently retrieve the indices to the nearest neighbors. Additionally, we have to
     # store the raw training data `X` for later angle calculations.
     X::AbstractArray
     tree::NN.NNTree
 end
 
-function fit(detector::ABOD, X::Data)::Tuple{ABODModel, Scores}
+function fit(detector::ABOD, X::Data)::Fit
     # use tree to calculate distances
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
     idxs, _ = NN.knn(tree, X, detector.k)
     scores = detector.enhanced ? _eabod(X, X, idxs, detector.k) : _abod(X, X, idxs, detector.k)
-    ABODModel(X, tree), scores
+    Fit(ABODModel(X, tree), scores)
 end
 
-function transform(detector::ABOD, model::ABODModel, X::Data)::Scores
+@unscorify function transform(detector::ABOD, model::Fit, X::Data)::Result
     # TODO: We could also paralellize the abod score calculation.
     if detector.parallel
         idxs, _ = knn_parallel(model.tree, X, detector.k)

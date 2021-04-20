@@ -142,6 +142,6 @@ Examples
 """
 function classify(outlier_fraction::Real, scores_train::Scores, scores_test::Scores)::Labels
     @assert 0 < outlier_fraction < 1
-    ifelse.(scores_test .> quantile(scores_train, 1 - outlier_fraction), -1, 1)
+    ifelse.(scores_test .> quantile(scores_train, 1 - outlier_fraction), CLASS_OUTLIER, CLASS_NORMAL)
 end
 classify(outlier_fraction, scores) = classify(outlier_fraction, scores, scores)

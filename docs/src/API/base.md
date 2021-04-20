@@ -23,10 +23,10 @@ SupervisedDetector
 UnsupervisedDetector
 ```
 
-### DetectorModel
+### Model
 
 ```@docs
-DetectorModel
+Model
 ```
 
 ### Scores
@@ -35,16 +35,28 @@ DetectorModel
 Scores
 ```
 
+### Data
+
+```@docs
+Data
+```
+
 ### Labels
 
 ```@docs
 Labels
 ```
 
-### Data
+### Fit
 
 ```@docs
-Data
+Fit
+```
+
+### Result
+
+```@docs
+Result
 ```
 
 ## Functions

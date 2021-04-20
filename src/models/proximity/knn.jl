@@ -37,11 +37,11 @@ MMI.@mlj_model mutable struct KNN <: UnsupervisedDetector
     reduction::Symbol = :maximum::(_ in (:maximum, :median, :mean))
 end
 
-struct KNNModel <: DetectorModel
+struct KNNModel <: Model
     tree::NN.NNTree
 end
 
-function fit(detector::KNN, X::Data)::Tuple{KNNModel, Scores}
+function fit(detector::KNN, X::Data)::Fit
     # create the specified tree
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
 
@@ -50,10 +50,10 @@ function fit(detector::KNN, X::Data)::Tuple{KNNModel, Scores}
 
     # reduce distances to outlier score
     scores = _knn(dists, detector.reduction)
-    KNNModel(tree), scores
+    Fit(KNNModel(tree), scores)
 end
 
-function transform(detector::KNN, model::KNNModel, X::Data)::Scores
+@unscorify function transform(detector::KNN, model::Fit, X::Data)::Result
     if detector.parallel
         idxs, dists = knn_parallel(model.tree, X, detector.k)
         return _knn(dists, detector.reduction)

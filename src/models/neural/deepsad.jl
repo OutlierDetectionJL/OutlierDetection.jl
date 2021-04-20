@@ -72,12 +72,12 @@ mutable struct DeepSAD <: SupervisedDetector
     end
 end
 
-struct DeepSADModel <: DetectorModel
+struct DeepSADModel <: Model
     chain::Chain
     center::AbstractArray
 end
 
-function fit(detector::DeepSAD, X::Data, y::Labels)::Tuple{DeepSADModel, Scores}
+function fit(detector::DeepSAD, X::Data, y::Labels)::Fit
     makeLoader = i -> DataLoader((X, y), batchsize=detector.batchsize[i], shuffle=detector.shuffle[i],
         partial=detector.partial[i])
     loaderPretrain = makeLoader(1)
@@ -102,10 +102,10 @@ function fit(detector::DeepSAD, X::Data, y::Labels)::Tuple{DeepSADModel, Scores}
            cb=detector.callback[2](detector.encoder))
 
     scores = svddScore(detector.encoder(X), center, dims)
-    DeepSADModel(model, center), scores
+    Fit(DeepSADModel(model, center), scores)
 end
 
-function transform(detector::DeepSAD, model::DeepSADModel, X::Data)::Scores
+@unscorify function transform(detector::DeepSAD, model::Fit, X::Data)::Result
     svddScore(detector.encoder(X), model.center, ndims(X))
 end
 

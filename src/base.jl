@@ -1,9 +1,11 @@
+using MacroTools
+
 """
     UnsupervisedDetector
 
 This abstract type forms the basis for all implemented unsupervised outlier detection algorithms. To implement a new
-`UnsupervisedDetector` yourself, you have to implement the `fit(detector, X)::DetectorModel` and
-`transform(detector, model, X)::Scores` methods. 
+`UnsupervisedDetector` yourself, you have to implement the `fit(detector, X)::Fit` and
+`transform(detector, model, X)::Result` methods. 
 """
 abstract type UnsupervisedDetector <: MMI.Unsupervised end
 
@@ -11,8 +13,8 @@ abstract type UnsupervisedDetector <: MMI.Unsupervised end
     SupervisedDetector
 
 This abstract type forms the basis for all implemented supervised outlier detection algorithms. To implement a new
-`SupervisedDetector` yourself, you have to implement the `fit(detector, X, y)::DetectorModel` and
-`transform(detector, model, X)::Scores` methods. 
+`SupervisedDetector` yourself, you have to implement the `fit(detector, X, y)::Fit` and
+`transform(detector, model, X)::Result` methods. 
 """
 abstract type SupervisedDetector <: MMI.Unsupervised end
 
@@ -22,16 +24,16 @@ abstract type SupervisedDetector <: MMI.Unsupervised end
 The union type of all implemented detectors, including supervised, semi-supervised and unsupervised detectors. *Note:* A
 semi-supervised detector can be seen as a supervised detector with a specific class representing unlabeled data.
 """
-const Detector = Union{<:SupervisedDetector, <:UnsupervisedDetector}
+const Detector = Union{<:SupervisedDetector,<:UnsupervisedDetector}
 
 """
-    DetectorModel
+    Model
 
-A `DetectorModel` represents the learned behaviour for specific detector. This might include parameters in parametric
+A `Model` represents the learned behaviour for specific  [`Detector`](@ref). This might include parameters in parametric
 models or other repesentations of the learned data in nonparametric models. In essence, it includes everything required
 to transform an instance to an outlier score.
 """
-abstract type DetectorModel end
+abstract type Model end
 
 """
     Scores::AbstractVector{<:Real}
@@ -57,6 +59,26 @@ Labels are used for supervision and evaluation and are defined as an `AbstractAr
 labels is that `-1` indicates outliers, `1` indicates inliers and `0` indicates unlabeled data in semi-supervised tasks.
 """
 const Labels = AbstractArray{<:Integer}
+
+"""
+    Fit
+
+A `Fit` bundles a [`Model`](@ref) and [`Scores`](@ref) achieved when fitting a [`Detector`](@ref). The model
+is used directly in later [`transform`](@ref) calls and the (train-) scores are forwarded in [`transform`](@ref).
+"""
+struct Fit
+    model::Model
+    scores::Scores
+end
+
+"""
+    Result::Tuple{Scores, Scores}
+
+Describes the result of using [`transform`](@ref) with a [`Detector`](@ref) and is a tuple containing the train scores
+achieved with [`fit`](@ref) and the test scores achieved with [`transform`](@ref). We return both train and test scores
+because this gives us the greatest flexibility in later score combination or classification.
+"""
+const Result = Tuple{Scores,Scores}
 
 const _input_data = """    X::Union{AbstractMatrix, Tables.jl-compatible}
 Either a column-major matrix or a row-major [Tables.jl-compatible](https://github.com/JuliaData/Tables.jl) source."""
@@ -91,10 +113,10 @@ transform(detector, model, X)
         X,
         y)
 
-Fit a specified unsupervised, supervised or semi-supervised outlier detector. That is, learn a `DetectorModel` from
-input data `X` and, in the supervised and semi-supervised setting, labels `y`. In a supervised setting, the label `-1`
-represents outliers and `1` inliers. In a semi-supervised setting, the label `0` additionally represents unlabeled data.
-*Note:* Unsupervised detectors can be fitted without specifying `y`, otherwise `y` is simply ignore.
+Fit a specified unsupervised, supervised or semi-supervised outlier detector. That is, learn a `Model` from input data
+`X` and, in the supervised and semi-supervised setting, labels `y`. In a supervised setting, the label `-1` represents
+outliers and `1` inliers. In a semi-supervised setting, the label `0` additionally represents unlabeled data. *Note:*
+Unsupervised detectors can be fitted without specifying `y`, otherwise `y` is simply ignore.
 
 Parameters
 ----------
@@ -104,11 +126,9 @@ $_input_data
 
 Returns
 ----------
-    model::DetectorModel
-The learned model of the given detector, which contains all the necessary information for later prediction.
-
-    scores::Scores
-The achieved outlier scores of the given training data `X`.
+    fit::Fit
+The learned model of the given detector, which contains all the necessary information for later prediction and the
+achieved outlier scores of the given input data `X`.
 
 Examples
 --------
@@ -125,24 +145,61 @@ fit(detector::SupervisedDetector, X, y) = fit(detector, MMI.matrix(X; transpose=
               X)
 
 Transform input data `X` to outlier scores using an [`UnsupervisedDetector`](@ref) or [`SupervisedDetector`](@ref) and
-a corresponding [`DetectorModel`](@ref).
+a corresponding [`Model`](@ref).
 
 Parameters
 ----------
 $_detector
 
-    model::DetectorModel
+    model::Model
 The model learned from using [`fit`](@ref) with a supervised or unsupervised [`Detector`](@ref)
 
 $_input_data
 
 Returns
 ----------
-    scores::Scores
-The achieved outlier scores of the given test data `X`.
+    result::Result
+Tuple of the achieved outlier scores of the given train and test data.
 
 Examples
 --------
 $(_transform_unsupervised("KNN"))
 """
 transform(detector::Detector, X) = fit(detector, MMI.matrix(X; transpose=true))
+
+"""
+    @unscorify
+
+Helps with the definition of [`transform`](@ref) for detectors, by unpacking the `.model` field of the second argument
+directly into the argument and implicitly returns the values of the `.scores` field as the first tuple element of the
+returned expression.
+"""
+macro unscorify(fn)
+    fn = MacroTools.longdef(fn)
+    @capture(fn, function f_(detector_, result_::Fit, X_::Data)::Result body_ end) || error("Expected a function with
+    three parameters f(`detector<:Detector`, `result::Fit`, `X::Data`)::Result and fully specified types.") 
+    copy_result = :copy_result_unique_name
+
+    # implicitly return the scores as the first tuple element for all return
+    return_count = 0
+    body = MacroTools.postwalk(body) do x
+        @capture(x, ret_return) || return x
+        # count the return
+        return_count += 1
+
+        # get the return expression
+        ret_expr = ret.args[1]
+        return :(($copy_result.scores, $(ret_expr)))
+    end
+
+    # check if there are any returns were found, if not, use the last body expression
+    if return_count == 0
+        body = :(($copy_result.scores, $(body.args[end])))
+    end
+
+    :(function $f($detector, $result, $X)
+        $copy_result = $result;
+        $result = $result.model;
+        $body 
+    end)
+end

@@ -9,13 +9,11 @@ function test_detector(detector)
         data_test = rand(dim, ntest)
 
         # learn model
-        model, scores = fit(detector, data_train, label_train)
-
-        # re-calculate train scores
-        scores_train = transform(detector, model, data_train)
+        model = fit(detector, data_train, label_train)
+        scores = model.scores
 
         # calculate test scores
-        scores_test = transform(detector, model, data_test)
+        scores_train, scores_test = transform(detector, model, data_test)
 
         @testset "fit and transform yield equal scores" begin
             @test scores_train ≈ scores

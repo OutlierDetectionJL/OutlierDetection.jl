@@ -53,11 +53,11 @@ MMI.@mlj_model mutable struct ESAD <: SupervisedDetector
     noise::Function = identity
 end
 
-struct ESADModel <: DetectorModel
+struct ESADModel <: Model
     chain::Chain
 end
 
-function fit(detector::ESAD, X::Data, y::Labels)::Tuple{ESADModel, Scores}
+function fit(detector::ESAD, X::Data, y::Labels)::Fit
     loader = DataLoader((X, y), batchsize=detector.batchsize, shuffle=detector.shuffle, partial=detector.partial)
 
     # Create the autoencoder // TODO: deepcopy the encoder/decoder?
@@ -72,10 +72,10 @@ function fit(detector::ESAD, X::Data, y::Labels)::Tuple{ESADModel, Scores}
 
     # Score as described in the paper
     scores = _esadscore(model[1:2](X), X, model(X), dims)
-    ESADModel(model), scores
+    Fit(ESADModel(model), scores)
 end
 
-function transform(_::ESAD, model::ESADModel, X::Data)::Scores
+@unscorify function transform(_::ESAD, model::Fit, X::Data)::Result
     _esadscore(model.chain[1:2](X), X, model.chain(X), ndims(X))
 end
 

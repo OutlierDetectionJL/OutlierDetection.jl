@@ -32,20 +32,20 @@ MMI.@mlj_model mutable struct DNN <: UnsupervisedDetector
     d::Real = 0::(_ > 0) # warns if `d` is not set
 end
 
-struct DNNModel <: DetectorModel
+struct DNNModel <: Model
     tree::NN.NNTree
 end
 
-function fit(detector::DNN, X::Data)::Tuple{DNNModel, Scores}
+function fit(detector::DNN, X::Data)::Fit
     # create the specified tree
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
 
     # use tree to calculate distances
     scores = _dnn(NN.inrange(tree, X, detector.d))
-    DNNModel(tree), scores
+    Fit(DNNModel(tree), scores)
 end
 
-function transform(detector::DNN, model::DNNModel, X::Data)::Scores
+@unscorify function transform(detector::DNN, model::Fit, X::Data)::Result
     if detector.parallel
         # already returns scores
         return dnn_parallel(model.tree, X, detector.d)
@@ -54,7 +54,7 @@ function transform(detector::DNN, model::DNNModel, X::Data)::Scores
     end
 end
 
-@inline function _dnn(idxs:: AbstractVector{<:AbstractVector})::Scores
+@inline function _dnn(idxs::AbstractVector{<:AbstractVector})::Scores
     # Helper function to reduce the instances to a global density score.
     1 ./ (length.(idxs) .+ 1e-10)
 end
