@@ -8,3 +8,5 @@
 *.info
 *.dev.jl
 .vscode/
+notebooks/
+*.jld
