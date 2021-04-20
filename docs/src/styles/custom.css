@@ -41,10 +41,11 @@
     margin-bottom: 1rem;
     color: currentColor;
     font-weight: 700;
+    font-size: 40px;
 }
 
 .mdx-hero svg {
-    width: 70px;
-    height: 45px;
-    margin-bottom: -8px;
+    width: auto;
+    height: 52px;
+    margin-bottom: -10px;
 }
