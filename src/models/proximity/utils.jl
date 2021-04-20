@@ -6,7 +6,7 @@ This is one of the Metric types defined in the Distances.jl package. It is possi
 creating new types that are subtypes of Metric.
 
     algorithm::Symbol
-One of `(:kdtree, :brutetree, :balltree)`. In a `kdtree`, points are recursively split into groups using hyper-planes.
+One of `(:kdtree, :balltree)`. In a `kdtree`, points are recursively split into groups using hyper-planes.
 Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock.
 A *brutetree* linearly searches all points in a brute force fashion and works with any Metric. A *balltree*
 recursively splits points into groups bounded by hyper-spheres and works with any Metric.
@@ -29,8 +29,6 @@ function buildTree(X::AbstractArray, metric::DI.Metric, algorithm::Symbol, leafs
         return NN.KDTree(X, metric; leafsize, reorder)
     elseif algorithm == :balltree
         return NN.BallTree(X, metric; leafsize, reorder)
-    elseif algorithm == :brutetree
-        return NN.BruteTree(X, metric; leafsize, reorder)
     end
 end
 
@@ -81,7 +79,7 @@ end
 # @copy KNNTemplate begin
 #     k::Integer = 5::(_ > 0)
 #     metric::DI.Metric = DI.Euclidean()
-#     algorithm::Symbol = :kdtree::(_ in (:kdtree, :brutetree, :balltree))
+#     algorithm::Symbol = :kdtree::(_ in (:kdtree, :balltree))
 #     leafsize::Integer = 10::(_ ≥ 0)
 #     reorder::Bool = true
 #     parallel::Bool = false

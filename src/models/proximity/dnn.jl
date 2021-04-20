@@ -25,7 +25,7 @@ References
 """
 MMI.@mlj_model mutable struct DNN <: UnsupervisedDetector
     metric::DI.Metric = DI.Euclidean()
-    algorithm::Symbol = :kdtree::(_ in (:kdtree, :brutetree, :balltree))
+    algorithm::Symbol = :kdtree::(_ in (:kdtree, :balltree))
     leafsize::Integer = 10::(_ ≥ 0)
     reorder::Bool = true
     parallel::Bool = false

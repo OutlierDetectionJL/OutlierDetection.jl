@@ -30,7 +30,7 @@ Sets.
 MMI.@mlj_model mutable struct KNN <: UnsupervisedDetector
     k::Integer = 5::(_ > 0)
     metric::DI.Metric = DI.Euclidean()
-    algorithm::Symbol = :kdtree::(_ in (:kdtree, :brutetree, :balltree))
+    algorithm::Symbol = :kdtree::(_ in (:kdtree, :balltree))
     leafsize::Integer = 10::(_ ≥ 0)
     reorder::Bool = true
     parallel::Bool = false
