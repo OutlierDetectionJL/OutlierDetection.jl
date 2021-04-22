@@ -16,7 +16,7 @@ This abstract type forms the basis for all implemented supervised outlier detect
 `SupervisedDetector` yourself, you have to implement the `fit(detector, X, y)::Fit` and
 `transform(detector, model, X)::Result` methods. 
 """
-abstract type SupervisedDetector <: MMI.Unsupervised end
+abstract type SupervisedDetector <: MMI.Deterministic end
 
 """
     Detector::Union{<:SupervisedDetector, <:UnsupervisedDetector}

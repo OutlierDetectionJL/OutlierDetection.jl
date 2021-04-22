@@ -1,34 +1,54 @@
+using Random:MersenneTwister
+using MLJBase
+
 function test_detector(detector)
     @testset "$detector" begin
         # create data
+        is_supervised = isa(detector, SupervisedDetector)
+        
+        # specify test parameters
+        rng = MersenneTwister(0)
         dim = trainDim
-        ntrain = 1000
-        ntest = 10
-        data_train = rand(dim, ntrain)
-        label_train = rand((-1,0,1), ntrain)
-        data_test = rand(dim, ntest)
+        fraction_train = 0.7
+        n_samples = 1000
+        n_train = Int(n_samples * fraction_train)
+        n_test = n_samples - n_train
 
-        # learn model
-        model = fit(detector, data_train, label_train)
-        scores = model.scores
+        # test all different input formats
+        y = rand(rng, (-1,0,1), n_samples)
+        X_raw = rand(rng, dim, n_samples)
+        X_mat = collect(X_raw')
+        X_df = table(X_mat)
+        train, test  = partition(eachindex(y), fraction_train, rng=rng);
 
-        # calculate test scores
-        scores_train, scores_test = transform(detector, model, data_test)
+        # Raw detector with matrix transpose input
+        model = is_supervised ? OutlierDetection.fit(detector, X_raw[:, train], y[train]) :
+                                OutlierDetection.fit(detector, X_raw[:, train])
+        train_raw, test_raw = OutlierDetection.transform(detector, model, X_raw[:, test])
 
-        @testset "fit and transform yield equal scores" begin
-            @test scores_train ≈ scores
-        end
+        # MLJ with matrix input
+        detector_mat = is_supervised ? machine(detector, X_mat, y) : machine(detector, X_mat)
+        fit!(detector_mat, rows=train)
+        train_mat, test_mat = MLJBase.predict(detector_mat, rows=test)
+
+        # MLJ with matrix table
+        detector_df = is_supervised ? machine(detector, X_df, y) : machine(detector, X_df)
+        fit!(detector_df, rows=train)
+        train_df, test_df = MLJBase.predict(detector_df, rows=test)
 
         @testset "scores have appropriate dimensions" begin
-            @test length(scores) == ntrain
-            @test length(scores_train) == ntrain
-            @test length(scores_test) == ntest
+            @test length(train_raw) == length(train_mat) == length(train_df) == n_train
+            @test length(test_raw) == length(test_mat) == length(test_df) == n_test
         end
 
         @testset "scores have appropriate values" begin
-            @test all(-Inf .< scores .< Inf)
-            @test all(-Inf .< scores_train .< Inf)
-            @test all(-Inf .< scores_test .< Inf)
+            @test all(-Inf .< train_raw .< Inf)
+            @test all(-Inf .< train_mat .< Inf)
+            @test all(-Inf .< train_df .< Inf)
+
+            @test all(-Inf .< test_raw .< Inf)
+            @test all(-Inf .< test_mat .< Inf)
+            @test all(-Inf .< test_df .< Inf)
         end
     end
 end

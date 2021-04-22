@@ -69,7 +69,7 @@ Examples
     normalize(scores_train, scores_test) # ([0.0, 0.5, 1.0], [1.0, 1.0, 0.5, 0.0, 0.0])
     normalize(scores_train) # [0.0, 0.5, 1.0]
 """
-function normalize(scores_train::Scores, scores_test::Scores)::Tuple{Scores, Scores}
+function normalize(scores_train::Scores, scores_test::Scores)::Result
     minTrain = minimum(scores_train)
     maxTrain = maximum(scores_train)
     @assert minTrain < maxTrain # otherwise all scores are equal
@@ -103,7 +103,7 @@ References
 ----------
 Kriegel, Hans-Peter; Kroger, Peer; Schubert, Erich; Zimek, Arthur (2011): Interpreting and Unifying Outlier Scores.
 """
-function unify(scores_train::Scores, scores_test::Scores)::Tuple{Scores, Scores}
+function unify(scores_train::Scores, scores_test::Scores)::Result
     μ = mean(scores_train)
     σ = std(scores_train)
     @assert σ > 0 # otherwise all scores are equal
