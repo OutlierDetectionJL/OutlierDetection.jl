@@ -1,5 +1,7 @@
 using OutlierDetection
 using OutlierDetection.Examples
+using Random:MersenneTwister
+using MLJBase
 using Test
 
 include("classifier.jl")

@@ -17,7 +17,7 @@ The hypersphere radius used to calculate the global density of an instance.
 
 Examples
 --------
-$(_transform_unsupervised("DNN"))
+$(_score_unsupervised("DNN"))
 
 References
 ----------
@@ -45,7 +45,7 @@ function fit(detector::DNN, X::Data)::Fit
     Fit(DNNModel(tree), scores)
 end
 
-@unscorify function transform(detector::DNN, model::Fit, X::Data)::Result
+@score function score(detector::DNN, model::Fit, X::Data)::Result
     if detector.parallel
         # already returns scores
         return dnn_parallel(model.tree, X, detector.d)

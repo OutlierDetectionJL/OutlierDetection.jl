@@ -18,7 +18,7 @@ reduce the distances, but mean has been implemented for numerical stability.
 
 Examples
 --------
-$(_transform_unsupervised("KNN"))
+$(_score_unsupervised("KNN"))
 
 References
 ----------
@@ -53,7 +53,7 @@ function fit(detector::KNN, X::Data)::Fit
     Fit(KNNModel(tree), scores)
 end
 
-@unscorify function transform(detector::KNN, model::Fit, X::Data)::Result
+@score function score(detector::KNN, model::Fit, X::Data)::Result
     if detector.parallel
         idxs, dists = knn_parallel(model.tree, X, detector.k)
         return _knn(dists, detector.reduction)

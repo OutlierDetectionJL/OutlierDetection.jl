@@ -26,7 +26,7 @@ $_ae_loss
 
 Examples
 --------
-$(_transform_unsupervised("AE"))
+$(_score_unsupervised("AE"))
 
 References
 ----------
@@ -60,6 +60,6 @@ function fit(detector::AE, X::Data)::Fit
     Fit(AEModel(model), scores)
 end
 
-@unscorify function transform(detector::AE, model::Fit, X::Data)::Result
+@score function score(detector::AE, model::Fit, X::Data)::Result
     detector.loss(model.chain(X), X, agg=instance_mean)
 end

@@ -41,7 +41,7 @@ pretraining and training.
 
 Examples
 --------
-$(_transform_supervised("DeepSAD"))
+$(_score_supervised("DeepSAD"))
 
 References
 ----------
@@ -105,7 +105,7 @@ function fit(detector::DeepSAD, X::Data, y::Labels)::Fit
     Fit(DeepSADModel(model, center), scores)
 end
 
-@unscorify function transform(detector::DeepSAD, model::Fit, X::Data)::Result
+@score function score(detector::DeepSAD, model::Fit, X::Data)::Result
     svddScore(detector.encoder(X), model.center, ndims(X))
 end
 

@@ -17,8 +17,11 @@ module OutlierDetection
            Scores,
            Data,
            Labels,
+           Fit,
+           Result,
            fit,
-           transform
+           score,
+           detect
 
     # models
     export DNN,

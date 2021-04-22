@@ -5,7 +5,7 @@ This example demonstrates using the *raw* `OutlierDetection` API to determine th
 Import `OutlierDetection` and `OutlierDetectionData`
 
 ```julia
-using OutlierDetection: KNN, fit, transform, roc_auc
+using OutlierDetection: KNN, fit, score, roc_auc
 using OutlierDetectionData: ODDS
 ```
 
@@ -30,13 +30,13 @@ detector = KNN(k=10);
 Learn a model from the data `X`.
 
 ```julia
-model, scores_train = fit(detector, X_train);
+model = fit(detector, X_train);
 ```
 
 Evaluate our resulting scores on the training data.
 
 ```julia
-roc_auc(y_train, scores_train)
+roc_auc(y_train, model.scores)
 ```
 
     julia> 0.945...
@@ -44,7 +44,7 @@ roc_auc(y_train, scores_train)
 Calculate the outlier scores for our test data.
 
 ```julia
-scores_test = transform(detector, model, X_test);
+scores_train, scores_test = score(detector, model, X_test);
 ```
 
 Evaluate the result on the test data.
@@ -54,6 +54,8 @@ roc_auc(y_test, scores_test)
 ```
 
     julia> 0.967...
+
+We always return both the train and test scores because later used [classifiers](../../API/base/#OutlierDetection.Classifier) typically choose a threshold based on the train scores when converting the scores to inlier/outlier labels.
 
 ## Notice
 

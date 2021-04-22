@@ -33,7 +33,7 @@ A function to be applied to a batch of input data to add noise, see [1] for an e
 
 Examples
 --------
-$(_transform_supervised("ESAD"))
+$(_score_supervised("ESAD"))
 
 References
 ----------
@@ -75,7 +75,7 @@ function fit(detector::ESAD, X::Data, y::Labels)::Fit
     Fit(ESADModel(model), scores)
 end
 
-@unscorify function transform(_::ESAD, model::Fit, X::Data)::Result
+@score function score(_::ESAD, model::Fit, X::Data)::Result
     _esadscore(model.chain[1:2](X), X, model.chain(X), ndims(X))
 end
 

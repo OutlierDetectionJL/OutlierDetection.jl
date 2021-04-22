@@ -9,15 +9,15 @@ function MMI.fit(detector::SupervisedDetector, verbosity::Int, X, y)
 end
 
 function MMI.transform(detector::Detector, fitresult::Fit, X)
-    transform(detector, fitresult, X)
+    score(detector, fitresult, X)
 end
 
 function MMI.predict(detector::Detector, fitresult::Fit, X)
-    transform(detector, fitresult, X)
+    score(detector, fitresult, X)
 end
 
 function MMI.transform(clf::Classifier, _, scores::Result...) # _ because there is no fitresult
-    transform(clf, scores...)
+    detect(clf, scores...)
 end
 
 # specify scitypes

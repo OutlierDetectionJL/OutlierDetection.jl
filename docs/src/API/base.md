@@ -1,7 +1,7 @@
 # Base
 
 Here we define the abstract supertypes that all outlier detectors share as well as the necessary [`fit`](@ref) and
-[`transform`](@ref) methods that have to be implemented for each detector.
+[`score`](@ref) methods that have to be implemented for each detector.
 
 ## Types
 
@@ -21,6 +21,12 @@ SupervisedDetector
 
 ```@docs
 UnsupervisedDetector
+```
+
+### Classifier
+
+```@docs
+Classifier
 ```
 
 ### Model
@@ -67,8 +73,14 @@ Result
 fit
 ```
 
-### transform
+### score
 
 ```@docs
-transform
+score
+```
+
+### detect
+
+```@docs
+detect
 ```

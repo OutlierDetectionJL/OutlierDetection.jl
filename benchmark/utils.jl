@@ -4,15 +4,15 @@ const IMPROVE_MARK = ":white_check_mark:"
 
 function create_benchmark(detector)
     SUITE["$detector fit"] = BenchmarkGroup()
-    SUITE["$detector transform"] = BenchmarkGroup()
+    SUITE["$detector score"] = BenchmarkGroup()
     for dimension ∈ (1,10,100)
         for points ∈ (100,1000)
             data = rand(MersenneTwister(1), dimension, points)
             model, scores = fit(detector, data)
             SUITE["$detector fit"]["dim=$dimension, points=$points"] =
                 @benchmarkable fit($detector, $data)
-            SUITE["$detector transform"]["dim=$dimension, points=$points"] =
-                @benchmarkable transform($detector, $model, $data)
+            SUITE["$detector score"]["dim=$dimension, points=$points"] =
+                @benchmarkable score($detector, $model, $data)
         end
     end
 end

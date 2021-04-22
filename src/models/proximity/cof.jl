@@ -14,7 +14,7 @@ $_knn_params
 
 Examples
 --------
-$(_transform_unsupervised("COF"))
+$(_score_unsupervised("COF"))
 
 References
 ----------
@@ -53,7 +53,7 @@ function fit(detector::COF, X::Data)::Fit
     Fit(COFModel(tree, pdists, acds), scores)
 end
 
-@unscorify function transform(detector::COF, model::Fit, X::Data)::Result
+@score function score(detector::COF, model::Fit, X::Data)::Result
     if detector.parallel
         idxs, _ = knn_parallel(model.tree, X, detector.k + 1, true)
         return _cof(idxs, model.pdists, model.acds, detector.k)

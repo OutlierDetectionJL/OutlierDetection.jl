@@ -1,16 +1,13 @@
-using Random:MersenneTwister
-using MLJBase
-
 function test_detector(detector)
     @testset "$detector" begin
         # create data
         is_supervised = isa(detector, SupervisedDetector)
-        
+
         # specify test parameters
         rng = MersenneTwister(0)
         dim = trainDim
         fraction_train = 0.7
-        n_samples = 1000
+        n_samples = 100
         n_train = Int(n_samples * fraction_train)
         n_test = n_samples - n_train
 
@@ -24,7 +21,7 @@ function test_detector(detector)
         # Raw detector with matrix transpose input
         model = is_supervised ? OutlierDetection.fit(detector, X_raw[:, train], y[train]) :
                                 OutlierDetection.fit(detector, X_raw[:, train])
-        train_raw, test_raw = OutlierDetection.transform(detector, model, X_raw[:, test])
+        train_raw, test_raw = score(detector, model, X_raw[:, test])
 
         # MLJ with matrix input
         detector_mat = is_supervised ? machine(detector, X_mat, y) : machine(detector, X_mat)

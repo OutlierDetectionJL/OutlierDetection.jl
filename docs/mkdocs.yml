@@ -44,5 +44,6 @@ nav:
       - Performance Tips: documentation/performance-tips.md
   - API:
     - Base: API/base.md
-    - Models: API/models.md
+    - Classifiers: API/classifiers.md
+    - Detectors: API/detectors.md
     - Evaluation: API/evaluation.md

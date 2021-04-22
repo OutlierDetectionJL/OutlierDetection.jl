@@ -21,7 +21,7 @@ In this case, a copy of the original data will be made so that the original data
 significant impact on performance and is by default set to true.
 
     parallel::Bool
-Parallelize `transform` and `predict` using all threads available. The number of threads can be set with the
+Parallelize `score` and `predict` using all threads available. The number of threads can be set with the
 `JULIA_NUM_THREADS` environment variable. Note: `fit` is not parallel."""
 
 function buildTree(X::AbstractArray, metric::DI.Metric, algorithm::Symbol, leafsize::Int, reorder::Bool)::NN.NNTree

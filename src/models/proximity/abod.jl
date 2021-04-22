@@ -25,7 +25,7 @@ When `enhanced=true`, it uses the enhanced ABOD (EABOD) adaptation proposed by [
 
 Examples
 --------
-$(_transform_unsupervised("ABOD"))
+$(_score_unsupervised("ABOD"))
 
 References
 ----------
@@ -60,7 +60,7 @@ function fit(detector::ABOD, X::Data)::Fit
     Fit(ABODModel(X, tree), scores)
 end
 
-@unscorify function transform(detector::ABOD, model::Fit, X::Data)::Result
+@score function score(detector::ABOD, model::Fit, X::Data)::Result
     # TODO: We could also paralellize the abod score calculation.
     if detector.parallel
         idxs, _ = knn_parallel(model.tree, X, detector.k)

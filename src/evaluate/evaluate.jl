@@ -5,20 +5,19 @@ const _shared_params = """    scores_train::AbstractVector{<:Real}
 A vector of training scores, typically the result of [`fit`](@ref) with a detector.
 
     scores_test::AbstractVector{<:Real}
-A vector of test scores, typically the result of [`transform`](@ref) using a previously fitted detector."""
+A vector of test scores, typically the result of [`score`](@ref) using a previously fitted detector."""
 
 """
     combine(scores_mat,
             strategy = :mean)
 
 Combination method to merge outlier scores from multiple detectors by using a combination strateg. This function is
-typically used within a [`Classifier`](@ref). TODO: Add AOM/MOA combination strategies 
+typically used within a [`Classifier`](@ref). TODO: Add AOM/MOA/LSCP combination strategies 
 
 Parameters
 ----------
     scores_mat::AbstractMatrix{T}
-A row-major matrix, with each row representing the scores for a specific instance and each column representing a
-specific detector.
+A matrix, with each row representing the scores for a specific instance and each column representing a detector.
 
     strategy::Symbol=:mean
 Determines how to combine the scores of multiple detectors, e.g. maximum or mean of all scores.

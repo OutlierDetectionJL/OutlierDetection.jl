@@ -17,7 +17,7 @@ $_knn_params
 
 Examples
 --------
-$(_transform_unsupervised("LOF"))
+$(_score_unsupervised("LOF"))
 
 References
 ----------
@@ -60,7 +60,7 @@ function fit(detector::LOF, X::Data)::Fit
     Fit(LOFModel(tree, ndists, lrds), scores)
 end
 
-@unscorify function transform(detector::LOF, model::Fit, X::Data)::Result
+@score function score(detector::LOF, model::Fit, X::Data)::Result
     if detector.parallel
         idxs, dists = knn_parallel(model.tree, X, detector.k, true)
         return _lof(idxs, dists, model.ndists, model.lrds, detector.k)
