@@ -246,7 +246,7 @@ macro score(fn)
         body = :(($copy_result.scores, $(body.args[end])))
     end
 
-    :(function $f($detector, $result, $X)
+    :(function $f($detector, $result::Fit, $X::Data)
         $copy_result = $result;
         $result = $result.model;
         $body 
