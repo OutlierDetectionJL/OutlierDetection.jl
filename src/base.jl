@@ -185,7 +185,7 @@ Examples
 --------
 $(_score_unsupervised("KNN"))
 """ # definition applies when X is not already a (transposed) abstract array
-score(detector::Detector, X) = score(detector, MMI.matrix(X; transpose=true))
+score(detector::Detector, fitresult::Fit, X) = score(detector, fitresult, MMI.matrix(X; transpose=true))
 
 """
     detect(classifier,
