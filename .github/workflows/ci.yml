@@ -21,6 +21,11 @@ jobs:
           - x64
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyod
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}

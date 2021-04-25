@@ -72,27 +72,19 @@ module OutlierDetection
     # basic types
     include("base.jl")
 
-    # probabilistic models
+    # utilities
+    include("utils/neighbors.jl")
+    include("utils/neural.jl")
 
-
-    # distance-based models
-    include("models/proximity/utils.jl")
-    include("models/proximity/dnn.jl") 
-    include("models/proximity/knn.jl")
-    include("models/proximity/lof.jl")
-    include("models/proximity/cof.jl")
-    include("models/proximity/abod.jl")
-
-    # kernel-based models
-    
-
-    # neural network models
-    include("models/neural/utils.jl")
-    include("models/neural/ae.jl")
-    include("models/neural/deepsad.jl")
-    include("models/neural/esad.jl")
-
-    # python models
+    # detectors
+    include("models/abod.jl")
+    include("models/ae.jl")
+    include("models/cof.jl")
+    include("models/deepsad.jl")
+    include("models/dnn.jl") 
+    include("models/esad.jl")
+    include("models/knn.jl")
+    include("models/lof.jl")
     include("pymodels/utils.jl")
     include("pymodels/detectors.jl")
 

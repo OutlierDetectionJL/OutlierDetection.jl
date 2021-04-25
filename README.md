@@ -99,32 +99,61 @@ ŷ = transform(mach, rows=test)
 
 ## Algorithms (also known as Detectors)
 
-Algorithms marked with ✓ are implemented in Julia. Algorithms marked with (py) are implemented in Python with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://davnn.github.io/OutlierDetection.jl/dev/API/detectors/).
+Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '✓ (py)' are implemented in Python with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://davnn.github.io/OutlierDetection.jl/dev/API/detectors/). Note: If you would like to use a Python-variant of an algorithm, prepend the algorithm name with `Py`, e.g., `PyLOF` is the Python variant of `LOF`.
 
 | Name    | Description                                  | Year  | Status | Ref                    |
 | ------- | -------------------------------------------- | :---: | :----: | ---------------------- |
 | LMDD    | Linear deviation-based outlier detection     | 1996  | ✓ (py) | Arning et al.          |
-| KNN     | Distance-based Outliers                      | 1997  |   ✓    | Knorr and Ng           |
-| MCD     | Minimum Covariance Determinant               | 1999  | ✓ (py) | Rousseeuw and Driessen |
+| KNN     | Distance-based outliers                      | 1997  |   ✓    | Knorr and Ng           |
+| MCD     | Minimum covariance determinant               | 1999  | ✓ (py) | Rousseeuw and Driessen |
 | KNN     | Distance to the k-th nearest neighbor        | 2000  |   ✓    | Ramaswamy              |
 | LOF     | Local outlier factor                         | 2000  |   ✓    | Breunig et al.         |
-| OCSVM   | One-Class Support Vector Machine             | 2001  | ✓ (py) | Schölkopf et al.       |
+| OCSVM   | One-Class support vector machine             | 2001  | ✓ (py) | Schölkopf et al.       |
 | KNN     | Sum of distances to the k-nearest neighbors  | 2002  |   ✓    | Angiulli and Pizzuti   |
 | COF     | Connectivity-based outlier factor            | 2002  |   ✓    | Tang et al.            |
 | LOCI    | Local correlation integral                   | 2003  | ✓ (py) | Papadimitirou et al.   |
 | CBLOF   | Cluster-based local outliers                 | 2003  | ✓ (py) | He et al.              |
-| PCA     | Principal Component Analysis                 | 2003  | ✓ (py) | Shyu et al.            |
-| IForest | Isolation Forest                             | 2008  | ✓ (py) | Liu et al.             |
+| PCA     | Principal component analysis                 | 2003  | ✓ (py) | Shyu et al.            |
+| IForest | Isolation forest                             | 2008  | ✓ (py) | Liu et al.             |
 | ABOD    | Angle-based outlier detection                | 2009  |   ✓    | Kriegel et al.         |
 | SOD     | Subspace outlier detection                   | 2009  | ✓ (py) | Kriegel et al.         |
-| HBOS    | Histogram-based Outlier Score                | 2012  | ✓ (py) | Goldstein and Dengel   |
+| HBOS    | Histogram-based outlier score                | 2012  | ✓ (py) | Goldstein and Dengel   |
 | SOS     | Stochastic outlier selection                 | 2012  | ✓ (py) | Janssens et al.        |
+| AE      | Auto-encoder reconstruction loss outliers    | 2015  |   ✓    | Aggarwal               |
 | ABOD    | Stable angle-based outlier detection         | 2015  |   ✓    | Li et al.              |
 | LODA    | Lightweight on-line detector of anomalies    | 2016  | ✓ (py) | Pevný                  |
 | DeepSAD | Deep semi-supervised anomaly detection       | 2019  |   ✓    | Ruff et al.            |
-| COPOD   | Copula-based Outlier Detection               | 2020  | ✓ (py) | Li et al.              |
+| COPOD   | Copula-based outlier detection               | 2020  | ✓ (py) | Li et al.              |
 | ROD     | Rotation-based outlier detection             | 2020  | ✓ (py) | Almardeny et al.       |
 | ESAD    | End-to-end semi-supervised anomaly detection | 2020  |   ✓    | Huang et al.           |
+
+If there are already so many algorithms available in Python - *why Julia, you might ask?* Let's have some fun!
+
+```julia
+using OutlierDetection, MLJ
+using BenchmarkTools: @benchmark
+X = rand(100000, 10);
+lof = machine(LOF(k=5, algorithm=:balltree, leafsize=30, parallel=true), X) |> fit!
+pylof = machine(PyLOF(n_neighbors=5, algorithm="ball_tree", leaf_size=30, n_jobs=-1), X) |> fit!
+```
+
+Julia enables you to implement your favorite algorithm in no time and it will be fast, *blazingly fast*.
+
+```julia
+@benchmark transform(lof, X)
+```
+    --------------
+    median time:      807.962 ms (0.00% GC)
+    --------------
+
+Interopating with Python is easy!
+
+```julia
+@benchmark transform(pylof, X)
+```
+    --------------
+    median time:      31.077 s (0.00% GC)
+    --------------
 
 ## Contributing
 
