@@ -21,13 +21,12 @@ jobs:
           - x64
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-conda@v2
         with:
           python-version: 3.8
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install pyod
+          conda install -c conda-forge pyod
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
