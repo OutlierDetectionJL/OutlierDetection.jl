@@ -46,4 +46,5 @@ nav:
     - Base: API/base.md
     - Classifiers: API/classifiers.md
     - Detectors: API/detectors.md
+    - PyDetectors: API/pydetectors.md
     - Evaluation: API/evaluation.md

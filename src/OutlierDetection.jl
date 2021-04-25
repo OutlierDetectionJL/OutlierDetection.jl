@@ -41,16 +41,33 @@ module OutlierDetection
            ESAD,
            ESADModel
 
+    export PyABOD,
+           PyCBLOF,
+           PyCOF,
+           PyCOPOD,
+           PyHBOS,
+           PyIForest,
+           PyKNN,
+           PyLMDD,
+           PyLODA,
+           PyLOF,
+           PyLOCI,
+           PyMCD,
+           PyOCSVM,
+           PyPCA,
+           PyROD,
+           PySOD,
+           PySOS,
+           PyModel
+
     # evaluation
-    export  roc,
-            roc_auc,
-            classify,
-            no_classify,
-            normalize,
-            no_normalize,
-            unify,
-            combine,
-            Classifier
+    export roc,
+           roc_auc,
+           classify,
+           normalize,
+           unify,
+           combine,
+           Classifier
 
     # basic types
     include("base.jl")
@@ -74,6 +91,10 @@ module OutlierDetection
     include("models/neural/ae.jl")
     include("models/neural/deepsad.jl")
     include("models/neural/esad.jl")
+
+    # python models
+    include("pymodels/utils.jl")
+    include("pymodels/detectors.jl")
 
     # evaluation
     include("evaluate/evaluate.jl")

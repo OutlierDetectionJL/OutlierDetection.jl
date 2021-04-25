@@ -39,35 +39,108 @@ Pkg.add("OutlierDetection")
 
 If you would like to modify the package locally, you can use `Pkg.develop(OutlierDetection)` or `] dev OutlierDetection` in the Julia REPL. This fetches a full clone of the package to `~/.julia/dev/` (the path can be changed by setting the environment variable `JULIA_PKG_DEVDIR`).
 
-## API Demo
+## API
+
+You typically want to interface with OutlierDetection.jl through the [MLJ-API](#mlj-api). However, it's also possible to use OutlierDetection.jl without MLJ. The main parts of the API are the functions `fit`, `score`, and `detect`. Note that the raw API uses the columns-as-observations convention for improved performance, and we transpose the input data.
 
 ```julia
-# train a local outlier factor model
 using OutlierDetection
+using OutlierDetectionData: ODDS
+
+# create a detector (a collection of hyperparameteres)
 lof = LOF()
-X_train = rand(10, 50)
-X_test = rand(10, 20)
-model, scores = fit(lof, X_train) # model + train scores
-transform(lof, model, X_test) # test scores
+
+# download and open the thyroid benchmark dataset
+X, y = ODDS.read("thyroid")
+
+# use 50% of the data for training
+n_train = Int(length(y) * 0.5)
+train, test = eachindex(y)[1:n_train], eachindex(y)[n_train+1:end]
+
+# learn a model from data
+model = fit(lof, X[train, :]')
+
+# predict outlier scores with learned model
+train_scores, test_scores = score(lof, model, X[test, :]')
+
+# transform scores to binary labels
+clf = Binarize()
+ŷ = detect(clf, train_scores, test_scores)
 ```
 
-## MLJ Demo
+## MLJ API
+
+The main difference between the raw API and MLJ is, besides method naming differences, the introduction of a [`machine`](https://alan-turing-institute.github.io/MLJ.jl/dev/machines/). In the raw API, we explicitly pass the results of fitting a detector (models) to further `score` calls. Machines allow us to hide that complexity by binding data directly to detectors and automatically passing fit results to further `transform` (unsupervised) or `predict` (supervised) calls. Under the hood, `transform` and `predict` pass the input data and previous fit result to `score`.
+
+```julia
+using MLJ # or using MLJBase
+using OutlierDetection
+using OutlierDetectionData: ODDS
+
+# download and open the thyroid benchmark dataset
+X, y = ODDS.read("thyroid");
+
+# use 50% of the data for training
+n_train = Int(length(y) * 0.5)
+train, test = eachindex(y)[1:n_train], eachindex(y)[n_train+1:end]
+
+# create a pipeline consisting of a detector and classifier
+pipe = @pipeline LOF() Binarize()
+
+# create a machine by binding the pipeline to data
+mach = machine(pipe, X)
+
+# learn from data
+fit!(mach, rows=train)
+
+# predict labels with learned machine
+ŷ = transform(mach, rows=test)
+```
+
+## Algorithms (also known as Detectors)
+
+Algorithms marked with ✓ are implemented in Julia. Algorithms marked with (py) are implemented in Python with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://davnn.github.io/OutlierDetection.jl/dev/API/detectors/).
+
+| Name    | Description                                  | Year  | Status | Ref                    |
+| ------- | -------------------------------------------- | :---: | :----: | ---------------------- |
+| LMDD    | Linear deviation-based outlier detection     | 1996  | ✓ (py) | Arning et al.          |
+| KNN     | Distance-based Outliers                      | 1997  |   ✓    | Knorr and Ng           |
+| MCD     | Minimum Covariance Determinant               | 1999  | ✓ (py) | Rousseeuw and Driessen |
+| KNN     | Distance to the k-th nearest neighbor        | 2000  |   ✓    | Ramaswamy              |
+| LOF     | Local outlier factor                         | 2000  |   ✓    | Breunig et al.         |
+| OCSVM   | One-Class Support Vector Machine             | 2001  | ✓ (py) | Schölkopf et al.       |
+| KNN     | Sum of distances to the k-nearest neighbors  | 2002  |   ✓    | Angiulli and Pizzuti   |
+| COF     | Connectivity-based outlier factor            | 2002  |   ✓    | Tang et al.            |
+| LOCI    | Local correlation integral                   | 2003  | ✓ (py) | Papadimitirou et al.   |
+| CBLOF   | Cluster-based local outliers                 | 2003  | ✓ (py) | He et al.              |
+| PCA     | Principal Component Analysis                 | 2003  | ✓ (py) | Shyu et al.            |
+| IForest | Isolation Forest                             | 2008  | ✓ (py) | Liu et al.             |
+| ABOD    | Angle-based outlier detection                | 2009  |   ✓    | Kriegel et al.         |
+| SOD     | Subspace outlier detection                   | 2009  | ✓ (py) | Kriegel et al.         |
+| HBOS    | Histogram-based Outlier Score                | 2012  | ✓ (py) | Goldstein and Dengel   |
+| SOS     | Stochastic outlier selection                 | 2012  | ✓ (py) | Janssens et al.        |
+| ABOD    | Stable angle-based outlier detection         | 2015  |   ✓    | Li et al.              |
+| LODA    | Lightweight on-line detector of anomalies    | 2016  | ✓ (py) | Pevný                  |
+| DeepSAD | Deep semi-supervised anomaly detection       | 2019  |   ✓    | Ruff et al.            |
+| COPOD   | Copula-based Outlier Detection               | 2020  | ✓ (py) | Li et al.              |
+| ROD     | Rotation-based outlier detection             | 2020  | ✓ (py) | Almardeny et al.       |
+| ESAD    | End-to-end semi-supervised anomaly detection | 2020  |   ✓    | Huang et al.           |
 
 ## Contributing
 
-OutlierDetection.jl is a community effort and your help is extremely welcome! See our [contribution guide](https://davnn.github.io/OutlierDetection.jl/stable/contributing) for more information on how to contribute to the project.
+OutlierDetection.jl is a community effort and your help is extremely welcome! See our [contribution guide](https://davnn.github.io/OutlierDetection.jl/dev/getting-started/contributing/) for more information how to contribute to the project.
 
 ### Inclusion Guidelines
 
 We are excited to make Julia a first-class citizen in the outlier detection community and happily accept algorithm contributions to OutlierDetection.jl.
 
-We consider well-established algorithms for inclusion. A rule of thumb is at least 2 years since publication, 100+ citations, and wide use and usefulness. Algorithms that do not meet the inclusion criteria can simply extend our API. External algorithm can also be listed in our documentation, if the authors wish so.
+We consider well-established algorithms for inclusion. A rule of thumb is at least two years since publication, 100+ citations, and wide use and usefulness. Algorithms that do not meet the inclusion criteria can simply extend our API. The external algorithms can also be listed in our documentation if the authors wish so.
 
-Additionally, algorithms that implement functionality that is useful on its own should live in their own package, wrapped by OutlierDetection.jl. Algorithms that build largely on top of existing packages can be implemented directly in OutlierDetection.jl.
+Additionally, algorithms that implement functionality that is useful on their own should live in their own package, wrapped by OutlierDetection.jl. Algorithms that build primarily on top of existing packages can be implemented directly in OutlierDetection.jl.
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
