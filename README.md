@@ -141,19 +141,15 @@ Julia enables you to implement your favorite algorithm in no time and it will be
 
 ```julia
 @benchmark transform(lof, X)
+> median time:      807.962 ms (0.00% GC)
 ```
-    --------------
-    median time:      807.962 ms (0.00% GC)
-    --------------
 
 Interopating with Python is easy!
 
 ```julia
 @benchmark transform(pylof, X)
+> median time:      31.077 s (0.00% GC)
 ```
-    --------------
-    median time:      31.077 s (0.00% GC)
-    --------------
 
 ## Contributing
 
