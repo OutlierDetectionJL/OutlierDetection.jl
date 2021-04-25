@@ -3,16 +3,16 @@ using IterTools:ncycle
 using Statistics:mean
 
 """
-    DeepSAD(encoder = Chain()
-            decoder = Chain()
-            batchsize = 32
-            epochs = 1
-            shuffle = true
-            partial = false
-            opt = ADAM()
-            loss = mse
-            eta = 1
-            eps = 1e-6
+    DeepSAD(encoder = Chain(),
+            decoder = Chain(),
+            batchsize = 32,
+            epochs = 1,
+            shuffle = true,
+            partial = false,
+            opt = ADAM(),
+            loss = mse,
+            eta = 1,
+            eps = 1e-6,
             callback = _ -> () -> ())
 
 Deep Semi-Supervised Anomaly detection technique based on the distance to a hypersphere center as described in [1].

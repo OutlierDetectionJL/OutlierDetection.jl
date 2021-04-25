@@ -1,11 +1,11 @@
 using Statistics: mean
 
 """
-    LOF(k = 5
-        metric = Euclidean()
-        algorithm = :kdtree
-        leafsize = 10
-        reorder = true
+    LOF(k = 5,
+        metric = Euclidean(),
+        algorithm = :kdtree,
+        leafsize = 10,
+        reorder = true,
         parallel = false)
 
 Calculate an anomaly score based on the density of an instance in comparison to its neighbors. This algorithm introduced

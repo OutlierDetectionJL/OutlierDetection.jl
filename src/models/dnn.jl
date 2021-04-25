@@ -1,9 +1,9 @@
 """
-    DNN(metric = Euclidean()
-    algorithm = :kdtree
-    leafsize = 10
-    reorder = true
-    parallel = false)
+    DNN(metric = Euclidean(),
+        algorithm = :kdtree,
+        leafsize = 10,
+        reorder = true,
+        parallel = false)
 
 Anomaly score based on the number of neighbors in a hypersphere of radius `d`. Knorr et al. [1] directly converted the
 resulting outlier scores to labels, thus this implementation does not fully reflect the approach from the paper.

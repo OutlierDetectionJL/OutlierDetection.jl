@@ -1,9 +1,9 @@
 """
-    COF(k = 5
-        metric = Euclidean()
-        algorithm = :kdtree
-        leafsize = 10
-        reorder = true
+    COF(k = 5,
+        metric = Euclidean(),
+        algorithm = :kdtree,
+        leafsize = 10,
+        reorder = true,
         parallel = false)
 
 Local outlier density based on chaining distance between graphs of neighbors, as described in [1].

@@ -4,15 +4,15 @@ using Statistics:mean
 using LinearAlgebra:norm
 
 """
-    ESAD(encoder = Chain()
-         decoder = Chain()
-         batchsize = 32
-         epochs = 1
-         shuffle = false
-         partial = true
-         opt = ADAM()
-         λ1 = 1
-         λ2 = 1
+    ESAD(encoder = Chain(),
+         decoder = Chain(),
+         batchsize = 32,
+         epochs = 1,
+         shuffle = false,
+         partial = true,
+         opt = ADAM(),
+         λ1 = 1,
+         λ2 = 1,
          noise = identity)
 
 End-to-End semi-supervised anomaly detection algorithm similar to DeepSAD, but without the pretraining phase. The
