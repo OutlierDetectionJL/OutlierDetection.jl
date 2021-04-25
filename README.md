@@ -101,7 +101,7 @@ ŷ = transform(mach, rows=test)
 
 Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '✓ (py)' are implemented in Python with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://davnn.github.io/OutlierDetection.jl/dev/API/detectors/). Note: If you would like to use a Python-variant of an algorithm, prepend the algorithm name with `Py`, e.g., `PyLOF` is the Python variant of `LOF`.
 
-| Name    | Description                                  | Year  | Status | Ref                    |
+| Name    | Description                                  | Year  | Status | Authors                |
 | ------- | -------------------------------------------- | :---: | :----: | ---------------------- |
 | LMDD    | Linear deviation-based outlier detection     | 1996  | ✓ (py) | Arning et al.          |
 | KNN     | Distance-based outliers                      | 1997  |   ✓    | Knorr and Ng           |
@@ -144,7 +144,7 @@ Julia enables you to implement your favorite algorithm in no time and it will be
 > median time:      807.962 ms (0.00% GC)
 ```
 
-Interopating with Python is easy!
+Interoperating with Python is easy!
 
 ```julia
 @benchmark transform(pylof, X)
