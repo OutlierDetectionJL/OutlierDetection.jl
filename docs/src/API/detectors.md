@@ -1,55 +1,51 @@
 # Detectors
 
-All models, both supervised and unsupervised, define a [`Detector`](@ref), which is just a mutable collection of hyperparameters. Each detector implements a [`fit`](@ref) and [`score`](@ref) method, where *fit* refers to learning a model from training data and *score* refers to using a learned model to calculate outlier scores of new data. Detectors typically do not classify samples; that's why a classifier might be used to convert the scores into binary labels, see [`Binarize`](@ref) for example.
+A [`Detector`](@ref) is just a mutable collection of hyperparameters. Each detector implements a [`fit`](@ref) and [`score`](@ref) method, where *fit* refers to learning a model from training data and *score* refers to using a learned model to calculate outlier scores of new data. Detectors typically do not classify samples; that's why a classifier is used to convert the scores into binary labels, see [`Binarize`](@ref) for example.
 
-## Proximity Models
-
-### ABOD
+## ABOD
 
 ```@docs
 ABOD
 ```
 
-### COF
-
-```@docs
-COF
-```
-
-### DNN
-
-```@docs
-DNN
-```
-
-### KNN
-
-```@docs
-KNN
-```
-
-### LOF
-
-```@docs
-LOF
-```
-
-## Neural Models
-
-### AE
+## AE
 
 ```@docs
 AE
 ```
 
-### DeepSAD
+## COF
+
+```@docs
+COF
+```
+
+## DeepSAD
 
 ```@docs
 DeepSAD
 ```
 
-### ESAD
+## DNN
+
+```@docs
+DNN
+```
+
+## ESAD
 
 ```@docs
 ESAD
+```
+
+## KNN
+
+```@docs
+KNN
+```
+
+## LOF
+
+```@docs
+LOF
 ```

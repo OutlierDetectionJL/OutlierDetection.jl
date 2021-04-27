@@ -20,7 +20,10 @@ theme:
     - navigation.sections
 
 markdown_extensions:
+  - admonition
   - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.details
   - pymdownx.superfences
 
 extra_css:

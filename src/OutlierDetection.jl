@@ -1,7 +1,8 @@
 module OutlierDetection
-    import MLJModelInterface
-    import NearestNeighbors
-    import Distances
+    using MLJModelInterface
+    using NearestNeighbors
+    using MacroTools
+    using Distances
     const MMI = MLJModelInterface
     const NN = NearestNeighbors
     const DI = Distances

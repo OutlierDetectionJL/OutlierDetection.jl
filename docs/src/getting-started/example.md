@@ -61,7 +61,7 @@ detect(clf, scores_train, scores_test)
 
 ## Using MLJ
 
-Typically, you do not use the *raw* `OutlierDetection` API, but instead use [MLJ](https://github.com/alan-turing-institute/MLJ.jl) to interface with `OutlierDetection.jl`. The main difference between the raw API and MLJ is, besides method naming differences, the introduction of a [`machine`](https://alan-turing-institute.github.io/MLJ.jl/dev/machines/). In the raw API, we explicitly pass the results of fitting a detector (models) to further `score` calls. Machines allow us to hide that complexity by binding data directly to detectors and automatically passing fit results to further `transform` (unsupervised) or `predict` (supervised) calls. Under the hood, `transform` and `predict` pass the input data and previous fit result to `score`.
+Typically, you do not use the `OutlierDetection` API, but instead, use [MLJ](https://github.com/alan-turing-institute/MLJ.jl) to interface with `OutlierDetection.jl`. The main difference between the raw API and MLJ is, besides method naming differences, the introduction of a [`machine`](https://alan-turing-institute.github.io/MLJ.jl/dev/machines/). In the raw API, we explicitly pass data and results to `fit` and `score` calls. Machines allow us to hide that complexity by implicitly passing data and results.
 
 Given that you have already imported `OutlierDetection` and loaded `X` and `y` as described before, import `MLJ`.
 
