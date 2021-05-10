@@ -12,7 +12,7 @@ using OutlierDetectionData: ODDS
 Download and read the `"thyroid"` dataset from the `ODDS` collection.
 
 ```julia
-X, y = ODDS.read("thyroid")
+X, y = ODDS.load("thyroid")
 ```
 
 Create indices to split the data into 50% training and test data.

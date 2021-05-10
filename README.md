@@ -53,7 +53,7 @@ using OutlierDetectionData: ODDS
 lof = LOF()
 
 # download and open the thyroid benchmark dataset
-X, y = ODDS.read("thyroid")
+X, y = ODDS.load("thyroid")
 
 # use 50% of the data for training
 n_train = Int(length(y) * 0.5)
@@ -80,7 +80,7 @@ using OutlierDetection
 using OutlierDetectionData: ODDS
 
 # download and open the thyroid benchmark dataset
-X, y = ODDS.read("thyroid");
+X, y = ODDS.load("thyroid");
 
 # use 50% of the data for training
 n_train = Int(length(y) * 0.5)
