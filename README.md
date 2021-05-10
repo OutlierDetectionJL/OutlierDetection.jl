@@ -60,10 +60,10 @@ n_train = Int(length(y) * 0.5)
 train, test = eachindex(y)[1:n_train], eachindex(y)[n_train+1:end]
 
 # learn a model from data
-model = fit(lof, X[train, :]')
+model = fit(lof, X[train, :])
 
 # predict outlier scores with learned model
-train_scores, test_scores = score(lof, model, X[test, :]')
+train_scores, test_scores = score(lof, model, X[test, :])
 
 # transform scores to binary labels
 clf = Binarize()
