@@ -1,3 +1,5 @@
+using Tables:matrix
+
 """
     UnsupervisedDetector
 
@@ -59,12 +61,12 @@ n-dimensional array. The input data used to [`fit`](@ref) a [`Detector`](@ref) a
 const Data = AbstractArray{<:Real}
 
 """
-    Labels::AbstractArray{<:Integer}
+    Labels::AbstractVector{<:Integer}
 
 Labels are used for supervision and evaluation and are defined as an `AbstractArray{<:Integer}`. The convention for
 labels is that `-1` indicates outliers, `1` indicates inliers and `0` indicates unlabeled data in semi-supervised tasks.
 """
-const Labels = AbstractArray{<:Integer}
+const Labels = AbstractVector{<:Integer}
 
 """
     Fit
@@ -154,8 +156,8 @@ Examples
 --------
 $(_score_unsupervised("KNN"))
 """ # those definitions apply when X is not already a (transposed) abstract array
-fit(detector::UnsupervisedDetector, X) = fit(detector, MMI.matrix(X; transpose=true)) # unsupervised call syntax
-fit(detector::SupervisedDetector, X, y) = fit(detector, MMI.matrix(X; transpose=true), y)
+fit(detector::UnsupervisedDetector, X) = fit(detector, matrix(X; transpose=true)) # unsupervised call syntax
+fit(detector::SupervisedDetector, X, y) = fit(detector, matrix(X; transpose=true), y)
 
 """
     score(detector,
@@ -183,7 +185,7 @@ Examples
 --------
 $(_score_unsupervised("KNN"))
 """ # definition applies when X is not already a (transposed) abstract array
-score(detector::Detector, fitresult::Fit, X) = score(detector, fitresult, MMI.matrix(X; transpose=true))
+score(detector::Detector, fitresult::Fit, X) = score(detector, fitresult, matrix(X; transpose=true))
 
 """
     detect(classifier,

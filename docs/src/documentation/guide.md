@@ -40,7 +40,7 @@ score(::Detector, ::Fit, ::Data)::Result
 detect(::Classifier, ::Result...)::Labels
 ```
 
-One last thing to not is that there are many convenience data transformations implemented. You can use any [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible data source and the framework will make sure that the detectors receive the data in the suitable form. Also, note that `detect` can work with arbitrarily many results, which is very convenient if you want to combine the results of different detectors.
+One last thing to note is that there are many convenience data transformations implemented. You can use any [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible data source and the framework will make sure that the detectors receive the data in the suitable form. Also, note that `detect` can work with arbitrarily many results, which is very convenient if you want to combine the results of different detectors.
 
 !!! warning
     If you are using native Julia arrays `AbstractArray{<:Real}` as input data, we expect the data to be formatted using the columns-as-observations convention for improved performance with Julia's column-major data. Every other input data will be transposed and converted to an array implicitly.
