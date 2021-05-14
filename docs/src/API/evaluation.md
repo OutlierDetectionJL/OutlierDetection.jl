@@ -1,6 +1,20 @@
 # Evaluation
 
-Raw evaluation methods that are typically used by a [`Classifier`](@ref), see [`Binarize`](@ref) for an exemplary usage.
+Raw evaluation methods that are typically used by an [`Evaluator`](@ref), see [`Class`](@ref) for an exemplary usage.
+
+## Evaluators
+
+### Class
+
+```@docs
+Class
+```
+
+### Score
+
+```@docs
+Score
+```
 
 ## Score Combination
 

@@ -66,7 +66,7 @@ model = fit(lof, X[train, :])
 train_scores, test_scores = score(lof, model, X[test, :])
 
 # transform scores to binary labels
-clf = Binarize()
+clf = Class()
 ŷ = detect(clf, train_scores, test_scores)
 ```
 
