@@ -10,7 +10,9 @@ Calculate the anomaly score of an instance based on the distance to its k-neares
 
 Parameters
 ----------
-$_knn_params
+$_k_param
+
+$_knn_shared
 
     reduction::Symbol
 One of `(:maximum, :median, :mean)`. (`reduction=:maximum`) was proposed by [1]. Angiulli et al. [2] proposed sum to
@@ -46,7 +48,7 @@ function fit(detector::KNN, X::Data)::Fit
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
 
     # use tree to calculate distances
-    idxs, dists = NN.knn(tree, X, detector.k)
+    _, dists = knn_others(tree, X, detector.k)
 
     # reduce distances to outlier score
     scores = _knn(dists, detector.reduction)

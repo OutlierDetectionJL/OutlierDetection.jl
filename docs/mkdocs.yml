@@ -47,7 +47,6 @@ nav:
       - Performance Tips: documentation/performance-tips.md
   - API:
     - Base: API/base.md
-    - Classifiers: API/classifiers.md
     - Detectors: API/detectors.md
     - PyDetectors: API/pydetectors.md
     - Evaluation: API/evaluation.md

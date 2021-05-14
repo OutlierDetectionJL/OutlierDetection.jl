@@ -42,10 +42,10 @@ Implements the `score` method for an underlying python model.
 """
 function pyod_score(modelname)
     quote
-        function score(_::$modelname, model::Fit, X::Data)::Result
+        function score(_::$modelname, fitresult::Fit, X::Data)::Result
             Xt = PyReverseDims(X) # change from column-major to row-major
-            scores_test = model.model.pyobject.decision_function(Xt)
-            return model.scores, scores_test
+            scores_test = fitresult.model.pyobject.decision_function(Xt)
+            return fitresult.scores, scores_test
         end
     end
 end

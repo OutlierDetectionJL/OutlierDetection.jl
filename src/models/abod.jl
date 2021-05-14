@@ -18,7 +18,9 @@ the paper, that is, it uses the variance of angles to its nearest neighbors, not
 
 Parameters
 ----------
-$_knn_params
+$_k_param
+
+$_knn_shared
 
     enhanced::Bool
 When `enhanced=true`, it uses the enhanced ABOD (EABOD) adaptation proposed by [2].
@@ -55,7 +57,7 @@ end
 function fit(detector::ABOD, X::Data)::Fit
     # use tree to calculate distances
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
-    idxs, _ = NN.knn(tree, X, detector.k)
+    idxs, _ = knn_others(tree, X, detector.k)
     scores = detector.enhanced ? _eabod(X, X, idxs, detector.k) : _abod(X, X, idxs, detector.k)
     Fit(ABODModel(X, tree), scores)
 end

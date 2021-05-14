@@ -13,7 +13,9 @@ the notion of local outliers and was developed by Breunig et al., see [1].
 
 Parameters
 ----------
-$_knn_params
+$_k_param
+
+$_knn_shared
 
 Examples
 --------
@@ -46,7 +48,7 @@ function fit(detector::LOF, X::Data)::Fit
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
 
     # use tree to calculate distances
-    idxs, dists = NN.knn(tree, X, detector.k, true)
+    idxs, dists = knn_others(tree, X, detector.k)
 
     # transform dists (vec of vec) to matrix to allow faster indexing later
     ndists = reduce(hcat, dists)

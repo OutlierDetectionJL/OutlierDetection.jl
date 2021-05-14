@@ -1,5 +1,6 @@
 """
-    DNN(metric = Euclidean(),
+    DNN(d = 0,
+        metric = Euclidean(),
         algorithm = :kdtree,
         leafsize = 10,
         reorder = true,
@@ -10,10 +11,10 @@ resulting outlier scores to labels, thus this implementation does not fully refl
 
 Parameters
 ----------
-$_knn_params
-
     d::Real
 The hypersphere radius used to calculate the global density of an instance.
+
+$_knn_shared
 
 Examples
 --------
@@ -41,7 +42,7 @@ function fit(detector::DNN, X::Data)::Fit
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
 
     # use tree to calculate distances
-    scores = _dnn(NN.inrange(tree, X, detector.d))
+    scores = dnn_others(NN.inrange(tree, X, detector.d))
     Fit(DNNModel(tree), scores)
 end
 
@@ -50,11 +51,17 @@ end
         # already returns scores
         return dnn_parallel(model.tree, X, detector.d)
     else
-        return _dnn(NN.inrange(model.tree, X, detector.d))
+        return dnn(NN.inrange(model.tree, X, detector.d))
     end
 end
 
-@inline function _dnn(idxs::AbstractVector{<:AbstractVector})::Scores
+@inline function dnn(idxs::AbstractVector{<:AbstractVector})::Scores
     # Helper function to reduce the instances to a global density score.
-    1 ./ (length.(idxs) .+ 1e-10)
+    1 ./ (length.(idxs) .+ 0.1) # min score = 0, max_score = 10
+end
+
+@inline function dnn_others(idxs::AbstractVector{<:AbstractVector})::Scores
+    # Remove the (self) point previously added when fitting the tree, otherwise during `fit`, that point would always
+    # be included in the density estimation
+    1 ./ (length.(idxs) .- 0.9) # 1 - 0.1
 end

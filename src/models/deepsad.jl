@@ -51,17 +51,17 @@ Kloft, Marius (2019): Deep Semi-Supervised Anomaly Detection.
 mutable struct DeepSAD <: SupervisedDetector
     encoder::Chain
     decoder::Chain
-    batchsize::Union{Integer,Tuple{Integer,Integer}}
-    epochs::Union{Integer,Tuple{Integer,Integer}}
-    shuffle::Union{Bool,Tuple{Bool, Bool}}
-    partial::Union{Bool,Tuple{Bool, Bool}}
+    batchsize::Tuple{Integer,Integer}
+    epochs::Tuple{Integer,Integer}
+    shuffle::Tuple{Bool, Bool}
+    partial::Tuple{Bool, Bool}
     opt::Any
     loss::Function
     eta::Number
     eps::Number
-    callback
+    callback::Tuple{Function, Function}
     function DeepSAD(;encoder::Chain = Chain(), decoder::Chain = Chain(), batchsize=32, epochs=1, shuffle=false,
-        partial=true, opt=ADAM(), loss=mse, eta=1, eps=1e-6, callback=_ -> () -> ())
+        partial=true, opt=ADAM(), loss=mse, eta=1, eps=1e-6, callback=(_ -> () -> ()))
 
         # unify all possible tuples to tuples
         tuplify = t -> isa(t, Tuple) ? t : (t, t)

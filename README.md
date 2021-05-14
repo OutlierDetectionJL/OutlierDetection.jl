@@ -87,7 +87,7 @@ n_train = Int(length(y) * 0.5)
 train, test = eachindex(y)[1:n_train], eachindex(y)[n_train+1:end]
 
 # create a pipeline consisting of a detector and classifier
-pipe = @pipeline LOF() Binarize()
+pipe = @pipeline LOF() Class()
 
 # create a machine by binding the pipeline to data
 mach = machine(pipe, X)

@@ -10,7 +10,9 @@ Local outlier density based on chaining distance between graphs of neighbors, as
 
 Parameters
 ----------
-$_knn_params
+$_k_param
+
+$_knn_shared
 
 Examples
 --------
@@ -47,7 +49,7 @@ function fit(detector::COF, X::Data)::Fit
     tree = buildTree(X, detector.metric, detector.algorithm, detector.leafsize, detector.reorder)
 
     # We need k + 1 neighbors to calculate the chaining distance and have to make sure the indices are sorted 
-    idxs, _ = NN.knn(tree, X, detector.k + 1, true)
+    idxs, _ = knn_others(tree, X, detector.k + 1)
     acds = _calc_acds(idxs, pdists, detector.k)
     scores = _cof(idxs, acds, detector.k)
     Fit(COFModel(tree, pdists, acds), scores)

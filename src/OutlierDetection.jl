@@ -3,6 +3,7 @@ module OutlierDetection
     using NearestNeighbors
     using MacroTools
     using Distances
+    using Requires:@require
     const MMI = MLJModelInterface
     const NN = NearestNeighbors
     const DI = Distances
@@ -62,13 +63,13 @@ module OutlierDetection
            PyModel
 
     # evaluation
-    export roc,
-           roc_auc,
-           classify,
+    export classify,
            normalize,
            unify,
            combine,
-           Classifier
+           Evaluator,
+           Score,
+           Class
 
     # basic types
     include("base.jl")
@@ -90,13 +91,16 @@ module OutlierDetection
     include("pymodels/detectors.jl")
 
     # evaluation
+    include("evaluate/utils.jl")
     include("evaluate/evaluate.jl")
-    include("evaluate/classifier.jl")
-    include("evaluate/roc.jl")
 
     # examples
     include("examples/examples.jl")
 
-    # extension
-    include("extension/mlj.jl")
+    function __init__()
+       @require MLJ="add582a8-e3ab-11e8-2d5e-e98b27df1bc7" begin
+           include("extension/mlj.jl")
+           include("extension/mlj_extra.jl")
+       end
+    end
 end

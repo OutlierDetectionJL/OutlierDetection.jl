@@ -40,7 +40,7 @@ Evaluate the resulting training data scores (stored in the fit result).
 roc_auc(y[train], fitresult.scores)
 ```
 
-Calculate the outlier scores for our test data. Note that we always return both the train and test scores because later used [classifiers](../../API/base/#OutlierDetection.Classifier) typically choose a threshold based on the train scores.
+Calculate the outlier scores for our test data. Note that we always return both the train and test scores because later used [evaluators](../../API/base/#OutlierDetection.Evaluator) typically choose a threshold based on the train scores.
 
 ```julia
 scores_train, scores_test = score(detector, fitresult, X[test, :]')
@@ -52,11 +52,10 @@ Evaluate the resulting test scores with the given labels.
 roc_auc(y[test], scores_test)
 ```
 
-You can easily convert the obtained scores into inlier (`1`), and outlier (`-1`) labels using a [`Classifier`](@ref), in this case, [`Binarize`](@ref).
+You can easily convert the obtained scores into inlier (`1`), and outlier (`-1`) labels using an [`Evaluator`](@ref), in this case, [`Class`](@ref).
 
 ```julia
-clf = Binarize()
-detect(clf, scores_train, scores_test)
+detect(Class(), scores_train, scores_test)
 ```
 
 ## Using MLJ
@@ -72,7 +71,7 @@ using MLJ # or MLJBase
 Create a pipeline consisting of a detector and classifier.
 
 ```julia
-pipe = @pipeline KNN(k=10) Binarize()
+pipe = @pipeline KNN(k=10) Class()
 ```
 
 Bind the pipeline to data to create a machine.

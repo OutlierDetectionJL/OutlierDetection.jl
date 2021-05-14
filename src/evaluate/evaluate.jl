@@ -1,146 +1,105 @@
-using Statistics:quantile, mean, median, std
-using SpecialFunctions:erf
-
-const _shared_params = """    scores_train::AbstractVector{<:Real}
-A vector of training scores, typically the result of [`fit`](@ref) with a detector.
-
-    scores_test::AbstractVector{<:Real}
-A vector of test scores, typically the result of [`score`](@ref) using a previously fitted detector."""
-
-"""
-    combine(scores_mat,
-            strategy = :mean)
-
-Combination method to merge outlier scores from multiple detectors by using a combination strateg. This function is
-typically used within a [`Classifier`](@ref). TODO: Add AOM/MOA/LSCP combination strategies 
-
-Parameters
-----------
-    scores_mat::AbstractMatrix{T}
-A matrix, with each row representing the scores for a specific instance and each column representing a detector.
-
-    strategy::Symbol=:mean
-Determines how to combine the scores of multiple detectors, e.g. maximum or mean of all scores.
-
-Returns
-----------
-    combined_scores::AbstractVector{T}
-The combined scores.e.g. the maximum of scores from different detectors.
-
-Examples
-----------
-    scores = [1 2; 3 4; 5 6]
-    combine(scores) # [1.5, 3.5, 5.5]
-"""
-function combine(scores_mat::AbstractMatrix{<:Real}, strategy::Symbol=:mean)::Scores
-    @assert strategy in (:mean, :maximum, :median)
-
-    if strategy == :mean
-        return  dropdims(mean(scores_mat, dims=2), dims=2)
-    elseif strategy == :maximum
-        return dropdims(maximum(scores_mat, dims=2), dims=2)
-    elseif strategy == :median
-        return dropdims(median(scores_mat, dims=2), dims=2)
-    end
-end
-
-# Combine scores in nested array format
-combine(scores::AbstractVector{AbstractVector}, strategy::Symbol=:mean) = combine(reduce(hcat, scores), strategy)
-
-"""
-    normalize(scoresTrain,
-              scoresTest)
-
-Transform an array of scores into a range between [0,1] using min-max scaling.
-
-Parameters
-----------
-$_shared_params
-
-Returns
-----------
-    normalized_scores::Tuple{AbstractVector{<:Real}, AbstractVector{<:Real}}
-The normalized train and test scores.
-
-Examples
-----------
-    scores_train, scores_test = ([1, 2, 3], [4, 3, 2, 1, 0])
-    normalize(scores_train, scores_test) # ([0.0, 0.5, 1.0], [1.0, 1.0, 0.5, 0.0, 0.0])
-    normalize(scores_train) # [0.0, 0.5, 1.0]
-"""
-function normalize(scores_train::Scores, scores_test::Scores)::Result
-    minTrain = minimum(scores_train)
-    maxTrain = maximum(scores_train)
-    @assert minTrain < maxTrain # otherwise all scores are equal
-    f = scores -> clamp.((scores .- minTrain) ./ (maxTrain - minTrain), 0, 1)
-    f(scores_train), f(scores_test)
-end
-normalize(scores) = normalize(scores, scores)[1]  # only extract scores train because they are the same
-
-"""
-    unify(scores_train,
-          scores_test)
-
-Transform an array of scores into a range between [0,1] using unifying scores as described in [1].
-
-Parameters
-----------
-$_shared_params
-
-Returns
-----------
-    unified_scores::Tuple{AbstractVector{<:Real}, AbstractVector{<:Real}}
-The unified train and test scores.
-
-Examples
-----------
-    scores_train, scores_test = ([1, 2, 3], [4, 3, 2, 1, 0])
-    unify(scores_train, scores_test) # ([0.0, 0.0, 0.68..], [0.95.., 0.68.., 0.0, 0.0, 0.0])
-    unify(scores_train) # [0.0, 0.0, 0.68..]
-
-References
-----------
-Kriegel, Hans-Peter; Kroger, Peer; Schubert, Erich; Zimek, Arthur (2011): Interpreting and Unifying Outlier Scores.
-"""
-function unify(scores_train::Scores, scores_test::Scores)::Result
-    μ = mean(scores_train)
-    σ = std(scores_train)
-    @assert σ > 0 # otherwise all scores are equal
-    f = scores -> clamp.(erf.((scores .- μ) ./ (σ * √2)), 0, 1)
-    f(scores_train), f(scores_test)
-end
-unify(scores) = unify(scores, scores)[1] # only extract scores train because they are the same
-
-"""
-    classify(outlier_fraction,
-             scores_train,
-             scores_test)
-
-Convert an array of scores to an array of classes with `1` indicating normal data and `-1` indicating outliers. The
-conversion is based on percentiles of the training data, i.e. all datapoints above the `1 - outlier_fraction` percentile
-are considered outliers.
-
-Parameters
-----------
-    outlier_fraction::Real
-The fraction of outliers (number between 0 and 1) in the data used to determine the score threshold to classify the
+_class_params = """    outlier_fraction::Float64
+The fraction of outliers (number between 0 and 1) in the data is used to determine the score threshold to classify the
 samples into inliers and outliers.
 
-$_shared_params
+    classify::Union{Function, Nothing}
+A function to transform a vector of scores to a vector of bits, where 1 represents an outlier and 0 represents a normal
+instance. *Hint:* Sometimes you don't want to transform your scores to classes, e.g. in ROC AUC evaluation, where you
+can use `no_classify` to pass along the reduced (raw) scores. See [`classify`](@ref) for a specific implementation."""
 
-Returns
+_score_params = """    combine::Function
+A function to reduce a matrix, where each row represents an instance and each column represents a score of specific
+detector, to a vector of scores for each instance. See `combine` for a specific implementation. *Note:* This function
+is not called if the input to the evaluator consists of a single train/test scores tuple.
+
+    normalize::Union{Function, Nothing}
+A function to reduce a matrix, where each row represents an instance and each column a score of specific detector, to a
+vector of scores for each instance. See [`normalize`](@ref) for a specific implementation."""
+
+"""
+    Class(outlier_fraction = 0.1,
+          classify = classify,
+          combine = combine,           
+          normalize = normalize)
+
+A flexible, quantile-thresholding classifier that maps the outlier scores of a single or multiple outlier detection
+models to binary classes, where `1` represents inliers and `-1` represents outliers.
+
+Parameters
 ----------
-    classes::AbstractVector{<:Integer}
-The vector of classes consisting of `-1` (outlier) and `1` (inlier) elements.
+$_class_params
+
+$_score_params
 
 Examples
 ----------
-    scores_train, scores_test = ([1, 2, 3], [4, 3, 2, 1, 0])
-    classify(0.3, scores_train, scores_test) # [-1, -1, 1, 1, 1]
-    classify(0.3, scores_train) # [1, 1, -1]
+$_evaluator
 """
-function classify(outlier_fraction::Real, scores_train::Scores, scores_test::Scores)::Labels
-    @assert 0 < outlier_fraction < 1
-    ifelse.(scores_test .> quantile(scores_train, 1 - outlier_fraction), CLASS_OUTLIER, CLASS_NORMAL)
+MMI.@mlj_model mutable struct Class <: Evaluator
+    outlier_fraction::Float64 = 0.1::(0 < _ < 1)
+    classify::Function = classify
+    combine::Function = combine
+    normalize::Union{Nothing, Function} = normalize
 end
-classify(outlier_fraction, scores) = classify(outlier_fraction, scores, scores)
+
+"""
+    Score(combine = combine,           
+          normalize = normalize)
+
+Transform the results of a single or multiple outlier detection models to combined and normalized scores.
+
+Parameters
+----------
+$_score_params
+
+Examples
+----------
+```julia
+using OutlierDetection: Score, KNN, fit, score
+detector = KNN()
+X = rand(10, 100)
+model = fit(detector, X)
+train_scores, test_scores = score(detector, model, X)
+ŷ = detect(Score(), train_scores, test_scores)
+```
+"""
+MMI.@mlj_model mutable struct Score <: Evaluator
+    combine::Function = combine
+    normalize::Union{Nothing, Function} = normalize
+end
+
+function detect(ev::Class, scores::Result...)::Labels
+    _detect_helper(ev.outlier_fraction, ev.classify, ev.normalize, ev.combine, scores...)
+end
+
+function detect(ev::Score, scores::Result...)::Scores
+    _detect_helper(nothing, nothing, ev.normalize, ev.combine, scores...)
+end
+
+function _detect_helper(outlier_fraction::Union{Real,Nothing},
+                        classify::Union{Function,Nothing},
+                        normalize::Union{Function,Nothing},
+                        combine::Function,
+                        scores::Result...)::Scores
+    # transforms a variable number of equal-length scores into classes, where each input tuple represents the
+    # train scores and test scores of a detector.
+
+    # make sure that we have at least one tuple of train and test scores
+    n_scores = length(scores)
+    @assert n_scores > 0
+
+    # conditionally normalize all scores if not nothing
+    scores = isnothing(normalize) ? scores : map(tup -> normalize(tup...), scores)
+
+    # [(train1, test1), (train2, test2)] -> matrix of scores for train [train1 train2]' and test [test1 test2]'
+    # Note: The matrices contain one observation per row!
+    reduce_cat = idx -> reduce(hcat, getfield.(scores, idx))
+    scores_train, scores_test = reduce_cat(1), reduce_cat(2)
+
+    # return an identity function that returns the existing scores if classify is nothing
+    classify = isnothing(classify) ? (_, _, scores) -> scores : classify
+
+    # scores_train and scores_test can be either a vector (if n_scores == 1) or a matrix (if n_scores > 1)
+    n_scores == 1 ? classify(outlier_fraction, scores_train, scores_test) :
+                    classify(outlier_fraction, combine(scores_train), combine(scores_test))
+end

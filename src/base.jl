@@ -27,12 +27,12 @@ semi-supervised detector can be seen as a supervised detector with a specific cl
 const Detector = Union{<:SupervisedDetector,<:UnsupervisedDetector}
 
 """
-    Classifier
+    Evaluator
 
-A classifier uses one or more detector scores produced by [`score`](@ref) and transforms them into labels, typically
-with two classes describing inliers (`1`) and outliers (`-1`).
+A evaluator uses one or more detector results produced by [`score`](@ref) and transforms them into labels or scores,
+typically with two classes describing inliers (`1`) and outliers (`-1`).
 """
-abstract type Classifier <: MMI.Static end
+abstract type Evaluator <: MMI.Static end
 
 """
     Model
@@ -117,17 +117,16 @@ model = fit(detector, X, y)
 train_scores, test_scores = score(detector, model, X)
 ```"""
 
-const _classifier = """
+const _evaluator = """
 ```julia
-using OutlierDetection: Binarize, KNN, fit, score
+using OutlierDetection: Class, KNN, fit, score
 detector = KNN()
 X = rand(10, 100)
 model = fit(detector, X)
 train_scores, test_scores = score(detector, model, X)
-clf = Binarize()
-ŷ = detect(clf, train_scores, test_scores)
+ŷ = detect(Class(), train_scores, test_scores)
 # or, if using multiple detectors
-# ŷ = detect(clf, (train1, test1), (train2, test2), ...)
+# ŷ = detect(Class(), (train1, test1), (train2, test2), ...)
 ```"""
 
 """
@@ -188,7 +187,7 @@ $(_score_unsupervised("KNN"))
 score(detector::Detector, fitresult::Fit, X) = score(detector, fitresult, matrix(X; transpose=true))
 
 """
-    detect(classifier,
+    detect(Evaluator,
            result...)
 
 Convert a number of scores into inlier (`1`) / outlier (`-1`) classes, typically by using on a outlier-threshold on the
@@ -196,8 +195,8 @@ achieved scores.
 
 Parameters
 ----------
-    classifier::Classifier
-A [`Classifier`](@ref) that implements the [`detect`](@ref) method.
+    evaluator::Evaluator
+A [`Evaluator`](@ref) that implements the [`detect`](@ref) method.
 
     result::Result...
 One or more [`score`](@ref) results (tuples) or alternatively a single vector of scores or two vectors, where the first
@@ -210,11 +209,11 @@ A vector containing the binary inlier and outlier labels.
 
 Examples
 --------
-$_classifier
+$_evaluator
 """ # transforms single scores, or combination of train-test scores into a tuple
-detect(classifier::Classifier, scores_train::Scores) = detect(classifier, (scores_train, scores_train))
-detect(classifier::Classifier, scores_train::Scores, scores_test::Scores) =
-    detect(classifier, (scores_train, scores_test))
+detect(evaluator::Evaluator, scores_train::Scores) = detect(evaluator, (scores_train, scores_train))
+detect(evaluator::Evaluator, scores_train::Scores, scores_test::Scores) =
+    detect(evaluator, (scores_train, scores_test))
 
 """
     @score
@@ -246,7 +245,7 @@ macro score(fn)
         body = :(($copy_result.scores, $(body.args[end])))
     end
 
-    :(function $f($detector, $result::Fit, $X::Data)
+    :(function $f($detector, $result::Fit, $X::Data)::Result
         $copy_result = $result;
         $result = $result.model;
         $body 

@@ -13,11 +13,11 @@ The key design choice of OutlierDetection.jl is promoting the usage of *outlier 
 - [`fit`](@ref): Learn a [`Model`](@ref) for a specific detector from input data `X` and labels `y` (if supervised), for example the weights of a neural network.
 - [`score`](@ref): Using a detector and a learned model, transform unseen data into outlier scores.
 
-Transforming the outlier scores to labels is seen as the last step of an outlier detection task. A [`Classifier`](@ref) simply turns scores into labels, typically with two classes describing inliers `(1)` and outliers `(-1)`. A classifier has to implement a single method: `detect`.
+Transforming the outlier scores to labels is seen as the last step of an outlier detection task. An [`Evaluator`](@ref) turns scores into probabilities or labels, typically with two classes describing inliers `(1)` and outliers `(-1)`. Such an evaluator has to implement a single method: `detect`.
 
-- [`detect`](@ref): Transform outlier scores to inlier and outlier classes.
+- [`detect`](@ref): Transform outlier scores to inlier and outlier classes or probabilities.
 
-A convention used in OutlierDetection.jl is that *higher scores always imply higher outlierness*.
+A convention used in OutlierDetection.jl is that *higher scores imply higher outlierness*.
 
 !!! note
     A peculiarity of working with outlier scores is the distinction between *train scores* and *test scores*. Train scores result from fitting a detector ([`fit`](@ref)), and test scores result from using predicting unseen data ([`score`](@ref)). Classifying an instance as an inlier or outlier always requires a comparison to the train scores.
@@ -37,7 +37,7 @@ Because train scores are essential in classification, we often work with tuples 
 fit(::UnsupervisedDetector, ::Data)::Fit
 fit(::SupervisedDetector, ::Data, ::Labels)::Fit
 score(::Detector, ::Fit, ::Data)::Result
-detect(::Classifier, ::Result...)::Labels
+detect(::Evaluator, ::Result...)::Labels
 ```
 
 One last thing to note is that there are many convenience data transformations implemented. You can use any [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible data source and the framework will make sure that the detectors receive the data in the suitable form. Also, note that `detect` can work with arbitrarily many results, which is very convenient if you want to combine the results of different detectors.
@@ -56,6 +56,6 @@ From a usage perspective, the main differences are:
 - A `Detector` is bound to data, either through `machine(::UnsupervisedDetector, X)`, or `machine(::SupervisedDetector, X, y)`.
 - `fit(::Detector, X, [y])` becomes `fit!(machine)`
 - `score(::Detector, ::Fit, X)` becomes `transform(machine)`
-- `detect(::Classifier, ::Results...)` becomes `transform(machine(::Classifier), ::Results...)`
+- `detect(::Evaluator, ::Results...)` becomes `transform(machine(::Evaluator), ::Results...)`
 
 Take a look at [Using MLJ](../../documentation/using-mlj/) to learn more.

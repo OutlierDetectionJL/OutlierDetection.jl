@@ -1,10 +1,10 @@
+using MLJ
 using OutlierDetection
 using OutlierDetection.Examples
 using Random:MersenneTwister
-using MLJBase
 using Test
 
-include("classifier.jl")
+include("evaluator.jl")
 include("detector.jl")
 
 # Number of dimensions for training

@@ -1,11 +1,11 @@
 function MMI.fit(detector::UnsupervisedDetector, verbosity::Int, X)
     model = fit(detector, X)
-    model, nothing, (scores=model.scores,)
+    model, nothing, (scores = model.scores,)
 end
 
 function MMI.fit(detector::SupervisedDetector, verbosity::Int, X, y)
     model = fit(detector, X, y)
-    model, nothing, (scores=model.scores,)
+    model, nothing, (scores = model.scores,)
 end
 
 function MMI.transform(detector::Detector, fitresult::Fit, X)
@@ -16,13 +16,19 @@ function MMI.predict(detector::Detector, fitresult::Fit, X)
     score(detector, fitresult, X)
 end
 
-function MMI.transform(clf::Classifier, _, scores::Result...) # _ because there is no fitresult
-    detect(clf, scores...)
+function MMI.transform(ev::Class, _, scores::Result...) # _ because there is no fitresult
+    MMI.categorical(detect(ev, scores...))
+end
+
+function MMI.transform(ev::Score, _, scores::Result...) # _ because there is no fitresult
+    scores = detect(ev, scores...) # if not normalized, return the raw scores, otherwise return a distribution
+    isnothing(ev.normalize) ? scores : MMI.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER],
+                                                            hcat(1 .- scores, scores); pool=missing, ordered=false)
 end
 
 # specify scitypes
-MMI.input_scitype(::Type{<:Detector}) = Union{MMI.Table(MMI.Continuous), AbstractMatrix{MMI.Continuous}}
-MMI.output_scitype(::Type{<:Detector}) = Tuple{AbstractVector{<:MMI.Continuous}, AbstractVector{<:MMI.Continuous}}
+MMI.input_scitype(::Type{<:Detector}) = Union{MMI.Table(MMI.Continuous),AbstractMatrix{MMI.Continuous}}
+MMI.output_scitype(::Type{<:Detector}) = Tuple{AbstractVector{<:MMI.Continuous},AbstractVector{<:MMI.Continuous}}
 
 # data front-end for fit (supervised):
 MMI.reformat(::SupervisedDetector, X, y) = (MMI.matrix(X, transpose=true), y)
@@ -34,7 +40,7 @@ MMI.selectrows(::SupervisedDetector, I, Xmatrix, y, w) = (view(Xmatrix, :, I), v
 MMI.reformat(::Detector, X) = (MMI.matrix(X, transpose=true),)
 MMI.selectrows(::Detector, I, Xmatrix) = (view(Xmatrix, :, I),)
 
-MODELS = (ABOD, COF, DNN, KNN, LOF, AE, DeepSAD, ESAD, Classifier)
+MODELS = (ABOD, COF, DNN, KNN, LOF, AE, DeepSAD, ESAD, Class, Score)
 MMI.metadata_pkg.(MODELS,
     package_name="OutlierDetection.jl",
     package_uuid="262411bb-c475-4342-ba9e-03b8c0183ca6",
