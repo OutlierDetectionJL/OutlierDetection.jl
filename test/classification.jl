@@ -1,4 +1,4 @@
-@testset "Evaluator" begin
+@testset "Result" begin
     # Create some test data of scores
     base = [1., 2, 3]
     scores0 = (base, base) # train and test equal

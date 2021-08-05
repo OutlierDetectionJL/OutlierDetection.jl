@@ -60,6 +60,9 @@ mutable struct DeepSAD <: SupervisedDetector
     eta::Number
     eps::Number
     callback::Tuple{Function, Function}
+    normalize::Function
+    classify::Function
+    threshold::Real
     function DeepSAD(;encoder::Chain = Chain(), decoder::Chain = Chain(), batchsize=32, epochs=1, shuffle=false,
         partial=true, opt=ADAM(), loss=mse, eta=1, eps=1e-6, callback=(_ -> () -> ()))
 
@@ -68,7 +71,8 @@ mutable struct DeepSAD <: SupervisedDetector
         batchsize, epochs, shuffle, partial, opt, callback =
             map(tuplify, (batchsize, epochs, shuffle, partial, opt, callback))
 
-        new(encoder, decoder, batchsize, epochs, shuffle, partial, opt, loss, eta, eps, callback)
+        new(encoder, decoder, batchsize, epochs, shuffle, partial, opt, loss,
+            eta, eps, callback, normalize, classify, 0.9)
     end
 end
 
@@ -105,16 +109,18 @@ function fit(detector::DeepSAD, X::Data, y::Labels)::Fit
     Fit(DeepSADModel(model, center), scores)
 end
 
-@score function score(detector::DeepSAD, model::Fit, X::Data)::Result
+function score(detector::DeepSAD, fitresult::Fit, X::Data)::Score
+    model = fitresult.model
     svddScore(detector.encoder(X), model.center, ndims(X))
 end
 
 function svddLoss(latent, center, y, eta, eps, dims)
     # The svdd loss function is based on the distance to the hypersphere center. The inverse distance is used if an
     # example is an outlier and labeled samples are weighted using the hyperparameter eta.
+    conditional_dist(y, d, id) = ifelse(y == 0, d, id)
     dist = dropdims(sum((latent .- center) .^ 2, dims=1:dims-1), dims=1)
     inverse_dist = eta .* ((dist .+ eps) .^ y)
-    mean(ifelse.(y .== 0, dist, inverse_dist))
+    mean(conditional_dist.(y, dist, inverse_dist))
 end
 
 function svddScore(latent, center, dims)

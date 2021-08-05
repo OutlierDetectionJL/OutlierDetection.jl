@@ -13,17 +13,31 @@ function MMI.transform(detector::Detector, fitresult::Fit, X)
 end
 
 function MMI.predict(detector::Detector, fitresult::Fit, X)
-    score(detector, fitresult, X)
+    _, test = detector.normalize(fitresult.scores, score(detector, fitresult, X))
+    MMI.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], test, augment=true, pool=missing)
 end
 
-function MMI.transform(ev::Class, _, scores::Result...) # _ because there is no fitresult
-    MMI.categorical(detect(ev, scores...))
+function MMI.predict_mode(detector::Detector, fitresult::Fit, X)
+    train, test = detector.normalize(fitresult.scores, score(detector, fitresult, X))
+    MMI.categorical(detector.classify(detector.threshold, train, test))
 end
 
-function MMI.transform(ev::Score, _, scores::Result...) # _ because there is no fitresult
-    scores = detect(ev, scores...) # if not normalized, return the raw scores, otherwise return a distribution
-    isnothing(ev.normalize) ? scores : MMI.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER],
-                                                            hcat(1 .- scores, scores); pool=missing, ordered=false)
+# extend evaluate to enable evaluation of unsupervised models
+function MMI.evaluate(model::T, Xs, ys, measure; args...) where {T <: MMI.Unsupervised}
+    ptype = MMI.prediction_type(measure)
+    @assert ptype in (:probabilistic, :deterministic)
+    # Xs, ys = MMI.source(X), MMI.source(y)
+    ypred = MMI.transform(machine(model, Xs), Xs)
+    # transform unsupervised model to supervised surrogate
+    mach = ptype == :probabilistic ?
+        machine(MMI.Probabilistic(), Xs, ys, predict=ypred) :
+        machine(MMI.Deterministic(), Xs, ys, predict=ypred)
+    MMI.evaluate!(mach; measure=measure, args...)
+end
+
+# helper to convert scores to univariate finite
+function univariate_finite(scores::Score)
+    MMI.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], hcat(1 .- scores, scores); pool=missing, ordered=false)
 end
 
 # specify scitypes
@@ -40,7 +54,7 @@ MMI.selectrows(::SupervisedDetector, I, Xmatrix, y, w) = (view(Xmatrix, :, I), v
 MMI.reformat(::Detector, X) = (MMI.matrix(X, transpose=true),)
 MMI.selectrows(::Detector, I, Xmatrix) = (view(Xmatrix, :, I),)
 
-MODELS = (ABOD, COF, DNN, KNN, LOF, AE, DeepSAD, ESAD, Class, Score)
+MODELS = (ABOD, COF, DNN, KNN, LOF, AE, DeepSAD, ESAD)
 MMI.metadata_pkg.(MODELS,
     package_name="OutlierDetection.jl",
     package_uuid="262411bb-c475-4342-ba9e-03b8c0183ca6",

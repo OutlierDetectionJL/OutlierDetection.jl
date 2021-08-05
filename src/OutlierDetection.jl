@@ -1,8 +1,8 @@
 module OutlierDetection
-    using MLJModelInterface
     using NearestNeighbors
     using MacroTools
     using Distances
+    using MLJModelInterface
     using Requires:@require
     const MMI = MLJModelInterface
     const NN = NearestNeighbors
@@ -17,13 +17,12 @@ module OutlierDetection
            SupervisedDetector,
            Model,
            Scores,
-           Data,
            Labels,
+           Data,
            Fit,
-           Result,
            fit,
-           score,
-           detect
+           Score,
+           score
 
     # models
     export DNN,
@@ -66,17 +65,22 @@ module OutlierDetection
     export classify,
            normalize,
            unify,
-           combine,
-           Evaluator,
-           Score,
-           Class
+           combine_mean,
+           combine_median,
+           combine_max
 
-    # basic types
+    # basics
     include("base.jl")
 
     # utilities
+    include("utils/normalization.jl")
+    include("utils/classification.jl")
+    include("utils/combination.jl")
     include("utils/neighbors.jl")
     include("utils/neural.jl")
+
+    # macros
+    include("macros.jl")
 
     # detectors
     include("models/abod.jl")
@@ -90,17 +94,16 @@ module OutlierDetection
     include("pymodels/utils.jl")
     include("pymodels/detectors.jl")
 
-    # evaluation
-    include("evaluate/utils.jl")
-    include("evaluate/evaluate.jl")
-
     # examples
     include("examples/examples.jl")
 
-    function __init__()
-       @require MLJ="add582a8-e3ab-11e8-2d5e-e98b27df1bc7" begin
-           include("extension/mlj.jl")
-           include("extension/mlj_extra.jl")
-       end
-    end
+    # extension
+    include("extension/mlj.jl")
+
+#     function __init__()
+#        @require MLJ="add582a8-e3ab-11e8-2d5e-e98b27df1bc7" begin
+#            include("extension/mlj.jl")
+#            include("extension/mlj_extra.jl")
+#        end
+#     end
 end

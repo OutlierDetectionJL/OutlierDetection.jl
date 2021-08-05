@@ -40,7 +40,7 @@ References
 [1] Huang, Chaoqin; Ye, Fei; Zhang, Ya; Wang, Yan-Feng; Tian, Qi (2020): ESAD: End-to-end Deep Semi-supervised Anomaly
 Detection.
 """
-MMI.@mlj_model mutable struct ESAD <: SupervisedDetector
+@detector_model mutable struct ESAD <: SupervisedDetector
     encoder::Chain = Chain()
     decoder::Chain = Chain()
     batchsize::Integer = 32::(_ > 0)
@@ -75,22 +75,26 @@ function fit(detector::ESAD, X::Data, y::Labels)::Fit
     Fit(ESADModel(model), scores)
 end
 
-@score function score(_::ESAD, model::Fit, X::Data)::Result
+function score(_::ESAD, fitresult::Fit, X::Data)::Score
+    model = fitresult.model
     _esadscore(model.chain[1:2](X), X, model.chain(X), ndims(X))
 end
 
 function _esadloss(x̂, x, ẑ, z, y, λ1, λ2, noise, dims)
     # The esad loss function is based on the distance to the hypersphere center. The inverse distance is used if an
     # example is an outlier and labeled samples are weighted using the hyperparameter eta
+    rec_loss(y, rec_outlier, rec_normal) = ifelse(y == -1, rec_outlier, rec_normal)
+    norm_loss(y, origin_dist) = ifelse(y == -1, origin_dist ^ -1, origin_dist)
+
     rec_outlier = dropdims(sum((x̂ .- noise(x)).^2, dims=1:dims - 1), dims=1)
     rec_normal = dropdims(sum((x̂ .- x).^2, dims=1:dims - 1), dims=1)
     origin_dist = map(norm, eachslice(ẑ; dims=ndims(ẑ)))
 
     # reconstruction error (optimize mutual information of latent)
-    l_rec_semi = ifelse.(y .== -1, rec_outlier, rec_normal) |> mean
+    l_rec_semi = rec_loss.(y, rec_outlier, rec_normal) |> mean
 
     # minimize distance to origin (thus minimize entropy for normal and maximize entropy for outliers)
-    l_norm_semi = ifelse.(y .== -1, origin_dist .^ -1, origin_dist) |> mean
+    l_norm_semi = norm_loss.(y, origin_dist) |> mean
 
     # similarity constraint of latent embeddings
     l_ass_semi = mse(ẑ, z)

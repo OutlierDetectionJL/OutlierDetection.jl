@@ -42,10 +42,10 @@ Implements the `score` method for an underlying python model.
 """
 function pyod_score(modelname)
     quote
-        function score(_::$modelname, fitresult::Fit, X::Data)::Result
+        function score(_::$modelname, fitresult::Fit, X::Data)::Score
             Xt = PyReverseDims(X) # change from column-major to row-major
             scores_test = fitresult.model.pyobject.decision_function(Xt)
-            return fitresult.scores, scores_test
+            return scores_test
         end
     end
 end
@@ -55,30 +55,35 @@ end
 Extracts the relevant information from the expr and build the expression
 corresponding to the model constructor (see [`_model_constructor`](@ref)).
 """
-function py_constructor(expr)
+function py_constructor(ex)
+    push!(ex.args[3].args, :(normalize::Function = $normalize))
+    push!(ex.args[3].args, :(classify::Function = $classify))
+    push!(ex.args[3].args, :(threshold::Real = 0.9))
+
     # similar to @mlj_model
-    expr, modelname, params, defaults, constraints = MMI._process_model_def(@__MODULE__, expr)
+    ex, modelname, params, defaults, constraints = MMI._process_model_def(@__MODULE__, ex)
 
     # keyword constructor
-    const_expr = MMI._model_constructor(modelname, params, defaults)
+    const_ex = MMI._model_constructor(modelname, params, defaults)
 
     # associate the constructor with the definition of the struct
-    push!(expr.args[3].args, const_expr)
+    push!(ex.args[3].args, const_ex)
 
     # cleaner
-    clean_expr = MMI._model_cleaner(modelname, defaults, constraints)
+    clean_ex = MMI._model_cleaner(modelname, defaults, constraints)
 
     # return
-    return modelname, params, clean_expr, expr
+    return modelname, params, clean_ex, ex
 end
 
-macro pymodel(expr)
-    modelname, params, clean_expr, expr = py_constructor(expr)
+macro pymodel(ex)
+    modelname, params, clean_ex, ex = py_constructor(ex)
     @assert startswith(String(modelname), "Py") "A python model name has to start with `Py`, e.g. PyKNN"
+    # don't propagate the internal params (normalize, classify, threshold, thus params[1:end-3])
     expr = quote
-        Base.@__doc__($expr)
-        $clean_expr
-        $(pyod_fit(modelname, params))
+        Base.@__doc__($ex)
+        $clean_ex
+        $(pyod_fit(modelname, params[1:end-3]))
         $(pyod_score(modelname))
         MMI.metadata_pkg($modelname,
             package_name="OutlierDetection.jl",

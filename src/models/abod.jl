@@ -37,7 +37,7 @@ data.
 [2] Li, Xiaojie; Lv, Jian Cheng; Cheng, Dongdong (2015): Angle-Based Outlier Detection Algorithm with More Stable
 Relationships.
 """
-MMI.@mlj_model mutable struct ABOD <: UnsupervisedDetector
+@detector_model mutable struct ABOD <: UnsupervisedDetector
     k::Integer = 5::(_ > 0)
     metric::DI.Metric = DI.Euclidean()
     algorithm::Symbol = :kdtree::(_ in (:kdtree, :balltree))
@@ -62,7 +62,8 @@ function fit(detector::ABOD, X::Data)::Fit
     Fit(ABODModel(X, tree), scores)
 end
 
-@score function score(detector::ABOD, model::Fit, X::Data)::Result
+function score(detector::ABOD, fitresult::Fit, X::Data)::Score
+    model = fitresult.model
     # TODO: We could also paralellize the abod score calculation.
     if detector.parallel
         idxs, _ = knn_parallel(model.tree, X, detector.k)
@@ -73,7 +74,7 @@ end
     end
 end
 
-function _abod(X::AbstractArray, Xtrain::AbstractArray, idxs::AbstractVector, k::Int)::Scores
+function _abod(X::AbstractArray, Xtrain::AbstractArray, idxs::AbstractVector, k::Int)::Score
     # Calculate the ABOF for all instances in X.
     scores = Vector{Float64}(undef, length(idxs))
     for i in eachindex(idxs)
@@ -99,7 +100,7 @@ function _abof(p::AbstractVector, idxs::AbstractVector, X::AbstractArray, k::Int
     -1 * var(Iterators.filter(!isnan, result))
 end
 
-function _eabod(X::AbstractArray, Xtrain::AbstractArray, idxs::AbstractVector, k::Int)::Scores
+function _eabod(X::AbstractArray, Xtrain::AbstractArray, idxs::AbstractVector, k::Int)::Score
     # Calculate the EABOF for all instances in X.
     scores = Vector{Float64}(undef, length(idxs))
     for i in eachindex(idxs)

@@ -33,10 +33,11 @@ Tables = "1.0.5 - 1.4"
 julia = "1"
 
 [extras]
+CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 Coverage = "a2441757-f6aa-5fb2-8edb-039e3f45d037"
 MLJ = "add582a8-e3ab-11e8-2d5e-e98b27df1bc7"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "MLJ", "Random"]
+test = ["Test", "MLJ", "Random", "CategoricalArrays"]

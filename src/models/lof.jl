@@ -26,7 +26,7 @@ References
 [1] Breunig, Markus M.; Kriegel, Hans-Peter; Ng, Raymond T.; Sander, Jörg (2000): LOF: Identifying Density-Based Local
 Outliers.
 """
-MMI.@mlj_model mutable struct LOF <: UnsupervisedDetector
+@detector_model mutable struct LOF <: UnsupervisedDetector
     k::Integer = 5::(_ > 0)
     metric::DI.Metric = DI.Euclidean()
     algorithm::Symbol = :kdtree::(_ in (:kdtree, :balltree))
@@ -62,7 +62,8 @@ function fit(detector::LOF, X::Data)::Fit
     Fit(LOFModel(tree, ndists, lrds), scores)
 end
 
-@score function score(detector::LOF, model::Fit, X::Data)::Result
+function score(detector::LOF, fitresult::Fit, X::Data)::Score
+    model = fitresult.model
     if detector.parallel
         idxs, dists = knn_parallel(model.tree, X, detector.k, true)
         return _lof(idxs, dists, model.ndists, model.lrds, detector.k)
@@ -73,13 +74,13 @@ end
 end
 
 function _lof(idxs:: AbstractVector, dists:: AbstractVector, model_dists::AbstractArray,
-    model_lrds::AbstractVector, k::Int)::Scores
+    model_lrds::AbstractVector, k::Int)::Score
     lrds = _calculate_lrd(idxs, dists, model_dists, k)
     # calculate the local outlier factor from the lrds
     map((idx, lrd) -> mean(model_lrds[idx]) / lrd, idxs, lrds)
 end
 
-function _lof_from_lrd(idxs::AbstractVector, lrds::AbstractVector)::Scores
+function _lof_from_lrd(idxs::AbstractVector, lrds::AbstractVector)::Score
     # Directly calculate the local outlier factor from idxs with corresponding lrds.
     map((idx, lrd) -> mean(lrds[idx]) / lrd, idxs, lrds)
 end

@@ -29,7 +29,7 @@ Sets.
 
 [2] Angiulli, Fabrizio; Pizzuti, Clara (2002): Fast Outlier Detection in High Dimensional Spaces.
 """
-MMI.@mlj_model mutable struct KNN <: UnsupervisedDetector
+@detector_model mutable struct KNN <: UnsupervisedDetector
     k::Integer = 5::(_ > 0)
     metric::DI.Metric = DI.Euclidean()
     algorithm::Symbol = :kdtree::(_ in (:kdtree, :balltree))
@@ -55,7 +55,8 @@ function fit(detector::KNN, X::Data)::Fit
     Fit(KNNModel(tree), scores)
 end
 
-@score function score(detector::KNN, model::Fit, X::Data)::Result
+function score(detector::KNN, fitresult::Fit, X::Data)::Score
+    model = fitresult.model
     if detector.parallel
         idxs, dists = knn_parallel(model.tree, X, detector.k)
         return _knn(dists, detector.reduction)
@@ -65,7 +66,7 @@ end
     end
 end
 
-@inline function _knn(distances::AbstractVector{<:AbstractVector}, reduction::Symbol)::Scores
+@inline function _knn(distances::AbstractVector{<:AbstractVector}, reduction::Symbol)::Score
     # Helper function to reduce `k` distances to a single distance.
     if reduction == :maximum
         return maximum.(distances)

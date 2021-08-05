@@ -23,7 +23,7 @@ References
 [1] Tang, Jian; Chen, Zhixiang; Fu, Ada Wai-Chee; Cheung, David Wai-Lok (2002): Enhancing Effectiveness of Outlier
 Detections for Low Density Patterns.
 """
-MMI.@mlj_model mutable struct COF <: UnsupervisedDetector
+@detector_model mutable struct COF <: UnsupervisedDetector
     k::Integer = 5::(_ > 0)
     metric::DI.Metric = DI.Euclidean()
     algorithm::Symbol = :kdtree::(_ in (:kdtree, :balltree))
@@ -55,7 +55,8 @@ function fit(detector::COF, X::Data)::Fit
     Fit(COFModel(tree, pdists, acds), scores)
 end
 
-@score function score(detector::COF, model::Fit, X::Data)::Result
+function score(detector::COF, fitresult::Fit, X::Data)::Score
+    model = fitresult.model
     if detector.parallel
         idxs, _ = knn_parallel(model.tree, X, detector.k + 1, true)
         return _cof(idxs, model.pdists, model.acds, detector.k)
@@ -65,7 +66,7 @@ end
     end
 end
 
-function _cof(idxs::AbstractVector{<:AbstractVector}, acds::AbstractVector, k:: Int)::Scores
+function _cof(idxs::AbstractVector{<:AbstractVector}, acds::AbstractVector, k:: Int)::Score
     # Calculate the connectivity-based outlier factor from given acds
     cof = Vector{Float64}(undef, length(idxs))
     for (i, idx) in enumerate(idxs)
@@ -74,7 +75,7 @@ function _cof(idxs::AbstractVector{<:AbstractVector}, acds::AbstractVector, k:: 
     cof
 end
 
-function _cof(idxs::AbstractVector{<:AbstractVector}, pdists::AbstractMatrix, acds:: AbstractVector, k::Int)::Scores
+function _cof(idxs::AbstractVector{<:AbstractVector}, pdists::AbstractMatrix, acds:: AbstractVector, k::Int)::Score
     # Calculate the connectivity-based outlier factor for test examples with given training distances and acds.
     cof = Vector{Float64}(undef, length(idxs))
     acdsTest = _calc_acds(idxs, pdists, k)

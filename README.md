@@ -43,7 +43,7 @@ If you would like to modify the package locally, you can use `Pkg.develop(Outlie
 
 ## API
 
-You typically want to interface with OutlierDetection.jl through the [MLJ-API](#mlj-api). However, it's also possible to use OutlierDetection.jl without MLJ. The main parts of the API are the functions `fit`, `score`, and `detect`. Note that the raw API uses the columns-as-observations convention for improved performance, and we transpose the input data.
+You typically want to interface with OutlierDetection.jl through the [MLJ-API](#mlj-api). However, it's also possible to use OutlierDetection.jl without MLJ. The main parts of the API are the functions `fit`, `score`, and `to`. Note that the raw API uses the columns-as-observations convention for improved performance, and we transpose the input data.
 
 ```julia
 using OutlierDetection
@@ -66,8 +66,7 @@ model = fit(lof, X[train, :])
 train_scores, test_scores = score(lof, model, X[test, :])
 
 # transform scores to binary labels
-clf = Class()
-ŷ = detect(clf, train_scores, test_scores)
+ŷ = detect(Class(), train_scores, test_scores)
 ```
 
 ## MLJ API

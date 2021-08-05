@@ -79,8 +79,8 @@ fit
 score
 ```
 
-### detect
+### to
 
 ```@docs
-detect
+to
 ```
