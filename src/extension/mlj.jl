@@ -53,8 +53,8 @@ end
 # specify scitypes
 MMI.input_scitype(::Type{<:Detector}) = Union{MMI.Table(MMI.Continuous), AbstractMatrix{MMI.Continuous}}
 MMI.output_scitype(::Type{<:Detector}) = AbstractVector{<:MMI.Continuous}
-MMI.target_scitype(::Type{<:Detector}) = AbstractVector{<:MMI.Binary}
-MMI.output_scitype(::Type{<:Scores}) = AbstractVector{<:MMI.Binary}
+MMI.target_scitype(::Type{<:Detector}) = AbstractVector{<:MMI.Finite}
+MMI.output_scitype(::Type{<:Scores}) = AbstractVector{<:MMI.Finite}
 MMI.output_scitype(::Type{<:Labels}) = AbstractVector{<:MMI.Binary}
 
 # data front-end for fit (supervised):
