@@ -15,7 +15,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-          - macOS-latest, can't get it to work with PyCall (2021-04-25)
+          - macOS-latest # can't get it to work with PyCall (2021-04-25)
         arch:
           - x64
     steps:
