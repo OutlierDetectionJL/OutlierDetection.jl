@@ -28,8 +28,6 @@ module OutlierDetection
            DNNModel,
            KNN,
            KNNModel,
-           LDF,
-           LDFModel,
            LOF,
            LOFModel,
            COF,
@@ -93,7 +91,6 @@ module OutlierDetection
     include("models/dnn.jl") 
     include("models/esad.jl")
     include("models/knn.jl")
-    include("models/ldf.jl")
     include("models/lof.jl")
     include("pymodels/utils.jl")
     include("pymodels/detectors.jl")
