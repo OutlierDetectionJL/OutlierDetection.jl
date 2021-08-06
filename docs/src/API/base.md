@@ -47,10 +47,10 @@ Scores
 Data
 ```
 
-### Labels
+### Label
 
 ```@docs
-Labels
+Label
 ```
 
 ### Fit

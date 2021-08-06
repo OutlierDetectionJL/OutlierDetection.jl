@@ -26,16 +26,15 @@ Let's see how the data looks like in a typical outlier detection task. We use th
 
 ```julia
 Data::AbstractArray{<:Real}
-Scores::AbstractVector{<:Real}
-Labels::AbstractVector{<:Integer}
-Result::Tuple{Scores, Scores}
+Score::AbstractVector{<:Real}
+Label::AbstractVector{<:Integer}
 ```
 
 Because train scores are essential in classification, we often work with tuples of training and test scores and call such a tuple a `Result`. One last previously unmentioned structure is the `Fit` result, a `struct` that bundles the learned model and training scores. Let's now looks how the methods defined by OutlierDetection.jl transform the mentioned data structures.
 
 ```julia
 fit(::UnsupervisedDetector, ::Data)::Fit
-fit(::SupervisedDetector, ::Data, ::Labels)::Fit
+fit(::SupervisedDetector, ::Data, ::Label)::Fit
 score(::Detector, ::Fit, ::Data)::Score
 ```
 

@@ -81,7 +81,7 @@ struct DeepSADModel <: Model
     center::AbstractArray
 end
 
-function fit(detector::DeepSAD, X::Data, y::Labels)::Fit
+function fit(detector::DeepSAD, X::Data, y::Label)::Fit
     makeLoader = i -> DataLoader((X, y), batchsize=detector.batchsize[i], shuffle=detector.shuffle[i],
         partial=detector.partial[i])
     loaderPretrain = makeLoader(1)

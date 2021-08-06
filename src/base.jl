@@ -16,7 +16,7 @@ This abstract type forms the basis for all implemented supervised outlier detect
 `SupervisedDetector` yourself, you have to implement the `fit(detector, X, y)::Fit` and
 `score(detector, model, X)::Score` methods. 
 """
-abstract type SupervisedDetector <: MMI.Deterministic end
+abstract type SupervisedDetector <: MMI.Probabilistic end
 
 """
     Detector::Union{<:SupervisedDetector, <:UnsupervisedDetector}
@@ -44,12 +44,12 @@ detectors return increasing scores and higher scores are associated with higher 
 const Score = AbstractVector{<:Real}
 
 """
-    Labels::AbstractVector{<:Integer}
+    Label::AbstractVector{<:Integer}
 
 Labels are used for supervision and evaluation and are defined as an `AbstractArray{<:Integer}`. The convention for
 labels is that `-1` indicates outliers, `1` indicates inliers and `0` indicates unlabeled data in semi-supervised tasks.
 """
-const Labels = AbstractVector{<:Integer}
+const Label = AbstractVector{<:Integer}
 
 """
     Data::AbstractArray{<:Real}

@@ -31,7 +31,7 @@ Examples
     classify(0.3, scores_train, scores_test) # [-1, -1, 1, 1, 1]
     classify(0.3, scores_train) # [1, 1, -1]
 """
-function classify(threshold::Real, scores_train::Score, scores_test::Score)::Labels
+function classify(threshold::Real, scores_train::Score, scores_test::Score)::Label
     @assert 0 < threshold < 1
     ifelse.(scores_test .> quantile(scores_train, threshold), CLASS_OUTLIER, CLASS_NORMAL)
 end

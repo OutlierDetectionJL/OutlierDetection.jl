@@ -10,7 +10,7 @@ function test_detector(detector)
         raw_train_norm, raw_test_norm = detector.normalize(raw_train, raw_test)
         raw_train_labels = detector.classify(detector.threshold, raw_train_norm)
         raw_test_labels = detector.classify(detector.threshold, raw_train_norm, raw_test_norm)
-
+ 
         # raw detector with table input
         raw_df = is_supervised ? fit(detector, table(X_mat[train, :]), y[train]) :
                                  fit(detector, table(X_mat[train, :]))

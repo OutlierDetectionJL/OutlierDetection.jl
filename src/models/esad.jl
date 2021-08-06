@@ -57,7 +57,7 @@ struct ESADModel <: Model
     chain::Chain
 end
 
-function fit(detector::ESAD, X::Data, y::Labels)::Fit
+function fit(detector::ESAD, X::Data, y::Label)::Fit
     loader = DataLoader((X, y), batchsize=detector.batchsize, shuffle=detector.shuffle, partial=detector.partial)
 
     # Create the autoencoder // TODO: deepcopy the encoder/decoder?

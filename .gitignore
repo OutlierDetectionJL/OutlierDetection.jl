@@ -8,5 +8,6 @@
 *.info
 *.dev.jl
 .vscode/
+.history/
 notebooks/
 *.jld

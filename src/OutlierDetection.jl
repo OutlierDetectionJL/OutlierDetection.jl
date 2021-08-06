@@ -16,8 +16,7 @@ module OutlierDetection
            UnsupervisedDetector,
            SupervisedDetector,
            Model,
-           Scores,
-           Labels,
+           Label,
            Data,
            Fit,
            fit,
@@ -29,6 +28,8 @@ module OutlierDetection
            DNNModel,
            KNN,
            KNNModel,
+           LDF,
+           LDFModel,
            LOF,
            LOFModel,
            COF,
@@ -67,7 +68,9 @@ module OutlierDetection
            unify,
            combine_mean,
            combine_median,
-           combine_max
+           combine_max,
+           Scores,
+           Labels
 
     # basics
     include("base.jl")
@@ -90,6 +93,7 @@ module OutlierDetection
     include("models/dnn.jl") 
     include("models/esad.jl")
     include("models/knn.jl")
+    include("models/ldf.jl")
     include("models/lof.jl")
     include("pymodels/utils.jl")
     include("pymodels/detectors.jl")
