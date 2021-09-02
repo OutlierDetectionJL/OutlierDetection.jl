@@ -5,17 +5,17 @@
   <a href="https://discord.gg/F5MPPS9t4h">
     <img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true" alt="Chat">
   </a>
-  <a href="https://davnn.github.io/OutlierDetection.jl/stable">
+  <a href="https://OutlierDetectionJL.github.io/OutlierDetection.jl/stable">
     <img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Documentation (stable)">
   </a>
-  <a href="https://davnn.github.io/OutlierDetection.jl/dev">
+  <a href="https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev">
     <img src="https://img.shields.io/badge/docs-dev-blue.svg" alt="Documentation (dev)">
   </a>
-  <a href="https://github.com/davnn/OutlierDetection.jl/actions">
-    <img src="https://github.com/davnn/OutlierDetection.jl/workflows/CI/badge.svg" alt="Build Status">
+  <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/actions">
+    <img src="https://github.com/OutlierDetectionJL/OutlierDetection.jl/workflows/CI/badge.svg" alt="Build Status">
   </a>
-  <a href="https://codecov.io/gh/davnn/OutlierDetection.jl">
-    <img src="https://codecov.io/gh/davnn/OutlierDetection.jl/branch/master/graph/badge.svg" alt="Coverage">
+  <a href="https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl">
+    <img src="https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl/branch/master/graph/badge.svg" alt="Coverage">
   </a>
   <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
   <a href="#contributors-">
@@ -100,7 +100,7 @@ ŷ = transform(mach, rows=test)
 
 ## Algorithms (also known as Detectors)
 
-Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '✓ (py)' are implemented in Python (thanks to the wonderful [PyOD library](https://github.com/yzhao062/pyod)) with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://davnn.github.io/OutlierDetection.jl/dev/API/detectors/). Note: If you would like to use a Python-variant of an algorithm, prepend the algorithm name with `Py`, e.g., `PyLOF` is the Python variant of `LOF`.
+Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '✓ (py)' are implemented in Python (thanks to the wonderful [PyOD library](https://github.com/yzhao062/pyod)) with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev/API/detectors/). Note: If you would like to use a Python-variant of an algorithm, prepend the algorithm name with `Py`, e.g., `PyLOF` is the Python variant of `LOF`.
 
 | Name    | Description                                  | Year  | Status | Authors                |
 | ------- | -------------------------------------------- | :---: | :----: | ---------------------- |
@@ -154,7 +154,7 @@ Interoperating with Python is easy!
 
 ## Contributing
 
-OutlierDetection.jl is a community effort and your help is extremely welcome! See our [contribution guide](https://davnn.github.io/OutlierDetection.jl/dev/getting-started/contributing/) for more information how to contribute to the project.
+OutlierDetection.jl is a community effort and your help is extremely welcome! See our [contribution guide](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev/getting-started/contributing/) for more information how to contribute to the project.
 
 ### Inclusion Guidelines
 
@@ -173,7 +173,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://fastpaced.com"><img src="https://avatars.githubusercontent.com/u/1233304?v=4?s=100" width="100px;" alt=""/><br /><sub><b>David Muhr</b></sub></a><br /><a href="https://github.com/davnn/OutlierDetection.jl/commits?author=davnn" title="Code">💻</a> <a href="https://github.com/davnn/OutlierDetection.jl/commits?author=davnn" title="Tests">⚠️</a> <a href="https://github.com/davnn/OutlierDetection.jl/commits?author=davnn" title="Documentation">📖</a> <a href="#maintenance-davnn" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="http://fastpaced.com"><img src="https://avatars.githubusercontent.com/u/1233304?v=4?s=100" width="100px;" alt=""/><br /><sub><b>David Muhr</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=OutlierDetectionJL" title="Code">💻</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=OutlierDetectionJL" title="Tests">⚠️</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=OutlierDetectionJL" title="Documentation">📖</a> <a href="#maintenance-OutlierDetectionJL" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 

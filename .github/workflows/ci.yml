@@ -11,11 +11,11 @@ jobs:
       matrix:
         version:
           - '1.5'
-          - '1' # automatically expands to the latest stable 1.x release of Julia.
+          - '1.6'
         os:
           - ubuntu-latest
           - windows-latest
-          - macOS-latest # can't get it to work with PyCall (2021-04-25)
+          # - macOS-latest # can't get it to work with PyCall (2021-08-28)
         arch:
           - x64
     steps:

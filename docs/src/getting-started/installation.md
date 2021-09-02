@@ -1,6 +1,6 @@
 # Installation
 
-It is recommended to use [Pkg.jl](https://julialang.github.io/Pkg.jl) for installation. Please make sure that you are using a compatible version of Julia. A list of compatible versions can be found our [CI pipeline](https://github.com/davnn/OutlierDetection.jl/blob/master/.github/workflows/ci.yml).
+It is recommended to use [Pkg.jl](https://julialang.github.io/Pkg.jl) for installation. Please make sure that you are using a compatible version of Julia. A list of compatible versions can be found our [CI pipeline](https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/master/.github/workflows/ci.yml).
 
 Follow the command below to install the latest official release or use `] add OutlierDetection` in the Julia REPL.
 

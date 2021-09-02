@@ -38,8 +38,8 @@ Please go through the checklist below. Please feel free to remove points if they
 -->
 
 ##### For all contributions
-- [ ] I've added myself to the [list of contributors](https://github.com/davnn/OutlierDetection.jl/blob/main/.all-contributorsrc).
-- [ ] Optionally, I've updated sktime's [CODEOWNERS](https://github.com/davnn/OutlierDetection.jl/blob/main/CODEOWNERS) to receive notifications about future changes to these files.
+- [ ] I've added myself to the [list of contributors](https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/main/.all-contributorsrc).
+- [ ] Optionally, I've updated sktime's [CODEOWNERS](https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/main/CODEOWNERS) to receive notifications about future changes to these files.
 - [ ] I've added unit tests and made sure they pass locally.
 
 ##### For new detectors

@@ -23,18 +23,15 @@ The normalized train and test scores.
 Examples
 ----------
 scores_train, scores_test = ([1, 2, 3], [4, 3, 2, 1, 0])
-normalize(scores_train, scores_test) # ([0.0, 0.5, 1.0], [1.0, 1.0, 0.5, 0.0, 0.0])
-normalize(scores_train) # [0.0, 0.5, 1.0]
+scale_minmax(scores_train, scores_test) # ([0.0, 0.5, 1.0], [1.0, 1.0, 0.5, 0.0, 0.0])
+scale_minmax(scores_train) # [0.0, 0.5, 1.0]
 """
-function normalize(scores_train::Score, scores_test::Score)::Tuple{Score, Score}
-    minTrain = minimum(scores_train)
-    maxTrain = maximum(scores_train)
+function scale_minmax(scores_train::Scores, scores_test::Scores)::Tuple{Scores, Scores}
+    minTrain, maxTrain = extrema(scores_train)
     @assert minTrain < maxTrain "Cannot normalize scores if they are all equal"
     f = scores -> clamp.((scores .- minTrain) ./ (maxTrain - minTrain), 0, 1)
     f(scores_train), f(scores_test)
 end
-normalize(scores::Tuple{Score, Score}) = normalize(scores...)
-normalize(scores::Score) = normalize(scores, scores)[1]  # only extract scores train because they are the same
 
 """
 unify(scores_train,
@@ -65,12 +62,9 @@ References
 ----------
 Kriegel, Hans-Peter; Kroger, Peer; Schubert, Erich; Zimek, Arthur (2011): Interpreting and Unifying Outlier Scores.
 """
-function unify(scores_train::Score, scores_test::Score)::Tuple{Score, Score}
-    μ = mean(scores_train)
-    σ = std(scores_train)
+function scale_unify(scores_train::Scores, scores_test::Scores)::Tuple{Scores, Scores}
+    μ, σ = mean(scores_train), std(scores_train)
     @assert σ > 0 "Cannot normalize scores if they are all equal"
     f = scores -> clamp.(erf.((scores .- μ) ./ (σ * √2)), 0, 1)
     f(scores_train), f(scores_test)
 end
-unify(scores::Tuple{Score, Score}) = unify(scores...)
-unify(scores) = unify(scores, scores)[1] # only extract scores train because they are the same

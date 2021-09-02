@@ -23,7 +23,7 @@ Examples
     combine_mean(scores) # [1.5, 3.5, 5.5]
 """
 combine_mean(scores_mat::AbstractMatrix{<:Real}) = dropdims(mean(scores_mat, dims=2), dims=2)
-combine_mean(scores::Score...) = combine_mean(hcat(scores...))
+combine_mean(scores::Scores...) = combine_mean(hcat(scores...))
 
 """
     combine_median(scores_mat)
@@ -46,7 +46,7 @@ Examples
     combine_median(scores) # [1.5, 3.5, 5.5]
 """
 combine_median(scores_mat::AbstractMatrix{<:Real}) = dropdims(median(scores_mat, dims=2), dims=2)
-combine_median(scores::Score...) = combine_median(hcat(scores...))
+combine_median(scores::Scores...) = combine_median(hcat(scores...))
 
 """
     combine_max(scores_mat)
@@ -69,16 +69,15 @@ Examples
     combine_max(scores) # [2, 4, 6]
 """
 combine_max(scores_mat::AbstractMatrix{<:Real}) = dropdims(maximum(scores_mat, dims=2), dims=2)
-combine_max(scores::Score...) = combine_max(hcat(scores...))
+combine_max(scores::Scores...) = combine_max(hcat(scores...))
 
 _class_params = """    outlier_fraction::Float64
 The fraction of outliers (number between 0 and 1) in the data is used to determine the score threshold to classify the
 samples into inliers and outliers.
 
     classify::Union{Function, Nothing}
-A function to transform a vector of scores to a vector of bits, where 1 represents an outlier and 0 represents a normal
-instance. *Hint:* Sometimes you don't want to transform your scores to classes, e.g. in ROC AUC evaluation, where you
-can use `no_classify` to pass along the reduced (raw) scores. See [`classify`](@ref) for a specific implementation."""
+A function to transform a vector of scores to a vector of classes, where `"outlier"` represents an outlier and
+`"normal"` represents a normal instance. See [`classify`](@ref) for a specific implementation."""
 
 _score_params = """    combine::Function
 A function to reduce a matrix, where each row represents an instance and each column represents a score of specific
@@ -101,26 +100,26 @@ $_score_params
 Examples
 ----------
 ```julia
-using OutlierDetection: Score, KNN, fit, score
-detector = KNN()
+using OutlierDetection: Score, KNNDetector, fit, score
+detector = KNNDetector()
 X = rand(10, 100)
 model = fit(detector, X)
 train_scores, test_scores = score(detector, model, X)
 ŷ = detect(Score(), train_scores, test_scores)
 ```
 """
-MMI.@mlj_model mutable struct Scores <: MMI.Static
-    normalize::Function = normalize
+MMI.@mlj_model mutable struct Score <: MMI.Static
+    normalize::Function = scale_minmax
     combine::Function = combine_mean
 end
 
-function to_scores(normalize::Function, combine::Function, scores::Tuple{Score, Score}...)::Tuple{Score, Score}
+function to_scores(normalize::Function, combine::Function, scores::Tuple{Scores, Scores}...)::Tuple{Scores, Scores}
     # make sure that we have at least one tuple of train and test scores
     n_scores = length(scores)
     @assert n_scores > 0
 
     # normalize all scores (might be identity function)
-    scores = map(normalize, scores)
+    scores = map(score_tuple -> normalize(score_tuple...), scores)
 
     # [(train1, test1), (train2, test2)] -> matrix of scores for train [train1 train2]' and test [test1 test2]'
     # Note: The matrices contain one observation per row!
@@ -130,12 +129,11 @@ function to_scores(normalize::Function, combine::Function, scores::Tuple{Score, 
 end
 
 """
-    Class(threshold = 0.9,
-          normalize = normalize,
-          combine = combine,
-          classify = classify)
-A flexible, quantile-thresholding classifier that maps the outlier scores of a single or multiple outlier detection
-models to binary classes, where `1` represents inliers and `-1` represents outliers.
+    Class(normalize = scale_minmax,
+          combine = combine_mean,
+          classify = classify_percentile(0.9))
+A flexible, percentile-thresholding classifier that maps the outlier scores of a single or multiple outlier detection
+models to binary classes, where `"normal"` represents inliers and `"outlier"` represents outliers.
 
 Parameters
 ----------
@@ -147,15 +145,27 @@ Examples
 ----------
 TODO
 """
-MMI.@mlj_model mutable struct Labels <: MMI.Static
-    threshold::Float64 = 0.9::(0 < _ < 1)
-    normalize::Function = normalize
+default_percentile_threshold = classify_percentile(DEFAULT_THRESHOLD)
+MMI.@mlj_model mutable struct Class <: MMI.Static
+    normalize::Function = scale_minmax
     combine::Function = combine_mean
-    classify::Function = classify
+    classify::Function = default_percentile_threshold
 end
 
-function to_labels(threshold::Float64, normalize::Function, combine::Function, classify::Function,
-                    scores::Tuple{Score, Score}...)::Label
-    scores_train, scores_test = to_scores(normalize, combine, scores)
-    classify(threshold, scores_train, scores_test)
+function to_classes(normalize::Function,
+                    combine::Function,
+                    classify::Function,
+                    scores::Tuple{Scores, Scores}...)::Tuple{Labels, Labels}
+    scores_train, scores_test = to_scores(normalize, combine, scores...)
+    classify(scores_train, scores_test)
+end
+
+function MMI.transform(ev::Score, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
+    _, scores_test = to_scores(ev.normalize, ev.combine, scores...)
+    to_univariate_finite(scores_test)
+end
+
+function MMI.transform(ev::Class, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
+    _, classes_test = to_classes(ev.normalize, ev.combine, ev.classify, scores...)
+    to_categorical(classes_test)
 end

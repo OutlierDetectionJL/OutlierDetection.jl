@@ -38,10 +38,10 @@ PyHBOS
 PyIForest
 ```
 
-## PyKNN
+## PyKNNDetector
 
 ```@docs
-PyKNN
+PyKNNDetector
 ```
 
 ## PyLMDD
