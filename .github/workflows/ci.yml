@@ -12,11 +12,10 @@ jobs:
         version:
           - '1.5'
           - '1.6'
-          - 'nightly'
         os:
           - ubuntu-latest
           - windows-latest
-          # - macOS-latest, can't get it to work with PyCall (2021-04-25)
+          # - macOS-latest # can't get it to work with PyCall (2021-08-28)
         arch:
           - x64
     steps:

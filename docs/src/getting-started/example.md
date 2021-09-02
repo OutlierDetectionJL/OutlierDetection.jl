@@ -1,6 +1,6 @@
 # Example
 
-This example demonstrates using the *raw* `OutlierDetection` API to determine the outlierness of instances in the *Thyroid Disease Dataset*, which is part of the [ODDS collection](http://odds.cs.stonybrook.edu/). We use [`OutlierDetectionData.jl`](https://github.com/davnn/OutlierDetectionData.jl) to download and read the dataset. Note that the raw API uses the *columns-as-observations* convention for improved performance.
+This example demonstrates using the *raw* `OutlierDetection` API to determine the outlierness of instances in the *Thyroid Disease Dataset*, which is part of the [ODDS collection](http://odds.cs.stonybrook.edu/). We use [`OutlierDetectionData.jl`](https://github.com/OutlierDetectionJL/OutlierDetectionData.jl) to download and read the dataset. Note that the raw API uses the *columns-as-observations* convention for improved performance.
 
 Import `OutlierDetection` and `OutlierDetectionData`
 
@@ -22,10 +22,10 @@ n_train = Int(length(y) * 0.5)
 train, test = eachindex(y)[1:n_train], eachindex(y)[n_train+1:end]
 ```
 
-Initialize an unsupervised [`KNN`](@ref) [`Detector`](@ref) with `k=10` neighbors.
+Initialize an unsupervised [`KNNDetector`](@ref) [`Detector`](@ref) with `k=10` neighbors.
 
 ```julia
-detector = KNN(k=10)
+detector = KNNDetector(k=10)
 ```
 
 Learn a model from the data `X`.
@@ -52,7 +52,7 @@ Evaluate the resulting test scores with the given labels.
 roc_auc(y[test], scores_test)
 ```
 
-You can easily convert the obtained scores into inlier (`1`), and outlier (`-1`) labels using an [`Evaluator`](@ref), in this case, [`Class`](@ref).
+You can easily convert the obtained scores into inlier (`"normal"`), and outlier (`"outlier"`) labels using an [`Evaluator`](@ref), in this case, [`Class`](@ref).
 
 ```julia
 detect(Class(), scores_train, scores_test)
@@ -71,7 +71,7 @@ using MLJ # or MLJBase
 Create a pipeline consisting of a detector and classifier.
 
 ```julia
-pipe = @pipeline KNN(k=10) Class()
+pipe = @pipeline KNNDetector(k=10) Class()
 ```
 
 Bind the pipeline to data to create a machine.

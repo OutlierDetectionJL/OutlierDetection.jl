@@ -38,10 +38,10 @@ DNN
 ESAD
 ```
 
-## KNN
+## KNNDetector
 
 ```@docs
-KNN
+KNNDetector
 ```
 
 ## LOF

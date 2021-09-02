@@ -47,10 +47,10 @@ Scores
 Data
 ```
 
-### Labels
+### Label
 
 ```@docs
-Labels
+Label
 ```
 
 ### Fit
@@ -79,8 +79,8 @@ fit
 score
 ```
 
-### detect
+### to
 
 ```@docs
-detect
+to
 ```

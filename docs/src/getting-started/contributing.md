@@ -1,8 +1,8 @@
 # How to Contribute
 
-OutlierDetection.jl is a community-driven project and your help is extremely welcome. If you get stuck, please don't hesitate to [chat with us](https://discord.gg/5ErtExMV) or [raise an issue](https://github.com/davnn/OutlierDetection.jl/issues/new/choose). Take a look at Github's [How to Contribute Guide](https://opensource.guide/how-to-contribute/) to find out more about what it means to contribute.
+OutlierDetection.jl is a community-driven project and your help is extremely welcome. If you get stuck, please don't hesitate to [chat with us](https://discord.gg/5ErtExMV) or [raise an issue](https://github.com/OutlierDetectionJL/OutlierDetection.jl/issues/new/choose). Take a look at Github's [How to Contribute Guide](https://opensource.guide/how-to-contribute/) to find out more about what it means to contribute.
 
-**Note:** To avoid duplicating work, it is highly advised that you search through the [issue tracker](https://github.com/davnn/OutlierDetection.jl/issues) and the [PR list](https://github.com/davnn/OutlierDetection.jl/pulls). If in doubt about duplicated work, or if you want to work on a non-trivial feature, it’s recommended to first open an issue in the issue tracker to get some feedbacks from core developers.
+**Note:** To avoid duplicating work, it is highly advised that you search through the [issue tracker](https://github.com/OutlierDetectionJL/OutlierDetection.jl/issues) and the [PR list](https://github.com/OutlierDetectionJL/OutlierDetection.jl/pulls). If in doubt about duplicated work, or if you want to work on a non-trivial feature, it’s recommended to first open an issue in the issue tracker to get some feedbacks from core developers.
 
 ## Areas of contribution
 
@@ -25,15 +25,15 @@ We use GitHub issues to track all bugs and feature requests; feel free to open a
 
 It is recommended to check that your issue complies with the following rules before submitting:
 
-- Verify that your issue is not being currently addressed by other [issues](https://github.com/davnn/OutlierDetection.jl/issues) or [pull requests](https://github.com/davnn/OutlierDetection.jl/pulls).
+- Verify that your issue is not being currently addressed by other [issues](https://github.com/OutlierDetectionJL/OutlierDetection.jl/issues) or [pull requests](https://github.com/OutlierDetectionJL/OutlierDetection.jl/pulls).
 - Please ensure all code snippets and error messages are formatted in appropriate code blocks. See [Creating and highlighting code blocks](https://help.github.com/articles/creating-and-highlighting-code-blocks).
 - Please be specific about what detectors and/or functions are involved and the shape of the data, as appropriate; please include a [reproducible](https://stackoverflow.com/help/mcve) code snippet or link to a [gist](https://gist.github.com). If an exception is raised, please provide the traceback.
 
 ## The contribution workflow
 
-The preferred workflow for contributing to OutlierDetection's repository is to fork the [main repository](https://github.com/davnn/OutlierDetection.jl) on GitHub, clone, and develop on a new branch.
+The preferred workflow for contributing to OutlierDetection's repository is to fork the [main repository](https://github.com/OutlierDetectionJL/OutlierDetection.jl) on GitHub, clone, and develop on a new branch.
 
-1. Fork the [project repository](https://github.com/davnn/OutlierDetection.jl) by clicking on the \'Fork\' button near the top right of the page. This creates a copy of the code under your GitHub user account. For more details on how to fork a repository see [this guide](https://help.github.com/articles/fork-a-repo/).
+1. Fork the [project repository](https://github.com/OutlierDetectionJL/OutlierDetection.jl) by clicking on the \'Fork\' button near the top right of the page. This creates a copy of the code under your GitHub user account. For more details on how to fork a repository see [this guide](https://help.github.com/articles/fork-a-repo/).
 
 2. [Clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) your fork of the OutlierDetection.jl repo from your GitHub account to your local disk:
 
@@ -46,7 +46,7 @@ cd OutlierDetection.jl
 
 ```bash
 git remote -v
-git remote add upstream https://github.com/davnn/OutlierDetection.git
+git remote add upstream https://github.com/OutlierDetectionJL/OutlierDetection.git
 ```
 
 4. Verify the new upstream repository you\'ve specified for your fork:
@@ -55,8 +55,8 @@ git remote add upstream https://github.com/davnn/OutlierDetection.git
 git remote -v
 > origin    https://github.com/USERNAME/YOUR_FORK.git (fetch)
 > origin    https://github.com/YOUR_USERNAME/YOUR_FORK.git (push)
-> upstream  https://github.com/davnn/OutlierDetection.jl.git (fetch)
-> upstream  https://github.com/davnn/OutlierDetection.jl.git (push)
+> upstream  https://github.com/OutlierDetectionJL/OutlierDetection.jl.git (fetch)
+> upstream  https://github.com/OutlierDetectionJL/OutlierDetection.jl.git (push)
 ```
 
 5. [Sync](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/syncing-a-fork) the `main` branch of your fork with the upstream repository:
@@ -102,7 +102,7 @@ We use continuous integration services on GitHub to automatically check if new p
 
 ### Unit testing
 
-We use Julia's built-in [Unit Testing](https://docs.julialang.org/en/v1/stdlib/Test/). The tests can be found in the [test](https://github.com/davnn/OutlierDetection.jl/tree/master/test) folder. To check if your code passes all tests make sure that you have the `OutlierDetection` environment activated and run `] test` from the Julia console.
+We use Julia's built-in [Unit Testing](https://docs.julialang.org/en/v1/stdlib/Test/). The tests can be found in the [test](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/test) folder. To check if your code passes all tests make sure that you have the `OutlierDetection` environment activated and run `] test` from the Julia console.
 
 ### Test coverage
 
@@ -116,9 +116,9 @@ We follow the general design approach chosen by MLJ, which is described in the p
 
 We use [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl) and [mkdocs](https://github.com/mkdocs/mkdocs/) to build and deploy our online documention.
 
-The source files used to generate the online documentation can be found in [docs/src/](https://github.com/davnn/OutlierDetection.jl/tree/master/docs/src). For example, the main configuration file for mkdocs is [mkdocs.yml](https://github.com/davnn/OutlierDetection.jl/tree/master/docs/src/mkdocs.yml) and the main page is [index.md](https://github.com/davnn/OutlierDetection.jl/tree/master/docs/src/index.md). To add new pages, you need to add a new `.md` file and include it in the `mkdocs.yml` file.
+The source files used to generate the online documentation can be found in [docs/src/](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/docs/src). For example, the main configuration file for mkdocs is [mkdocs.yml](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/docs/src/mkdocs.yml) and the main page is [index.md](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/docs/src/index.md). To add new pages, you need to add a new `.md` file and include it in the `mkdocs.yml` file.
 
-To build the documentation locally, you need to navigate to [docs/](https://github.com/davnn/OutlierDetection.jl/tree/master/docs) and
+To build the documentation locally, you need to navigate to [docs/](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/docs) and
 
 1. Build the markdown files with Documenter.jl:
 
@@ -140,4 +140,4 @@ We use [DocumentFormat.jl](https://github.com/julia-vscode/DocumentFormat.jl) as
 
 ## Acknowledging contributions
 
-We follow the [all-contributors specification](https://allcontributors.org) and recognise various types of contributions. Take a look at our past and current [contributors](https://github.com/davnn/OutlierDetection.jl/blob/main/CONTRIBUTORS.md)! If you are a new contributor, please make sure we add you to our list of contributors. All contributions are recorded in [.all-contributorsrc](https://github.com/davnn/OutlierDetection.jl/blob/main/.all-contributorsrc).
+We follow the [all-contributors specification](https://allcontributors.org) and recognise various types of contributions. Take a look at our past and current [contributors](https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/main/CONTRIBUTORS.md)! If you are a new contributor, please make sure we add you to our list of contributors. All contributions are recorded in [.all-contributorsrc](https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/main/.all-contributorsrc).

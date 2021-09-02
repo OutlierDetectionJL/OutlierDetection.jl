@@ -1,5 +1,5 @@
 site_name:        OutlierDetection.jl
-repo_url:         https://github.com/davnn/OutlierDetection.jl
+repo_url:         https://github.com/OutlierDetectionJL/OutlierDetection.jl
 site_description: Fast, scalable and flexible outlier detection with Julia.
 site_author:      David Muhr <muhrdavid@gmail.com> and contributors
 
