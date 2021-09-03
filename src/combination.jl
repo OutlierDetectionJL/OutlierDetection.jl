@@ -108,7 +108,7 @@ train_scores, test_scores = score(detector, model, X)
 ŷ = detect(Score(), train_scores, test_scores)
 ```
 """
-MMI.@mlj_model mutable struct Score <: MMI.Static
+@detector_model mutable struct Score <: MLJ.Static
     normalize::Function = scale_minmax
     combine::Function = combine_mean
 end
@@ -146,7 +146,7 @@ Examples
 TODO
 """
 default_percentile_threshold = classify_percentile(DEFAULT_THRESHOLD)
-MMI.@mlj_model mutable struct Class <: MMI.Static
+@detector_model mutable struct Class <: MLJ.Static
     normalize::Function = scale_minmax
     combine::Function = combine_mean
     classify::Function = default_percentile_threshold
@@ -160,12 +160,12 @@ function to_classes(normalize::Function,
     classify(scores_train, scores_test)
 end
 
-function MMI.transform(ev::Score, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
+function MLJ.transform(ev::Score, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
     _, scores_test = to_scores(ev.normalize, ev.combine, scores...)
     to_univariate_finite(scores_test)
 end
 
-function MMI.transform(ev::Class, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
+function MLJ.transform(ev::Class, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
     _, classes_test = to_classes(ev.normalize, ev.combine, ev.classify, scores...)
     to_categorical(classes_test)
 end
