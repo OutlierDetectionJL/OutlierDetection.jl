@@ -7,8 +7,8 @@ module OutlierDetection
     # re-export from OutlierDetectionInterface
     export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD
 
-    export Score,
-           Class,
+    export ScoreTransformer,
+           ClassTransformer,
            scale_minmax,
            scale_unify,
            combine_mean,
@@ -17,8 +17,8 @@ module OutlierDetection
            classify_percentile,
            to_categorical,
            to_univariate_finite,
-           ProbabilisticDetector,
-           DeterministicDetector
+           probabilistic,
+           deterministic
 
     # utilities
     include("normalization.jl")
@@ -27,5 +27,6 @@ module OutlierDetection
 
     # extension
     include("mlj_helpers.jl")
+    include("mlj_transformers.jl")
     include("mlj_wrappers.jl")
 end
