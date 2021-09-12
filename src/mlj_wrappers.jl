@@ -79,7 +79,7 @@ function extract_detector_args(args, named_args)
     (detector_names, detectors)
 end
 
-function probabilistic(args...; normalize=scale_minmax, combine=combine_mean, named_detectors...)
+function ProbabilisticDetector(args...; normalize=scale_minmax, combine=combine_mean, named_detectors...)
     detector_names, detectors = extract_detector_args(args, named_detectors)
     args = (detector_names, detectors, normalize, combine)
     LUB = eltype(detectors)
@@ -92,8 +92,8 @@ function probabilistic(args...; normalize=scale_minmax, combine=combine_mean, na
     end
 end
 
-function deterministic(args...; normalize=scale_minmax, combine=combine_mean,
-                          classify=classify_percentile(DEFAULT_THRESHOLD), named_detectors...)
+function DeterministicDetector(args...; normalize=scale_minmax, combine=combine_mean,
+                               classify=classify_percentile(DEFAULT_THRESHOLD), named_detectors...)
     detector_names, detectors = extract_detector_args(args, named_detectors)
     args = (detector_names, detectors, normalize, combine, classify)
     LUB = eltype(detectors)

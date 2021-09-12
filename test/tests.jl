@@ -18,10 +18,10 @@ const train_labels = to_categorical(fill(missing, length(base)))
     unsupervised = MinimalUnsupervised()
 
     # fake machines
-    up = machine(probabilistic(unsupervised), train) |> fit!
-    sp = machine(probabilistic(supervised), train, train_labels) |> fit!
-    ud = machine(deterministic(unsupervised), train) |> fit!
-    sd = machine(deterministic(supervised), train, train_labels) |> fit!
+    up = machine(ProbabilisticDetector(unsupervised), train) |> fit!
+    sp = machine(ProbabilisticDetector(supervised), train, train_labels) |> fit!
+    ud = machine(DeterministicDetector(unsupervised), train) |> fit!
+    sd = machine(DeterministicDetector(supervised), train, train_labels) |> fit!
 
     minmax_test = score_tuple -> scale_minmax(score_tuple...)[2]
     unify_test = score_tuple -> scale_unify(score_tuple...)[2]

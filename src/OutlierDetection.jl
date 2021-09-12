@@ -17,8 +17,8 @@ module OutlierDetection
            classify_percentile,
            to_categorical,
            to_univariate_finite,
-           probabilistic,
-           deterministic
+           ProbabilisticDetector,
+           DeterministicDetector
 
     # utilities
     include("normalization.jl")
