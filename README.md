@@ -1,24 +1,11 @@
-<h1 align="center">OutlierDetection.jl</h1>
-<p align="center">
-  <a href="https://discord.gg/F5MPPS9t4h">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true" alt="Chat">
-  </a>
-  <a href="https://OutlierDetectionJL.github.io/OutlierDetection.jl/stable">
-    <img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Documentation (stable)">
-  </a>
-  <a href="https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev">
-    <img src="https://img.shields.io/badge/docs-dev-blue.svg" alt="Documentation (dev)">
-  </a>
-  <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/actions">
-    <img src="https://github.com/OutlierDetectionJL/OutlierDetection.jl/workflows/CI/badge.svg" alt="Build Status">
-  </a>
-  <a href="https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl">
-    <img src="https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl/branch/master/graph/badge.svg" alt="Coverage">
-  </a>
-  <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+# OutlierDetection.jl
+
+[![Chat](https://img.shields.io/badge/slack-@julialang/outlierdetection-yellow.svg?logo=slack)](https://julialang.slack.com/archives/C02EXTD7WGG)
+[![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://OutlierDetectionJL.github.io/OutlierDetection.jl/stable)
+[![Documentation (dev)](https://img.shields.io/badge/docs-dev-blue.svg)](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev)
+[![Build Status](https://github.com/OutlierDetectionJL/OutlierDetection.jl/workflows/CI/badge.svg)](https://github.com/OutlierDetectionJL/OutlierDetection.jl/actions)
+[![Coverage](https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl)
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->  
-</p>
 
 *OutlierDetection.jl* is a Julia toolkit for detecting outlying objects, also known as *anomalies*. This package is an effort to make Julia a first-class citizen in the Outlier- and Anomaly-Detection community. *Why should you use this package?*
 
