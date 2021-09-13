@@ -1,5 +1,3 @@
-🚧 *Experimental*, install from master branch until 0.2 is released and expect breaking changes 🚧
-
 <h1 align="center">OutlierDetection.jl</h1>
 <p align="center">
   <a href="https://discord.gg/F5MPPS9t4h">
