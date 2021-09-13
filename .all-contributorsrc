@@ -16,11 +16,20 @@
         "doc",
         "maintenance"
       ]
+    },
+    {
+      "login": "PallHaraldsson",
+      "name": "Páll Haraldsson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8005416?v=4",
+      "profile": "https://github.com/PallHaraldsson",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "OutlierDetection.jl",
-  "projectOwner": "davnn",
+  "projectOwner": "OutlierDetectionJL",
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": true
