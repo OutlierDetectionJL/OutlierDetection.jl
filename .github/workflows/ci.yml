@@ -15,18 +15,10 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-          # - macOS-latest # can't get it to work with PyCall (2021-08-28)
         arch:
           - x64
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - name: python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyod
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
@@ -42,11 +34,9 @@ jobs:
             ${{ runner.os }}-test-
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
-        env:
-          PYTHON: python
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: lcov.info
