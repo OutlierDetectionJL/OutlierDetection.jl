@@ -3,7 +3,7 @@ using OutlierDetectionData
 using OutlierDetectionInterface
 using OutlierDetectionNetworks
 using OutlierDetectionNeighbors
-using OutlierDetectionPy
+using OutlierDetectionPython
 
 using Documenter
 using DocumenterMarkdown
@@ -21,7 +21,7 @@ makedocs(;
         OutlierDetectionInterface,
         OutlierDetectionNetworks,
         OutlierDetectionNeighbors,
-        OutlierDetectionPy
+        OutlierDetectionPython
     ],
     clean=true
 )
