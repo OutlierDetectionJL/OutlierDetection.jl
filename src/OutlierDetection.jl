@@ -7,17 +7,19 @@ module OutlierDetection
     # re-export from OutlierDetectionInterface
     export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD
 
-    export ScoreTransformer,
-           ClassTransformer,
-           scale_minmax,
+    export scale_minmax,
            scale_unify,
            combine_mean,
            combine_median,
            combine_max,
            classify_percentile,
            to_categorical,
-           to_univariate_finite,
-           ProbabilisticDetector,
+           to_univariate_finite
+
+    export ScoreTransformer,
+           ClassTransformer
+
+    export ProbabilisticDetector,
            DeterministicDetector
 
     # utilities
