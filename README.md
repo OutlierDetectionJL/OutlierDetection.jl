@@ -158,6 +158,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
   <tr>
     <td align="center"><a href="http://fastpaced.com"><img src="https://avatars.githubusercontent.com/u/1233304?v=4?s=100" width="100px;" alt=""/><br /><sub><b>David Muhr</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Code">💻</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Tests">⚠️</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Documentation">📖</a> <a href="#maintenance-davnn" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/PallHaraldsson"><img src="https://avatars.githubusercontent.com/u/8005416?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Páll Haraldsson</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=PallHaraldsson" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://ablaom.github.io"><img src="https://avatars.githubusercontent.com/u/30517088?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Anthony Blaom, PhD</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=ablaom" title="Code">💻</a></td>
   </tr>
 </table>
 
