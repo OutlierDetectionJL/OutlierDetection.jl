@@ -16,11 +16,9 @@ module OutlierDetection
            to_categorical,
            to_univariate_finite
 
-    export ScoreTransformer,
-           ClassTransformer
-
     export ProbabilisticDetector,
-           DeterministicDetector
+           DeterministicDetector,
+           ScoreTransformer
 
     # utilities
     include("normalization.jl")

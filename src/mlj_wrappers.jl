@@ -118,41 +118,48 @@ raw_classes(categorical::MLJ.Node) = MLJ.node(raw_classes, categorical)
 augment(Xs) = mach -> MLJ.node((mach, Xs) -> (MLJ.report(mach).scores, MLJ.transform(mach, Xs)), mach, Xs)
 augment_scores(model, Xs) = augment(Xs).(map(d -> MLJ.machine(d, Xs), getfield(model, :detectors)))
 augment_scores(model, Xs, ys) = augment(Xs).(map(d -> MLJ.machine(d, Xs, ys), getfield(model, :detectors)))
-transform_augmented(transformer, augmented_scores) = MLJ.transform(MLJ.machine(transformer), augmented_scores...)
+transform_augmented(normalize, combine, augmented_scores) = 
+    MLJ.transform(MLJ.machine(ScoreTransformer(;normalize, combine)), augmented_scores...)
 
 function MLJ.fit(model::UnsupervisedProbabilisticDetector, verbosity::Int64, X)
     Xs = MLJ.source(X)
     augmented_scores = augment_scores(model, Xs)
-    transformer = ScoreTransformer(normalize=model.normalize, combine=model.combine)
-    probs = transform_augmented(transformer, augmented_scores)
-    network_mach = MLJ.machine(ProbabilisticUnsupervisedDetector(), Xs, predict=probs, transform=raw_scores(probs))
+    probs = transform_augmented(model.normalize, model.combine, augmented_scores) |> last
+    network_mach = MLJ.machine(ProbabilisticUnsupervisedDetector(), Xs,
+                               predict=to_univariate_finite(probs),
+                               transform=probs)
     MLJ.return!(network_mach, model, verbosity)
 end
 
 function MLJ.fit(model::UnsupervisedDeterministicDetector, verbosity::Int64, X)
     Xs = MLJ.source(X)
     augmented_scores = augment_scores(model, Xs)
-    transformer = ClassTransformer(normalize=model.normalize, combine=model.combine, classify=model.classify)
-    classes = transform_augmented(transformer, augmented_scores)
-    network_mach = MLJ.machine(DeterministicUnsupervisedDetector(), Xs, predict=classes, transform=raw_classes(classes))
+    scores = transform_augmented(model.normalize, model.combine, augmented_scores)
+    classes = MLJ.node(model.classify, first(scores), last(scores)) |> last
+    network_mach = MLJ.machine(DeterministicUnsupervisedDetector(), Xs,
+                               predict=to_categorical(classes),
+                               transform=classes)
     MLJ.return!(network_mach, model, verbosity)
 end
 
 function MLJ.fit(model::SupervisedProbabilisticDetector, verbosity::Int64, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
     augmented_scores = augment_scores(model, Xs, ys)
-    transformer = ScoreTransformer(normalize=model.normalize, combine=model.combine)
-    probs = transform_augmented(transformer, augmented_scores)
-    network_mach = MLJ.machine(ProbabilisticSupervisedDetector(), Xs, ys, predict=probs, transform=raw_scores(probs))
+    probs = transform_augmented(model.normalize, model.combine, augmented_scores) |> last
+    network_mach = MLJ.machine(ProbabilisticSupervisedDetector(), Xs, ys,
+                               predict=to_univariate_finite(probs), 
+                               transform=probs)
     MLJ.return!(network_mach, model, verbosity)
 end
 
 function MLJ.fit(model::SupervisedDeterministicDetector, verbosity::Int64, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
     augmented_scores = augment_scores(model, Xs, ys)
-    transformer = ClassTransformer(normalize=model.normalize, combine=model.combine, classify=model.classify)
-    classes = transform_augmented(transformer, augmented_scores)
-    network_mach = MLJ.machine(DeterministicSupervisedDetector(), Xs, ys, predict=classes, transform=raw_classes(classes))
+    scores = transform_augmented(model.normalize, model.combine, augmented_scores)
+    classes = MLJ.node(model.classify, first(scores), last(scores)) |> last
+    network_mach = MLJ.machine(DeterministicSupervisedDetector(), Xs, ys,
+                               predict=to_categorical(classes),
+                               transform=classes)
     MLJ.return!(network_mach, model, verbosity)
 end
 

@@ -16,6 +16,7 @@ achieved outlier scores of the given input data `X`.
 function to_univariate_finite(scores::Scores)
     MLJ.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], scores; augment=true, pool=missing, ordered=true)
 end
+to_univariate_finite(scores::MLJ.AbstractNode) = MLJ.node(to_univariate_finite, scores)
 
 """
     to_categorical(classes::Labels)
@@ -36,3 +37,4 @@ function to_categorical(classes::Labels)
     # explicit cast to Vector{Union{String, Missing}} in case only missing values are passed
     MLJ.categorical(Vector{Union{String, Missing}}(classes), ordered=true, levels=[CLASS_NORMAL, CLASS_OUTLIER])
 end
+to_categorical(classes::MLJ.AbstractNode) = MLJ.node(to_categorical, classes)
