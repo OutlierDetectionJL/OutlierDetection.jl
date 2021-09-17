@@ -25,6 +25,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "ablaom",
+      "name": "Anthony Blaom, PhD",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30517088?v=4",
+      "profile": "http://ablaom.github.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
