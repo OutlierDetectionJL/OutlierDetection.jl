@@ -12,7 +12,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [compat]
 MLJBase = "0.18"
 OutlierDetectionInterface = "0.1"
-SpecialFunctions = "1.0 - 1.6"
+SpecialFunctions = "1.0 - 1.6, 1"
 julia = "1"
 
 [extras]
