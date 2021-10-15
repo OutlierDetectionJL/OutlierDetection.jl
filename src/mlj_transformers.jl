@@ -8,12 +8,11 @@ Parameters
 ----------
     normalize::Function
 A function to reduce a matrix, where each row represents an instance and each column a score of specific detector, to a
-vector of scores for each instance. See [`normalize`](@ref) for a specific implementation.
+vector of scores for each instance. See [`scale_minmax`](@ref) for a specific implementation.
 
     combine::Function
-A function to reduce a matrix, where each row represents an instance and each column represents a score of specific
-detector, to a vector of scores for each instance. See `combine` for a specific implementation. *Note:* This function
-is not called if the input to the evaluator consists of a single train/test scores tuple.
+A function to reduce a matrix, where each row represents an instance and each column represents the score of specific
+detector, to a vector of scores for each instance. See [`combine_mean`](@ref) for a specific implementation.
 """
 @detector mutable struct ScoreTransformer <: MLJ.Static
     normalize::Function = scale_minmax

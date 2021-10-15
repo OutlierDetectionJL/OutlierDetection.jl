@@ -12,4 +12,3 @@ Pkg.add("OutlierDetection")
 A specific version can be installed by appending a version after a `@` symbol, e.g. `OutlierDetection@v0.1`. Additionally, you can directly install specific branches or commits by appending a `#` symbol and the corresponding branch name or commit SHA, e.g. `OutlierDetection#master`.
 
 If you would like to modify the package locally, you can use `Pkg.develop(OutlierDetection)` or `] dev OutlierDetection` in the Julia REPL. This fetches a full clone of the package to `~/.julia/dev/` (the path can be changed by setting the environment variable `JULIA_PKG_DEVDIR`).
-

@@ -2,8 +2,8 @@ using Statistics:mean, std
 using SpecialFunctions:erf
 
 """
-normalize(scoresTrain,
-          scoresTest)
+scale_minmax(scoresTrain,
+             scoresTest)
 
 Transform an array of scores into a range between [0,1] using min-max scaling.
 
@@ -13,7 +13,7 @@ Parameters
 A vector of training scores, typically the result of [`fit`](@ref) with a detector.
 
     scores_test::AbstractVector{<:Real}
-A vector of test scores, typically the result of [`score`](@ref) using a previously fitted detector.
+A vector of test scores, typically the [`transform`](@ref) result of a fitted detector.
 
 Returns
 ----------
@@ -34,8 +34,8 @@ function scale_minmax(scores_train::Scores, scores_test::Scores)::Tuple{Scores, 
 end
 
 """
-unify(scores_train,
-      scores_test)
+scale_unify(scores_train,
+            scores_test)
 
 Transform an array of scores into a range between [0,1] using unifying scores as described in [1].
 
@@ -45,7 +45,7 @@ Parameters
 A vector of training scores, typically the result of [`fit`](@ref) with a detector.
 
     scores_test::AbstractVector{<:Real}
-A vector of test scores, typically the result of [`score`](@ref) using a previously fitted detector.
+A vector of test scores, typically the [`transform`](@ref) result of a fitted detector.
 
 Returns
 ----------

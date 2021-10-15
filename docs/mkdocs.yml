@@ -38,7 +38,8 @@ nav:
   - Documentation:
     - Guide: documentation/guide.md
     - Tutorials:
-      - Using MLJ: documentation/using-mlj.md
+      - Simple Usage: documentation/simple-usage.md
+      - Detector Evaluation: documentation/detector-evaluation.md
       - Ensemble Learning: documentation/ensemble-learning.md
       - Benchmark Datasets: documentation/benchmark-datasets.md
     - For Developers:
@@ -46,7 +47,7 @@ nav:
       - Detector Creation: documentation/detector-creation.md
       - Performance Tips: documentation/performance-tips.md
   - API:
-    - Base: API/base.md
+    - Interface: API/interface.md
     - Detectors: API/detectors.md
-    - PyDetectors: API/pydetectors.md
-    - Evaluation: API/evaluation.md
+    - Helpers: API/helpers.md
+    - Neural Networks: API/neural-networks.md

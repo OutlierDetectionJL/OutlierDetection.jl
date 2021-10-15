@@ -26,6 +26,7 @@ Convert a vector of classes (with possible missing values) to a categorical vect
 Parameters
 ----------
     classes::[`Labels`](@ref)
+A vector of classes.
 
 Returns
 ----------
@@ -38,3 +39,39 @@ function to_categorical(classes::Labels)
     MLJ.categorical(Vector{Union{String, Missing}}(classes), ordered=true, levels=[CLASS_NORMAL, CLASS_OUTLIER])
 end
 to_categorical(classes::MLJ.AbstractNode) = MLJ.node(to_categorical, classes)
+
+"""
+    raw_scores(scores)
+
+Extract the raw scores from a vector of univariate finite distributions.
+
+Parameters
+----------
+    scores::MLJ.UnivariateFiniteVector
+A vector of univariate finite distributions.
+
+Returns
+----------
+    scores::[`Scores`](@ref)
+A vector of raw scores.
+"""
+from_univariate_finite(scores) = MLJ.pdf.(scores, CLASS_OUTLIER)
+from_univariate_finite(scores::MLJ.Node) = MLJ.node(from_univariate_finite, scores)
+
+"""
+    raw_scores(scores)
+
+Extract the raw classes from categorical arrays.
+
+Parameters
+----------
+    scores::MLJ.CategoricalVector
+A vector of categorical values.
+
+Returns
+----------
+    scores::[`Labels`](@ref)
+A vector of raw classes.
+"""
+from_categorical(categorical) = MLJ.unwrap.(categorical)
+from_categorical(categorical::MLJ.Node) = MLJ.node(from_categorical, categorical)

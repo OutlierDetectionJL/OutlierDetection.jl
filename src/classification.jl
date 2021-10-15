@@ -16,7 +16,7 @@ The score threshold (number between 0 and 1) used to classify the samples into i
 A vector of training scores, typically the result of [`fit`](@ref) with a detector.
 
     scores_test::AbstractVector{<:Real}
-A vector of test scores, typically the result of [`score`](@ref) using a previously fitted detector.
+A vector of test scores, typically the result of [`transform`](@ref) using a previously fitted detector.
 
 Returns
 ----------

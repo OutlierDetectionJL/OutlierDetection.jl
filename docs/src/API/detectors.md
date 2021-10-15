@@ -1,51 +1,162 @@
 # Detectors
 
-A [`Detector`](@ref) is just a mutable collection of hyperparameters. Each detector implements a [`fit`](@ref) and [`score`](@ref) method, where *fit* refers to learning a model from training data and *score* refers to using a learned model to calculate outlier scores of new data. Detectors typically do not classify samples; that's why a classifier is used to convert the scores into binary labels, see [`Class`](@ref) for example.
+A [`Detector`](@ref) is just a collection of hyperparameters. Each detector implements a [`OutlierDetectionInterface.fit`](@ref) and [`OutlierDetectionInterface.transform`](@ref) method, where *fit* refers to learning a model from training data and *transform* refers to using a learned model to calculate outlier scores of new data. Detectors typically do not classify samples into inliers and outliers; that's a [`OutlierDetection.DeterministicDetector`](@ref) wrapper is used to convert the raw scores into binary labels.
 
-## ABOD
+## Neighbor-based
+
+### ABODDetector
 
 ```@docs
-ABOD
+OutlierDetectionNeighbors.ABODDetector
 ```
 
-## AE
+### COFDetector
 
 ```@docs
-AE
+OutlierDetectionNeighbors.COFDetector
 ```
 
-## COF
+### DNNDetector
 
 ```@docs
-COF
+OutlierDetectionNeighbors.DNNDetector
 ```
 
-## DeepSAD
+### KNNDetector
 
 ```@docs
-DeepSAD
+OutlierDetectionNeighbors.KNNDetector
 ```
 
-## DNN
+### LOFDetector
 
 ```@docs
-DNN
+OutlierDetectionNeighbors.LOFDetector
 ```
 
-## ESAD
+## Network-based
+
+### AEDetector
 
 ```@docs
-ESAD
+OutlierDetectionNetworks.AEDetector
 ```
 
-## KNNDetector
+### DSADDetector
 
 ```@docs
-KNNDetector
+OutlierDetectionNetworks.DSADDetector
 ```
 
-## LOF
+### ESADDetector
 
 ```@docs
-LOF
+OutlierDetectionNetworks.ESADDetector
+```
+
+## Python-based
+
+
+Using [PyCall](https://github.com/JuliaPy/PyCall.jl), we can easily integrate existing python outlier detection algorithms. Currently, almost every [PyOD](https://github.com/yzhao062/pyod) algorithm is integrated and can thus be easily used directly from Julia.
+
+### ABODDetector
+
+```@docs
+OutlierDetectionPython.ABODDetector
+```
+
+### CBLOFDetector
+
+```@docs
+OutlierDetectionPython.CBLOFDetector
+```
+
+### COFDetector
+
+```@docs
+OutlierDetectionPython.COFDetector
+```
+
+### COPODDetector
+
+```@docs
+OutlierDetectionPython.COPODDetector
+```
+
+### HBOSDetector
+
+```@docs
+OutlierDetectionPython.HBOSDetector
+```
+
+### IForestDetector
+
+```@docs
+OutlierDetectionPython.IForestDetector
+```
+
+### KNNDetector
+
+```@docs
+OutlierDetectionPython.KNNDetector
+```
+
+### LMDDDetector
+
+```@docs
+OutlierDetectionPython.LMDDDetector
+```
+
+### LODADetector
+
+```@docs
+OutlierDetectionPython.LODADetector
+```
+
+### LOFDetector
+
+```@docs
+OutlierDetectionPython.LOFDetector
+```
+
+### LOCIDetector
+
+```@docs
+OutlierDetectionPython.LOCIDetector
+```
+
+### MCDDetector
+
+```@docs
+OutlierDetectionPython.MCDDetector
+```
+
+### OCSVMDetector
+
+```@docs
+OutlierDetectionPython.OCSVMDetector
+```
+
+### PCADetector
+
+```@docs
+OutlierDetectionPython.PCADetector
+```
+
+### RODDetector
+
+```@docs
+OutlierDetectionPython.RODDetector
+```
+
+### SODDetector
+
+```@docs
+OutlierDetectionPython.SODDetector
+```
+
+### SOSDetector
+
+```@docs
+OutlierDetectionPython.SOSDetector
 ```
