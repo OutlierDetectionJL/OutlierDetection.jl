@@ -1,62 +1,76 @@
 # Determine the input scitype of an array of detectors
 to_input_scitype(detectors) = MLJ.glb(MLJ.input_scitype.(detectors)...)
 
-mutable struct UnsupervisedProbabilisticDetector{detector_names, input_scitype} <:
-    MLJ.ProbabilisticUnsupervisedDetectorComposite
+# Determine the supported composite detector type
+ex_to_eltype(type_symbol) = type_symbol == :Unsupervised ? UnsupervisedDetector :
+                                Union{SupervisedDetector, UnsupervisedDetector}
 
-    detectors::Vector{<:UnsupervisedDetector}
-    normalize::Function
-    combine::Function
+# transform an expression specifying the type (unsupervised or supervised) to the corresponding composite types
+# e.g. type_ex = Unsupervised, target_type = :"" would lead to a struct called :UnsupervisedCompositeDetector
+# that is a subtype of :UnsupervisedDetectorComposite, if you would add target_type = :Probabilistic, the resulting
+# struct would be called :ProbabilisticUnsupervisedCompositeDetector
+function ex_to_types(type_ex, target_type::Symbol)
+    type_symbol = Symbol(type_ex)
+    detector_type = ex_to_eltype(type_symbol)
+    composite_type = Symbol(target_type, type_symbol, :Detector, :Composite)
+    type_composite = Symbol(target_type, type_symbol, :Composite, :Detector)
+    detector_type, composite_type, type_composite
+end
 
-    function UnsupervisedProbabilisticDetector(detector_names, detectors, normalize, combine)
-        input_scitypes = to_input_scitype(detectors)
-        new{detector_names, input_scitypes}(detectors, normalize, combine)
+# create the struct expression for a scoring composite model from the input symbols
+function score_composite(detector_type, composite_type, type_composite)
+    return quote
+        mutable struct $type_composite{detector_names, input_scitype} <: MLJ.$composite_type
+            detectors::Vector{<:$detector_type}
+            normalize::Function
+            combine::Function
+
+            function $type_composite(detectors, detector_names, normalize, combine)
+                input_scitypes = to_input_scitype(detectors)
+                new{detector_names, input_scitypes}(detectors, normalize, combine)
+            end
+        end
     end
 end
 
-mutable struct SupervisedProbabilisticDetector{detector_names, input_scitype} <:
-    MLJ.ProbabilisticSupervisedDetectorComposite
-
-    detectors::Vector{<:Union{UnsupervisedDetector, SupervisedDetector}}
-    normalize::Function
-    combine::Function
-
-    function SupervisedProbabilisticDetector(detector_names, detectors, normalize, combine)
-        input_scitypes = to_input_scitype(detectors)
-        new{detector_names, input_scitypes}(detectors, normalize, combine)
+# create the struct expression for a classifying composite model from the input symbols
+function class_composite(detector_type, composite_type, type_composite)
+    return quote
+        mutable struct $type_composite{detector_names, input_scitype} <: MLJ.$composite_type
+            detectors::Vector{<:$detector_type}
+            normalize::Function
+            combine::Function
+            classify::Function
+    
+            function $type_composite(detectors, detector_names, normalize, combine, classify)
+                input_scitypes = to_input_scitype(detectors)
+                new{detector_names, input_scitypes}(detectors, normalize, combine, classify)
+            end
+        end
     end
 end
 
-mutable struct UnsupervisedDeterministicDetector{detector_names, input_scitype} <:
-    MLJ.DeterministicUnsupervisedDetectorComposite
-
-    detectors::Vector{<:UnsupervisedDetector}
-    normalize::Function
-    combine::Function
-    classify::Function
-
-    function UnsupervisedDeterministicDetector(detector_names, detectors, normalize, combine, classify)
-        input_scitypes = to_input_scitype(detectors)
-        new{detector_names, input_scitypes}(detectors, normalize, combine, classify)
-    end
+macro CompositeDetector(type_ex)
+    detector_type, composite_type, type_composite = ex_to_types(type_ex, Symbol())
+    score_composite(detector_type, composite_type, type_composite)
 end
 
-mutable struct SupervisedDeterministicDetector{detector_names, input_scitype} <:
-    MLJ.DeterministicSupervisedDetectorComposite
-
-    detectors::Vector{<:Union{UnsupervisedDetector, SupervisedDetector}}
-    normalize::Function
-    combine::Function
-    classify::Function
-
-    function SupervisedDeterministicDetector(detector_names, detectors, normalize, combine, classify)
-        input_scitypes = to_input_scitype(detectors)
-        new{detector_names, input_scitypes}(detectors, normalize, combine, classify)
-    end
+macro ProbabilisticDetector(type_ex)
+    detector_type, composite_type, type_composite = ex_to_types(type_ex, :Probabilistic)
+    score_composite(detector_type, composite_type, type_composite)
 end
 
-const ERR_DETECTOR_UNSUPPORTED = ArgumentError(
-    "All detectors must subtype from `UnsupervisedDetector` or `SupervisedDetector`")
+macro DeterministicDetector(type_ex)
+    detector_type, composite_type, type_composite = ex_to_types(type_ex, :Deterministic)
+    class_composite(detector_type, composite_type, type_composite)
+end
+
+@CompositeDetector Supervised
+@CompositeDetector Unsupervised
+@ProbabilisticDetector Supervised
+@ProbabilisticDetector Unsupervised
+@DeterministicDetector Supervised
+@DeterministicDetector Unsupervised
 
 # TODO: enable programmatic construction of multiple detectors without names
 const ERR_SPECIFY_NAMES = ArgumentError(
@@ -65,6 +79,7 @@ const ERR_SPECIFY_NAMES = ArgumentError(
 warn_ignore_detector_names(detector, named_detectors) =
     "Wrapping the single detector `$detector`. Ignoring $named_detectors. "
 
+# check and transform the arguments given to composite detectors
 function extract_detector_args(args, named_args)
     nt = NamedTuple(named_args)
     length(args) < 2 || throw(ERR_SPECIFY_NAMES)
@@ -79,119 +94,178 @@ function extract_detector_args(args, named_args)
     (detector_names, detectors)
 end
 
-function ProbabilisticDetector(args...; normalize=scale_minmax, combine=combine_mean, named_detectors...)
-    detector_names, detectors = extract_detector_args(args, named_detectors)
-    args = (detector_names, detectors, normalize, combine)
-    LUB = eltype(detectors)
-    if LUB <: UnsupervisedDetector
-        UnsupervisedProbabilisticDetector(args...)
-    elseif LUB <: Union{UnsupervisedDetector, SupervisedDetector}
-        SupervisedProbabilisticDetector(args...)
-    else
-        throw(ERR_DETECTOR_UNSUPPORTED)
-    end
+# fails if it cannot convert to a vector of detectors
+function return_composite(target_symbol::Symbol, detectors, args)
+    detector_type = eltype(detectors)
+    unsupervised = eval(Symbol(target_symbol, :Unsupervised, :Composite, :Detector))
+    supervised = eval(Symbol(target_symbol, :Supervised, :Composite, :Detector))
+    return detector_type <: UnsupervisedDetector ? unsupervised(detectors, args...) : 
+           detector_type <: SupervisedDetector ? supervised(detectors, args...) :
+           supervised(convert(Vector{OD.Detector}, detectors), args...) # mixed case
 end
 
+"""
+    ProbabilisticDetector(unnamed_detectors...;
+                          normalize,
+                          combine,
+                          named_detectors...)
+
+Transform one or more raw detectors into a single probabilistic detector (that returns outlier probabilities).
+"""
+function ProbabilisticDetector(args...; normalize=scale_minmax, combine=combine_mean, named_detectors...)
+    detector_names, detectors = extract_detector_args(args, named_detectors)
+    args = (detector_names, normalize, combine)
+    return_composite(:Probabilistic, detectors, args)
+end
+
+"""
+    DeterministicDetector(unnamed_detectors...;
+                          normalize,
+                          combine,
+                          named_detectors...)
+
+Transform one or more raw detectors into a single deterministic detector (that returns inlier and outlier classes).
+"""
 function DeterministicDetector(args...; normalize=scale_minmax, combine=combine_mean,
                                classify=classify_percentile(DEFAULT_THRESHOLD), named_detectors...)
     detector_names, detectors = extract_detector_args(args, named_detectors)
-    args = (detector_names, detectors, normalize, combine, classify)
-    LUB = eltype(detectors)
-    if LUB <: UnsupervisedDetector
-        UnsupervisedDeterministicDetector(args...)
-    elseif LUB <: Union{UnsupervisedDetector, SupervisedDetector}
-        SupervisedDeterministicDetector(args...)
-    else
-        throw(ERR_DETECTOR_UNSUPPORTED)
-    end
+    args = (detector_names, normalize, combine, classify)
+    return_composite(:Deterministic, detectors, args)
 end
 
-# extract the raw scores from univariate finite distributions
-raw_scores(dist) = MLJ.pdf.(dist, CLASS_OUTLIER)
-raw_scores(dist::MLJ.Node) = MLJ.node(raw_scores, dist)
+"""
+    CompositeDetector(unnamed_detectors...;
+                      normalize,
+                      combine,
+                      named_detectors...)
 
-# extract the raw classes from categorical arrays
-raw_classes(categorical) = MLJ.unwrap.(categorical)
-raw_classes(categorical::MLJ.Node) = MLJ.node(raw_classes, categorical)
+Transform one or more raw detectors into a single composite detector (that returns raw outlier scores).
+"""
+function CompositeDetector(args...; normalize=scale_minmax, combine=combine_mean, named_detectors...)
+    detector_names, detectors = extract_detector_args(args, named_detectors)
+    args = (detector_names, normalize, combine)
+    return_composite(Symbol(), detectors, args)
+end
+
+# extend the return values with the training scores
+function return_with_scores!(network_mach, model, verbosity, scores_train, X)
+    fitresult, cache, report = MLJ.return!(network_mach, model, verbosity)
+    report = merge(report, (scores = scores_train(X),))
+    return fitresult, cache, report
+end
 
 # augment the test scores with the training scores from the fit result (report)
-augment(Xs) = mach -> MLJ.node((mach, Xs) -> (MLJ.report(mach).scores, MLJ.transform(mach, Xs)), mach, Xs)
+augment(Xs) = mach -> MLJ.node((mach, Xs) -> (mach.report.scores, MLJ.transform(mach, Xs)), mach, Xs)
 augment_scores(model, Xs) = augment(Xs).(map(d -> MLJ.machine(d, Xs), getfield(model, :detectors)))
 augment_scores(model, Xs, ys) = augment(Xs).(map(d -> MLJ.machine(d, Xs, ys), getfield(model, :detectors)))
-transform_augmented(normalize, combine, augmented_scores) = 
+apply_transformer(normalize, combine, augmented_scores) = 
     MLJ.transform(MLJ.machine(ScoreTransformer(;normalize, combine)), augmented_scores...)
 
-function MLJ.fit(model::UnsupervisedProbabilisticDetector, verbosity::Int64, X)
-    Xs = MLJ.source(X)
+function unsupervised_transformer(model, Xs)
     augmented_scores = augment_scores(model, Xs)
-    probs = transform_augmented(model.normalize, model.combine, augmented_scores) |> last
-    network_mach = MLJ.machine(ProbabilisticUnsupervisedDetector(), Xs,
-                               predict=to_univariate_finite(probs),
-                               transform=probs)
-    MLJ.return!(network_mach, model, verbosity)
+    scores = apply_transformer(model.normalize, model.combine, augmented_scores)
+    scores_train, scores_test = first(scores), last(scores)
+    return scores_train, scores_test
 end
 
-function MLJ.fit(model::UnsupervisedDeterministicDetector, verbosity::Int64, X)
+function supervised_transformer(model, Xs, ys)
+    augmented_scores = augment_scores(model, Xs, ys)
+    scores = apply_transformer(model.normalize, model.combine, augmented_scores)
+    scores_train, scores_test = first(scores), last(scores)
+    return scores_train, scores_test
+end
+
+function MLJ.fit(model::ProbabilisticUnsupervisedCompositeDetector, verbosity::Int64, X)
     Xs = MLJ.source(X)
-    augmented_scores = augment_scores(model, Xs)
-    scores = transform_augmented(model.normalize, model.combine, augmented_scores)
-    classes = MLJ.node(model.classify, first(scores), last(scores)) |> last
+    scores_train, scores_test = unsupervised_transformer(model, Xs)
+    network_mach = MLJ.machine(ProbabilisticUnsupervisedDetector(), Xs,
+                               predict=to_univariate_finite(scores_test),
+                               transform=scores_test)
+    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+end
+
+function MLJ.fit(model::DeterministicUnsupervisedCompositeDetector, verbosity::Int64, X)
+    Xs = MLJ.source(X)
+    scores_train, scores_test = unsupervised_transformer(model, Xs)
+    classes = MLJ.node(model.classify, scores_train, scores_test) |> last
     network_mach = MLJ.machine(DeterministicUnsupervisedDetector(), Xs,
                                predict=to_categorical(classes),
-                               transform=classes)
-    MLJ.return!(network_mach, model, verbosity)
+                               transform=scores_test)
+    return_with_scores!(network_mach, model, verbosity, scores_train, X)
 end
 
-function MLJ.fit(model::SupervisedProbabilisticDetector, verbosity::Int64, X, y)
+function MLJ.fit(model::ProbabilisticSupervisedCompositeDetector, verbosity::Int64, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
-    augmented_scores = augment_scores(model, Xs, ys)
-    probs = transform_augmented(model.normalize, model.combine, augmented_scores) |> last
+    scores_train, scores_test = supervised_transformer(model, Xs, ys)
     network_mach = MLJ.machine(ProbabilisticSupervisedDetector(), Xs, ys,
-                               predict=to_univariate_finite(probs), 
-                               transform=probs)
-    MLJ.return!(network_mach, model, verbosity)
+                               predict=to_univariate_finite(scores_test), 
+                               transform=scores_test)
+    return_with_scores!(network_mach, model, verbosity, scores_train, X)
 end
 
-function MLJ.fit(model::SupervisedDeterministicDetector, verbosity::Int64, X, y)
+function MLJ.fit(model::DeterministicSupervisedCompositeDetector, verbosity::Int64, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
-    augmented_scores = augment_scores(model, Xs, ys)
-    scores = transform_augmented(model.normalize, model.combine, augmented_scores)
-    classes = MLJ.node(model.classify, first(scores), last(scores)) |> last
+    scores_train, scores_test = supervised_transformer(model, Xs, ys)
+    classes = MLJ.node(model.classify, scores_train, scores_test) |> last
     network_mach = MLJ.machine(DeterministicSupervisedDetector(), Xs, ys,
                                predict=to_categorical(classes),
-                               transform=classes)
-    MLJ.return!(network_mach, model, verbosity)
+                               transform=scores_test)
+    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+end
+
+function MLJ.fit(model::UnsupervisedCompositeDetector, verbosity::Integer, X)
+    Xs = MLJ.source(X)
+    scores_train, scores_test = unsupervised_transformer(model, Xs)
+    network_mach = MLJ.machine(UnsupervisedDetector(), Xs, transform=scores_test)
+    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+end
+
+function MLJ.fit(model::SupervisedCompositeDetector, verbosity::Integer, X, y)
+    Xs, ys = MLJ.source(X), MLJ.source(y)
+    scores_train, scores_test = supervised_transformer(model, Xs, ys)
+    network_mach = MLJ.machine(SupervisedDetector(), Xs, ys, transform=scores_test)
+    return_with_scores!(network_mach, model, verbosity, scores_train, X)
 end
 
 ProbabilisticDetectorUnion{detector_names} = Union{
-    UnsupervisedProbabilisticDetector{detector_names},
-    SupervisedProbabilisticDetector{detector_names}}
+    ProbabilisticUnsupervisedCompositeDetector{detector_names},
+    ProbabilisticSupervisedCompositeDetector{detector_names}}
 
 DeterministicDetectorUnion{detector_names} = Union{
-    UnsupervisedDeterministicDetector{detector_names},
-    SupervisedDeterministicDetector{detector_names}}
+    DeterministicUnsupervisedCompositeDetector{detector_names},
+    DeterministicSupervisedCompositeDetector{detector_names}}
+
+CompositeDetectorUnion{detector_names} = Union{
+    UnsupervisedCompositeDetector{detector_names},
+    SupervisedCompositeDetector{detector_names}}
 
 MLJ.input_scitype(::Type{<:Union{
-    UnsupervisedProbabilisticDetector{N,I},
-    UnsupervisedDeterministicDetector{N,I},
-    SupervisedProbabilisticDetector{N,I},
-    SupervisedDeterministicDetector{N,I}
+    ProbabilisticUnsupervisedCompositeDetector{N,I},
+    DeterministicUnsupervisedCompositeDetector{N,I},
+    ProbabilisticSupervisedCompositeDetector{N,I},
+    DeterministicSupervisedCompositeDetector{N,I},
+    UnsupervisedCompositeDetector{N,I},
+    SupervisedCompositeDetector{N,I}
 }}) where {N,I} = I
 
-Base.propertynames(::ProbabilisticDetectorUnion{detector_names}) where detector_names =
+Base.propertynames(::Union{ProbabilisticDetectorUnion{detector_names},
+                           CompositeDetectorUnion{detector_names}}) where detector_names =
     tuple(:normalize, :combine, detector_names...)
 
 Base.propertynames(::DeterministicDetectorUnion{detector_names}) where detector_names =
     tuple(:normalize, :combine, :classify, detector_names...)
 
-function Base.getproperty(model::ProbabilisticDetectorUnion{detector_names}, name::Symbol) where detector_names
+ERR_NO_PROPERTY(name) = error("CompositeDetector has no property $name")
+
+function Base.getproperty(model::Union{ProbabilisticDetectorUnion{detector_names},
+                                       CompositeDetectorUnion{detector_names}}, name::Symbol) where detector_names
     name === :normalize && return getfield(model, :normalize)
     name === :combine && return getfield(model, :combine)
     models = getfield(model, :detectors)
     for j in eachindex(detector_names)
         name === detector_names[j] && return models[j]
     end
-    error("ProbabilisticDetector has no property $name")
+    ERR_NO_PROPERTY(name)
 end
 
 function Base.getproperty(model::DeterministicDetectorUnion{detector_names}, name::Symbol) where detector_names
@@ -202,15 +276,16 @@ function Base.getproperty(model::DeterministicDetectorUnion{detector_names}, nam
     for j in eachindex(detector_names)
         name === detector_names[j] && return models[j]
     end
-    error("DeterministicDetector has no property $name")
+    ERR_NO_PROPERTY(name)
 end
 
-function Base.setproperty!(model::ProbabilisticDetectorUnion{detector_names}, name::Symbol, val) where detector_names
+function Base.setproperty!(model::Union{ProbabilisticDetectorUnion{detector_names},
+                                        CompositeDetectorUnion{detector_names}}, name::Symbol, val) where detector_names
     name === :normalize && return setfield!(model, :normalize, val)
     name === :combine && return setfield!(model, :combine, val)
     idx = findfirst(==(name), detector_names)
     idx isa Nothing || return getfield(model, :detectors)[idx] = val
-    error("type ProbabilisticDetector has no property $name")
+    ERR_NO_PROPERTY(name)
 end
 
 function Base.setproperty!(model::DeterministicDetectorUnion{detector_names}, name::Symbol, val) where detector_names
@@ -219,5 +294,5 @@ function Base.setproperty!(model::DeterministicDetectorUnion{detector_names}, na
     name === :classify && return setfield!(model, :classify, val)
     idx = findfirst(==(name), detector_names)
     idx isa Nothing || return getfield(model, :detectors)[idx] = val
-    error("type ProbabilisticDetector has no property $name")
+    ERR_NO_PROPERTY(name)
 end

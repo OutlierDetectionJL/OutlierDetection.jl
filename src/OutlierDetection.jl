@@ -1,11 +1,12 @@
 module OutlierDetection
     using OutlierDetectionInterface
+    const OD = OutlierDetectionInterface
 
     import MLJBase
     const MLJ = MLJBase
 
     # re-export from OutlierDetectionInterface
-    export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD
+    export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD, augmented_transform
 
     export scale_minmax,
            scale_unify,
@@ -14,11 +15,14 @@ module OutlierDetection
            combine_max,
            classify_percentile,
            to_categorical,
-           to_univariate_finite
+           to_univariate_finite,
+           from_categorical,
+           from_univariate_finite
 
     export ProbabilisticDetector,
            DeterministicDetector,
-           ScoreTransformer
+           ScoreTransformer,
+           CompositeDetector
 
     # utilities
     include("normalization.jl")
