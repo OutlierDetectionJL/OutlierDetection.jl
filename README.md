@@ -1,6 +1,6 @@
 # OutlierDetection.jl
 
-[![Chat](https://img.shields.io/badge/slack-julialang/outlierdetection-yellowgreen.svg?logo=slack)](https://julialang.slack.com/archives/C02EXTD7WGG)
+[![Chat](https://img.shields.io/badge/slack-julialang/outlierdetection-blue.svg?logo=slack)](https://julialang.slack.com/archives/C02EXTD7WGG)
 [![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://OutlierDetectionJL.github.io/OutlierDetection.jl/stable)
 [![Documentation (dev)](https://img.shields.io/badge/docs-dev-blue.svg)](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev)
 [![Build Status](https://github.com/OutlierDetectionJL/OutlierDetection.jl/workflows/CI/badge.svg)](https://github.com/OutlierDetectionJL/OutlierDetection.jl/actions)
@@ -23,37 +23,9 @@ Pkg.add("OutlierDetection")
 
 If you would like to modify the package locally, you can use `Pkg.develop(OutlierDetection)` or `] dev OutlierDetection` in the Julia REPL. This fetches a full clone of the package to `~/.julia/dev/` (the path can be changed by setting the environment variable `JULIA_PKG_DEVDIR`).
 
-## API
+## Usage
 
-You typically want to interface with OutlierDetection.jl through the [MLJ-API](#mlj-api). However, it's also possible to use OutlierDetection.jl without MLJ. The main parts of the API are the functions `fit`, `score`, and `to`. Note that the raw API uses the columns-as-observations convention for improved performance, and we transpose the input data.
-
-```julia
-using OutlierDetection
-using OutlierDetectionData: ODDS
-
-# create a detector (a collection of hyperparameteres)
-lof = LOF()
-
-# download and open the thyroid benchmark dataset
-X, y = ODDS.load("thyroid")
-
-# use 50% of the data for training
-n_train = Int(length(y) * 0.5)
-train, test = eachindex(y)[1:n_train], eachindex(y)[n_train+1:end]
-
-# learn a model from data
-model = fit(lof, X[train, :])
-
-# predict outlier scores with learned model
-train_scores, test_scores = score(lof, model, X[test, :])
-
-# transform scores to binary labels
-ŷ = detect(Class(), train_scores, test_scores)
-```
-
-## MLJ API
-
-The main difference between the raw API and MLJ is, besides method naming differences, the introduction of a [`machine`](https://alan-turing-institute.github.io/MLJ.jl/dev/machines/). In the raw API, we explicitly pass the results of fitting a detector (models) to further `score` calls. Machines allow us to hide that complexity by binding data directly to detectors and automatically passing fit results to further `transform` (unsupervised) or `predict` (supervised) calls. Under the hood, `transform` and `predict` pass the input data and previous fit result to `score`.
+ *OutlierDetection.jl* is built on top of [MLJ](https://github.com/alan-turing-institute/MLJ.jl) and provides many `Detector` implementations for MLJ. A `Detector` simply assigns a real-valued score to each sample, which is defined to be increasing with increasing outlierness. The detectors live in sub-packages of [OutlierDetectionJL](https://github.com/OutlierDetectionJL/), e.g. [OutlierDetectionNeighbors](https://github.com/OutlierDetectionJL/OutlierDetectionNeighbors.jl),and can be loaded directly with MLJ, as shown below.
 
 ```julia
 using MLJ # or using MLJBase
@@ -64,25 +36,39 @@ using OutlierDetectionData: ODDS
 X, y = ODDS.load("thyroid");
 
 # use 50% of the data for training
-n_train = Int(length(y) * 0.5)
-train, test = eachindex(y)[1:n_train], eachindex(y)[n_train+1:end]
+train, test = partition(eachindex(y), 0.5, shuffle=true);
 
-# create a pipeline consisting of a detector and classifier
-pipe = @pipeline LOF() Class()
+# load the detector
+KNN = @iload KNNDetector pkg=OutlierDetectionNeighbors
 
-# create a machine by binding the pipeline to data
-mach = machine(pipe, X)
+# instantiate a detector with default parameters, returning scores
+knn = KNN()
 
-# learn from data
-fit!(mach, rows=train)
+# bind the detector to data and learn a model with all data
+knn_raw = machine(knn, X) |> fit!
 
-# predict labels with learned machine
-ŷ = transform(mach, rows=test)
+# transform data to raw outlier scores based on the test data; note that there
+# is no `predict` defined for raw detectors
+transform(knn_raw, rows=test)
+
+# OutlierDetection.jl provides helper functions to normalize the scores,
+# for example using min-max scaling based on the training scores
+knn_probas = machine(ProbabilisticDetector(knn), X) |> fit!
+
+# predict outlier probabilities based on the test data
+predict(knn_probas, rows=test)
+
+# OutlierDetection.jl also provides helper functions to turn scores into classes,
+# for example by imposing a threshold based on the training data percentiles
+knn_classifier = machine(DeterministicDetector(knn), X) |> fit!
+
+# predict outlier classes based on the test data
+predict(knn_classifier, rows=test)
 ```
 
 ## Algorithms (also known as Detectors)
 
-Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '✓ (py)' are implemented in Python (thanks to the wonderful [PyOD library](https://github.com/yzhao062/pyod)) with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev/API/detectors/). Note: If you would like to use a Python-variant of an algorithm, prepend the algorithm name with `Py`, e.g., `PyLOF` is the Python variant of `LOF`.
+Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '✓ (py)' are implemented in Python (thanks to the wonderful [PyOD library](https://github.com/yzhao062/pyod)) with an existing Julia interface through [PyCall](https://github.com/JuliaPy/PyCall.jl). If you would like to know more, open the [detector reference](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev/API/detectors/).
 
 | Name    | Description                                  | Year  | Status | Authors                |
 | ------- | -------------------------------------------- | :---: | :----: | ---------------------- |
@@ -116,11 +102,13 @@ If there are already so many algorithms available in Python - *why Julia, you mi
 using OutlierDetection, MLJ
 using BenchmarkTools: @benchmark
 X = rand(100000, 10);
+LOF =  @iload LOFDetector pkg=OutlierDetectionNeighbors
+PyLOF =  @iload LOFDetector pkg=OutlierDetectionPython
 lof = machine(LOF(k=5, algorithm=:balltree, leafsize=30, parallel=true), X) |> fit!
 pylof = machine(PyLOF(n_neighbors=5, algorithm="ball_tree", leaf_size=30, n_jobs=-1), X) |> fit!
 ```
 
-Julia enables you to implement your favorite algorithm in no time and it will be fast, *blazingly fast*.
+Julia enables you to implement your favorite algorithm in no time, and it will be fast, *blazingly fast*.
 
 ```julia
 @benchmark transform(lof, X)
