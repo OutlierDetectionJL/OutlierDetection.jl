@@ -158,19 +158,21 @@ end
 augment(Xs) = mach -> MLJ.node((mach, Xs) -> (mach.report.scores, MLJ.transform(mach, Xs)), mach, Xs)
 augment_scores(model, Xs) = augment(Xs).(map(d -> MLJ.machine(d, Xs), getfield(model, :detectors)))
 augment_scores(model, Xs, ys) = augment(Xs).(map(d -> MLJ.machine(d, Xs, ys), getfield(model, :detectors)))
-apply_transformer(normalize, combine, augmented_scores) = 
-    MLJ.transform(MLJ.machine(ScoreTransformer(;normalize, combine)), augmented_scores...)
+apply_to_scores(normalize, combine, augmented_scores) = begin
+    _to_scores(scores...) = to_scores(normalize, combine, scores...)
+    scores = MLJ.node(_to_scores, augmented_scores...)
+end
 
 function unsupervised_transformer(model, Xs)
     augmented_scores = augment_scores(model, Xs)
-    scores = apply_transformer(model.normalize, model.combine, augmented_scores)
+    scores = apply_to_scores(model.normalize, model.combine, augmented_scores)
     scores_train, scores_test = first(scores), last(scores)
     return scores_train, scores_test
 end
 
 function supervised_transformer(model, Xs, ys)
     augmented_scores = augment_scores(model, Xs, ys)
-    scores = apply_transformer(model.normalize, model.combine, augmented_scores)
+    scores = apply_to_scores(model.normalize, model.combine, augmented_scores)
     scores_train, scores_test = first(scores), last(scores)
     return scores_train, scores_test
 end
