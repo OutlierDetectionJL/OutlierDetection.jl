@@ -217,3 +217,40 @@ end
     @test_throws ErrorException augmented_transform(s_not_fitted)
     @test_throws ErrorException augmented_transform(c_not_fitted)
 end
+
+@testset "transformers expected results" begin
+    Xs = source(X)
+    ys = source(y)
+
+    # prepare learning network machines
+    um = machine(MinimalUnsupervisedDetector(), Xs)
+    sm = machine(MinimalSupervisedDetector(), Xs, ys)
+
+    # prepare the transformers
+    score_transformer = machine(ScoreTransformer())
+    probabilistic_transformer = machine(ProbabilisticTransformer())
+    deterministic_transformer = machine(DeterministicTransformer())
+
+    # get the augmented scores
+    u_scores = augmented_transform(um, Xs)
+    s_scores = augmented_transform(sm, Xs)
+
+    fit_transform(transformer, scores) = fit!(transform(transformer, scores))()
+    fit_predict(transformer, scores) = fit!(predict(transformer, scores))()
+
+    # test the transformed scores
+    @test fit_transform(score_transformer, u_scores) isa OD.Scores
+    @test fit_transform(score_transformer, s_scores) isa OD.Scores
+    @test fit_transform(probabilistic_transformer, u_scores) isa OD.Scores
+    @test fit_transform(probabilistic_transformer, s_scores) isa OD.Scores
+    @test fit_transform(deterministic_transformer, u_scores) isa OD.Scores
+    @test fit_transform(deterministic_transformer, s_scores) isa OD.Scores
+
+    # test the predicted probabilities
+    @test fit_predict(probabilistic_transformer, u_scores) isa UnivariateFiniteVector
+    @test fit_predict(probabilistic_transformer, s_scores) isa UnivariateFiniteVector
+
+    # test the predicted classes
+    @test fit_predict(deterministic_transformer, u_scores) isa OD.Labels
+    @test fit_predict(deterministic_transformer, s_scores) isa OD.Labels
+end

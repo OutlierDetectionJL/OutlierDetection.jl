@@ -1,3 +1,11 @@
+SCORE_PARAMS = """  normalize::Function
+A function to reduce a matrix, where each row represents an instance and each column a score of specific detector, to a
+vector of scores for each instance. See [`scale_minmax`](@ref) for a specific implementation.
+
+    combine::Function
+A function to reduce a matrix, where each row represents an instance and each column represents the score of specific
+detector, to a vector of scores for each instance. See [`combine_mean`](@ref) for a specific implementation."""
+
 """
     ScoreTransformer(combine = combine,           
                      normalize = normalize)
@@ -6,23 +14,67 @@ Transform the results of a single or multiple outlier detection models to combin
 
 Parameters
 ----------
-    normalize::Function
-A function to reduce a matrix, where each row represents an instance and each column a score of specific detector, to a
-vector of scores for each instance. See [`scale_minmax`](@ref) for a specific implementation.
-
-    combine::Function
-A function to reduce a matrix, where each row represents an instance and each column represents the score of specific
-detector, to a vector of scores for each instance. See [`combine_mean`](@ref) for a specific implementation.
+$SCORE_PARAMS
 """
 @detector mutable struct ScoreTransformer <: MLJ.Static
     normalize::Function = scale_minmax
     combine::Function = combine_mean
 end
 
+"""
+    ProbabilisticTransformer(combine = combine,           
+                             normalize = normalize)
+
+Transform the results of a single or multiple outlier detection models to combined univariate finite distributions.
+
+Parameters
+----------
+$SCORE_PARAMS
+"""
+@detector mutable struct ProbabilisticTransformer <: MLJ.Static
+    normalize::Function = scale_minmax
+    combine::Function = combine_mean
+end
+
+"""
+    DeterministicTransformer(combine = combine,           
+                             normalize = normalize,
+                             classify = classify_percentile(DEFAULT_THRESHOLD))
+
+Transform the results of a single or multiple outlier detection models to combined categorical values.
+
+Parameters
+----------
+$SCORE_PARAMS
+"""
+default_percentile_threshold = classify_percentile(DEFAULT_THRESHOLD)
+@detector mutable struct DeterministicTransformer <: MLJ.Static
+    normalize::Function = scale_minmax
+    combine::Function = combine_mean
+    classify::Function = default_percentile_threshold
+end
+
+const StaticTransformer = Union{
+    ScoreTransformer,
+    DeterministicTransformer,
+    ProbabilisticTransformer
+}
+
 # returns the augmented train/test scores
-function MLJ.transform(ev::ScoreTransformer, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
+function MLJ.transform(ev::StaticTransformer, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
+    _, scores_test = to_scores(ev.normalize, ev.combine, scores...)
+    scores_test
+end
+
+function MLJ.predict(ev::ProbabilisticTransformer, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
+    _, scores_test = to_scores(ev.normalize, ev.combine, scores...)
+    to_univariate_finite(scores_test)
+end
+
+function MLJ.predict(ev::DeterministicTransformer, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
     scores_train, scores_test = to_scores(ev.normalize, ev.combine, scores...)
-    scores_train, scores_test
+    _, classes_test = ev.classify(scores_train, scores_test)
+    to_categorical(classes_test)
 end
 
 function to_scores(normalize::Function, combine::Function, scores::Tuple{Scores, Scores}...)::Tuple{Scores, Scores}

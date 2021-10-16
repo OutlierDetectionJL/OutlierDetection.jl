@@ -34,6 +34,18 @@ A transformer simply takes the training and test scores of one or more detectors
 OutlierDetection.ScoreTransformer
 ```
 
+### ProbabilisticTransformer
+
+```@docs
+OutlierDetection.ProbabilisticTransformer
+```
+
+### DeterministicTransformer
+
+```@docs
+OutlierDetection.DeterministicTransformer
+```
+
 ## Normalization
 
 These functions may be used as an input for the `normalize` keyword argument present in wrappers and transformers, they transform `train_scores` and `test_scores`.
