@@ -111,13 +111,19 @@ function check_mach(mach)
     mach.state > 0 || error("$mach has not been trained.")
 end
 
-# 0. augmented_transform given rows:
-function OD.augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows=:)
-    check_mach(mach)
-    return augmented_transform(mach.model, to_fitresult(mach), selectrows(mach.model, rows, mach.data[1])...)
+function _augmented_transform(detector::Detector, fitresult::Fit, X)
+    model, scores_train = fitresult
+    scores_test = MLJ.transform(detector, model, X)
+    return scores_train, scores_test
 end
 
-function OD.augmented_transform(mach::DetectorComposites; rows=:)
+# 0. augmented_transform given rows:
+function augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows=:)
+    check_mach(mach)
+    return _augmented_transform(mach.model, to_fitresult(mach), selectrows(mach.model, rows, mach.data[1])...)
+end
+
+function augmented_transform(mach::DetectorComposites; rows=:)
     check_mach(mach)
     scores_train = mach.report.scores
     scores_test = mach.fitresult.transform(selectrows(mach.model, rows, mach.data[1])...)
@@ -125,12 +131,12 @@ function OD.augmented_transform(mach::DetectorComposites; rows=:)
 end
 
 # 1. augmented_transform on machines, given *concrete* data:
-function OD.augmented_transform(mach::MLJ.Machine{<:OD.Detector}, X)
+function augmented_transform(mach::MLJ.Machine{<:OD.Detector}, X)
     check_mach(mach)
-    return augmented_transform(mach.model, to_fitresult(mach), reformat(mach.model, X)...)
+    return _augmented_transform(mach.model, to_fitresult(mach), reformat(mach.model, X)...)
 end
 
-function OD.augmented_transform(mach::DetectorComposites, X)
+function augmented_transform(mach::DetectorComposites, X)
     check_mach(mach)
     scores_train = mach.report.scores
     scores_test = mach.fitresult.transform(X)
@@ -138,6 +144,6 @@ function OD.augmented_transform(mach::DetectorComposites, X)
 end
 
 # 2. operations on machines, given *dynamic* data (nodes):
-function OD.augmented_transform(mach::MLJ.Machine{<:OD.Detector}, X::MLJ.AbstractNode)
+function augmented_transform(mach::MLJ.Machine{<:OD.Detector}, X::MLJ.AbstractNode)
     MLJ.node(augmented_transform, mach, X)
 end

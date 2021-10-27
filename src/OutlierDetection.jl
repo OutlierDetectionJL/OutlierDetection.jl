@@ -6,9 +6,10 @@ module OutlierDetection
     const MLJ = MLJBase
 
     # re-export from OutlierDetectionInterface
-    export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD, augmented_transform
+    export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD
 
-    export scale_minmax,
+    export augmented_transform,
+           scale_minmax,
            scale_unify,
            combine_mean,
            combine_median,
@@ -21,8 +22,10 @@ module OutlierDetection
 
     export ProbabilisticDetector,
            DeterministicDetector,
-           ScoreTransformer,
-           CompositeDetector
+           CompositeDetector,
+           ProbabilisticTransformer,
+           DeterministicTransformer,
+           ScoreTransformer
 
     # utilities
     include("normalization.jl")
