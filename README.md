@@ -1,7 +1,6 @@
 # OutlierDetection.jl
 
 [![Chat](https://img.shields.io/badge/slack-julialang/outlierdetection-blue.svg?logo=slack)](https://julialang.slack.com/archives/C02EXTD7WGG)
-[![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://OutlierDetectionJL.github.io/OutlierDetection.jl/stable)
 [![Documentation (dev)](https://img.shields.io/badge/docs-dev-blue.svg)](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev)
 [![Build Status](https://github.com/OutlierDetectionJL/OutlierDetection.jl/workflows/CI/badge.svg)](https://github.com/OutlierDetectionJL/OutlierDetection.jl/actions)
 [![Coverage](https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section --> <a href="#contributors-"> <img src="https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square" alt="All Contributors"> </a> <!-- ALL-CONTRIBUTORS-BADGE:END -->
