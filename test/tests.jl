@@ -10,7 +10,7 @@ const test_scores = [base, # train and test equal
 const scores0, scores1, scores2, scores3, scores4, scores5 = map(t -> (base, t), test_scores)
 const X_test0, X_test1, X_test2, X_test3, X_test4, X_test5 = map(to_table, test_scores)
 const X = to_table(base)
-const y = to_categorical(fill(missing, length(base)))
+const y = to_categorical(["normal", "normal", "outlier"])
 
 # # fake detectors
 supervised = MinimalSupervisedDetector()
@@ -44,10 +44,27 @@ machines = [composite_machines..., wrapped_machines..., combined_machines...]
 probabilistic_machines = [up, sp, upc, spc, usp]
 deterministic_machines = [ud, sd, udc, sdc, usd]
 
+# create a simple detector learning network
+Xs = source()
+ys = source()
+uscores = augmented_transform(machine(unsupervised, Xs), Xs)
+sscores = augmented_transform(machine(supervised, Xs, ys), Xs)
+upscores = predict(machine(ProbabilisticTransformer()), uscores)
+spscores = predict(machine(ProbabilisticTransformer()), sscores)
+udscores = predict(machine(DeterministicTransformer()), uscores)
+sdscores = predict(machine(DeterministicTransformer()), sscores)
+
+# TODO: The empty source for ys in unsupervised models is currently necessary to enable evaluation, but
+# we could fix this in MLJBase
+upmach = machine(OD.ProbabilisticUnsupervisedDetector(), Xs, source(); predict=upscores)
+spmach = machine(OD.ProbabilisticSupervisedDetector(), Xs, ys; predict=spscores)
+udmach = machine(OD.DeterministicUnsupervisedDetector(), Xs, source(); predict=udscores)
+sdmach = machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=sdscores)
+
 @testset "normalization, combination and classification" begin
-    minmax_test = score_tuple -> scale_minmax(score_tuple...)[2]
-    unify_test = score_tuple -> scale_unify(score_tuple...)[2]
-    classify = score_tuple -> classify_percentile(DEFAULT_THRESHOLD)(scale_minmax(score_tuple...)...)[2]
+    minmax_test = scores -> last(scale_minmax(scores)) # extract test scores
+    unify_test = scores -> last(scale_unify(scores)) # extract test scores
+    classify = scores -> last(classify_quantile(DEFAULT_THRESHOLD)(scale_minmax(scores))) # extract test scores
 
     @testset "scores" begin
         raw_proba(detector, data) = from_univariate_finite.(predict(detector, data))
@@ -147,7 +164,7 @@ end
 @testset "wrappers property access" begin
     normalization_strategy = scale_unify
     combination_strategy = combine_max
-    classification_strategy = classify_percentile(0.5)
+    classification_strategy = classify_quantile(0.5)
 
     for m in getproperty.(machines, :model)
         initial_normalization_strategy = m.normalize
@@ -253,4 +270,28 @@ end
     # test the predicted classes
     @test fit_predict(deterministic_transformer, u_scores) isa OD.Labels
     @test fit_predict(deterministic_transformer, s_scores) isa OD.Labels
+end
+
+@testset "evaluation works as expected" begin
+    train, test = [1, 2], [3]
+    evaluate_detector(detector) =
+        @test evaluate(detector, X, y; measure=misclassification_rate, resampling=[(train, test)]).measurement[1] == 0
+
+    # evaluation of wrapped detectors
+    evaluate_detector(ProbabilisticDetector(unsupervised))
+    evaluate_detector(DeterministicDetector(unsupervised))
+
+    # create the detectors from the network
+    @from_network upmach mutable struct CustomUnsupervisedProbabilisticDetector end
+    @from_network spmach mutable struct CustomSupervisedProbabilisticDetector end
+    @from_network udmach mutable struct CustomUnsupervisedDeterministicDetector end
+    @from_network sdmach mutable struct CustomSupervisedDeterministicDetector end
+
+    evaluate_detector(CustomUnsupervisedProbabilisticDetector())
+    evaluate_detector(CustomSupervisedProbabilisticDetector())
+    evaluate_detector(CustomUnsupervisedDeterministicDetector())
+    evaluate_detector(CustomSupervisedDeterministicDetector())
+
+    # TODO: Enable composites with custom detectors after https://github.com/JuliaAI/MLJBase.jl/pull/644 is merged
+    # CompositeDetector(CustomUnsupervisedProbabilisticDetector)
 end
