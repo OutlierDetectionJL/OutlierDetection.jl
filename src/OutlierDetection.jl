@@ -8,22 +8,37 @@ module OutlierDetection
     # re-export from OutlierDetectionInterface
     export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD
 
-    export augmented_transform,
-           scale_minmax,
-           scale_unify,
-           combine_mean,
+    # combination.jl
+    export combine_mean,
            combine_median,
-           combine_max,
-           classify_percentile,
+           combine_max
+
+    # normalization.jl
+    export scale_minmax,
+           scale_unify
+
+    # classification.jl
+    export classify_quantile
+
+    # helpers.jl
+    export n_normal,
+           n_outlier,
+           outlier_fraction 
+
+    # mlj_helpers.jl
+    export augmented_transform,
            to_categorical,
            to_univariate_finite,
            from_categorical,
            from_univariate_finite
 
+    # mlj_wrappers.jl
     export ProbabilisticDetector,
            DeterministicDetector,
-           CompositeDetector,
-           ProbabilisticTransformer,
+           CompositeDetector
+
+    # mlj_transformers.jl
+    export ProbabilisticTransformer,
            DeterministicTransformer,
            ScoreTransformer
 
@@ -31,6 +46,7 @@ module OutlierDetection
     include("normalization.jl")
     include("classification.jl")
     include("combination.jl")
+    include("helpers.jl")
 
     # extension
     include("mlj_helpers.jl")
