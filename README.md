@@ -126,14 +126,6 @@ Interoperating with Python is easy!
 
 OutlierDetection.jl is a community effort and your help is extremely welcome! See our [contribution guide](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev/getting-started/contributing/) for more information how to contribute to the project.
 
-### Inclusion Guidelines
-
-We are excited to make Julia a first-class citizen in the outlier detection community and happily accept algorithm contributions to OutlierDetection.jl.
-
-We consider well-established algorithms for inclusion. A rule of thumb is at least two years since publication, 100+ citations, and wide use and usefulness. Algorithms that do not meet the inclusion criteria can simply extend our API. The external algorithms can also be listed in our documentation if the authors wish so.
-
-Additionally, algorithms that implement functionality that is useful on their own should live in their own package, wrapped by OutlierDetection.jl. Algorithms that build primarily on top of existing packages can be implemented directly in OutlierDetection.jl.
-
 ## Contributors ✨
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
