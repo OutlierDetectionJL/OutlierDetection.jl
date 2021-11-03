@@ -1,24 +1,24 @@
 # Neural Networks
 
-`OutlierDetectionNetworks` contains helpers to generate simple neural-network architectures.
+`OutlierDetectionNetworks` contains helpers to generate simple neural-network architectures. Note that the neural-network API is *highly experimental and subject to change*.
 
 ## Multilayer Perceptron
 
 Helpers to construct MLP networks.
 
-### MLPEncoder
+### `MLPEncoder`
 
 ```@docs
 OutlierDetectionNetworks.Templates.MLPEncoder
 ```
 
-### MLPDecoder
+### `MLPDecoder`
 
 ```@docs
 OutlierDetectionNetworks.Templates.MLPDecoder
 ```
 
-### MLPAutoEncoder
+### `MLPAutoEncoder`
 
 ```@docs
 OutlierDetectionNetworks.Templates.MLPAutoEncoder

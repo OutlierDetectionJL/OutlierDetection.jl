@@ -1,34 +1,34 @@
 # Detectors
 
-A [`Detector`](@ref) is just a collection of hyperparameters. Each detector implements a [`OutlierDetectionInterface.fit`](@ref) and [`OutlierDetectionInterface.transform`](@ref) method, where *fit* refers to learning a model from training data and *transform* refers to using a learned model to calculate outlier scores of new data. Detectors typically do not classify samples into inliers and outliers; that's a [`OutlierDetection.DeterministicDetector`](@ref) wrapper is used to convert the raw scores into binary labels.
+A [`Detector`](@ref) is just a collection of hyperparameters. Each detector implements a [`fit`](@ref) and [`transform`](@ref) method, where *fit* refers to learning a model from training data and *transform* refers to using a learned model to calculate outlier scores of new data. Detectors typically do not classify samples into inliers and outliers; that's a [`DeterministicDetector`](@ref) wrapper is used to convert the raw scores into binary labels.
 
 ## Neighbor-based
 
-### ABODDetector
+### `ABODDetector`
 
 ```@docs
 OutlierDetectionNeighbors.ABODDetector
 ```
 
-### COFDetector
+### `COFDetector`
 
 ```@docs
 OutlierDetectionNeighbors.COFDetector
 ```
 
-### DNNDetector
+### `DNNDetector`
 
 ```@docs
 OutlierDetectionNeighbors.DNNDetector
 ```
 
-### KNNDetector
+### `KNNDetector`
 
 ```@docs
 OutlierDetectionNeighbors.KNNDetector
 ```
 
-### LOFDetector
+### `LOFDetector`
 
 ```@docs
 OutlierDetectionNeighbors.LOFDetector
@@ -36,19 +36,22 @@ OutlierDetectionNeighbors.LOFDetector
 
 ## Network-based
 
-### AEDetector
+!!! warning
+    The neural-network detectors are *experimental* and subject to change.
+
+### `AEDetector`
 
 ```@docs
 OutlierDetectionNetworks.AEDetector
 ```
 
-### DSADDetector
+### `DSADDetector`
 
 ```@docs
 OutlierDetectionNetworks.DSADDetector
 ```
 
-### ESADDetector
+### `ESADDetector`
 
 ```@docs
 OutlierDetectionNetworks.ESADDetector
@@ -56,106 +59,105 @@ OutlierDetectionNetworks.ESADDetector
 
 ## Python-based
 
-
 Using [PyCall](https://github.com/JuliaPy/PyCall.jl), we can easily integrate existing python outlier detection algorithms. Currently, almost every [PyOD](https://github.com/yzhao062/pyod) algorithm is integrated and can thus be easily used directly from Julia.
 
-### ABODDetector
+### `ABODDetector`
 
 ```@docs
 OutlierDetectionPython.ABODDetector
 ```
 
-### CBLOFDetector
+### `CBLOFDetector`
 
 ```@docs
 OutlierDetectionPython.CBLOFDetector
 ```
 
-### COFDetector
+### `COFDetector`
 
 ```@docs
 OutlierDetectionPython.COFDetector
 ```
 
-### COPODDetector
+### `COPODDetector`
 
 ```@docs
 OutlierDetectionPython.COPODDetector
 ```
 
-### HBOSDetector
+### `HBOSDetector`
 
 ```@docs
 OutlierDetectionPython.HBOSDetector
 ```
 
-### IForestDetector
+### `IForestDetector`
 
 ```@docs
 OutlierDetectionPython.IForestDetector
 ```
 
-### KNNDetector
+### `KNNDetector`
 
 ```@docs
 OutlierDetectionPython.KNNDetector
 ```
 
-### LMDDDetector
+### `LMDDDetector`
 
 ```@docs
 OutlierDetectionPython.LMDDDetector
 ```
 
-### LODADetector
+### `LODADetector`
 
 ```@docs
 OutlierDetectionPython.LODADetector
 ```
 
-### LOFDetector
+### `LOFDetector`
 
 ```@docs
 OutlierDetectionPython.LOFDetector
 ```
 
-### LOCIDetector
+### `LOCIDetector`
 
 ```@docs
 OutlierDetectionPython.LOCIDetector
 ```
 
-### MCDDetector
+### `MCDDetector`
 
 ```@docs
 OutlierDetectionPython.MCDDetector
 ```
 
-### OCSVMDetector
+### `OCSVMDetector`
 
 ```@docs
 OutlierDetectionPython.OCSVMDetector
 ```
 
-### PCADetector
+### `PCADetector`
 
 ```@docs
 OutlierDetectionPython.PCADetector
 ```
 
-### RODDetector
+### `RODDetector`
 
 ```@docs
 OutlierDetectionPython.RODDetector
 ```
 
-### SODDetector
+### `SODDetector`
 
 ```@docs
 OutlierDetectionPython.SODDetector
 ```
 
-### SOSDetector
+### `SOSDetector`
 
 ```@docs
 OutlierDetectionPython.SOSDetector

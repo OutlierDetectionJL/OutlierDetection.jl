@@ -1,22 +1,22 @@
 # Interface
 
-Here we define the abstract supertypes that all outlier detectors share as well as useful datatypes use throughout `OutlierDetectionJL` and the [`OutlierDetectionInterface.fit`](@ref) and [`OutlierDetectionInterface.transform`](@ref) methods, that have to be implemented for each detector.
+Here we define the abstract supertypes that all outlier detectors share as well as useful datatypes use throughout `OutlierDetectionJL` and the [`fit`](@ref) and [`transform`](@ref) methods, that have to be implemented for each detector.
 
 ## Detectors
 
-### Detector
+### `Detector`
 
 ```@docs
 OutlierDetectionInterface.Detector
 ```
 
-### SupervisedDetector
+### `SupervisedDetector`
 
 ```@docs
 OutlierDetectionInterface.SupervisedDetector
 ```
 
-### UnsupervisedDetector
+### `UnsupervisedDetector`
 
 ```@docs
 OutlierDetectionInterface.UnsupervisedDetector
@@ -24,31 +24,31 @@ OutlierDetectionInterface.UnsupervisedDetector
 
 ## Data types
 
-### DetectorModel
+### `DetectorModel`
 
 ```@docs
 OutlierDetectionInterface.DetectorModel
 ```
 
-### Scores
+### `Scores`
 
 ```@docs
 OutlierDetectionInterface.Scores
 ```
 
-### Data
+### `Data`
 
 ```@docs
 OutlierDetectionInterface.Data
 ```
 
-### Label
+### `Label`
 
 ```@docs
 OutlierDetectionInterface.Labels
 ```
 
-### Fit
+### `Fit`
 
 ```@docs
 OutlierDetectionInterface.Fit
@@ -56,14 +56,34 @@ OutlierDetectionInterface.Fit
 
 ## Functions
 
-### fit
+### `fit`
 
 ```@docs
 OutlierDetectionInterface.fit
 ```
 
-### transform
+### `transform`
 
 ```@docs
 OutlierDetectionInterface.transform
+```
+
+## Macros
+
+### `@detector`
+
+```@docs
+OutlierDetectionInterface.@detector
+```
+
+### `@default_frontend`
+
+```@docs
+OutlierDetectionInterface.@default_frontend
+```
+
+### `@default_metadata`
+
+```@docs
+OutlierDetectionInterface.@default_metadata
 ```
