@@ -16,4 +16,7 @@ OD.fit(::MinimalSupervisedDetector, X::OD.Data, y::OD.Labels; verbosity)::OD.Fit
 OD.transform(::Union{MinimalSupervisedDetector, MinimalUnsupervisedDetector},
              model::MinimalDetectorModel, X::OD.Data)::OD.Scores = score(X)
 
+OD.@default_frontend(MinimalUnsupervisedDetector)
+OD.@default_frontend(MinimalSupervisedDetector)
+
 include("tests.jl")
