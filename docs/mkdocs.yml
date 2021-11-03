@@ -29,25 +29,31 @@ markdown_extensions:
 extra_css:
   - styles/custom.css
 
+extra:
+  version:
+    provider: mike
+    default: stable
+
 nav:
   - Home: index.markdown
-  - Getting started:
-    - Installation: getting-started/installation.md
-    - Example: getting-started/example.md
-    - Contributing: getting-started/contributing.md
   - Documentation:
-    - Guide: documentation/guide.md
+    - Installation: documentation/installation.md
+    - Getting Started: documentation/getting-started.md
+    - Simple Usage: documentation/simple-usage.md
+    - Advanced Usage: documentation/advanced-usage.md
     - Tutorials:
-      - Simple Usage: documentation/simple-usage.md
       - Detector Evaluation: documentation/detector-evaluation.md
       - Ensemble Learning: documentation/ensemble-learning.md
       - Benchmark Datasets: documentation/benchmark-datasets.md
-    - For Developers:
+    - For Contributors:
+      - Key Concepts: documentation/key-concepts.md
       - Architecture: documentation/architecture.md
+      - Contributing: documentation/contributing.md
       - Detector Creation: documentation/detector-creation.md
       - Performance Tips: documentation/performance-tips.md
   - API:
-    - Interface: API/interface.md
     - Detectors: API/detectors.md
-    - Helpers: API/helpers.md
+    - Datasets: API/datasets.md
+    - Interface: API/interface.md
+    - Score Helpers: API/score-helpers.md
     - Neural Networks: API/neural-networks.md
