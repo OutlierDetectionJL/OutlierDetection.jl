@@ -123,7 +123,7 @@ Interoperating with Python is easy!
 
 ## Contributing
 
-OutlierDetection.jl is a community effort and your help is extremely welcome! See our [contribution guide](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev/getting-started/contributing/) for more information how to contribute to the project.
+OutlierDetection.jl is a community effort and your help is extremely welcome! See our [contribution guide](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev/documentation/contributing/) for more information how to contribute to the project.
 
 ## Contributors ✨
 
