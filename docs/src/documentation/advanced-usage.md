@@ -168,7 +168,7 @@ OD.@default_frontend SimpleDetector
 
 Again, we can simply wrap our detector in a [`ProbabilisticDetector`](@ref) to enable probabilistic predictions.
 
-```
+```@example advanced
 sd = machine(ProbabilisticDetector(SimpleDetector()), X, y)
 fit!(sd, rows=train)
 predict(sd, rows=test)
