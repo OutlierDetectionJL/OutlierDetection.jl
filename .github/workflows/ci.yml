@@ -58,6 +58,8 @@ jobs:
             using OutlierDetection
             doctest(OutlierDetection)'
       - run: julia --project=docs docs/make.jl
+        env:
+          DATADEPS_ALWAYS_ACCEPT: true
       - run: julia --project=docs docs/deploy.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
