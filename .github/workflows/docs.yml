@@ -15,11 +15,9 @@ jobs:
       node -e "
       var vm = require('vm');
       var fs = require('fs');
-
       var context = {};
       var data = fs.readFileSync('versions.js');
       vm.runInNewContext(data, context);
-
       var result = [];
       context.DOC_VERSIONS.forEach(function(version) {
           aliases = []
@@ -28,7 +26,6 @@ jobs:
 
           result.push({'version': version, 'title': version, 'aliases': aliases})
       });
-
       fs.writeFileSync('./versions.json', JSON.stringify(result));
       "
     - run: |
