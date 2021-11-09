@@ -77,5 +77,6 @@ jobs:
     - run: |
         git config user.name "versionize"
         git config user.email "davnn@users.noreply.github.com"
-        git commit -am "versionize"
+        git add .
+        git commit -m "versionize"
         git push
