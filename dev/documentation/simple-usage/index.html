@@ -1039,8 +1039,8 @@ Extract:
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{ProbabilisticTunedModel{Grid,…},…} trained 1 time; caches data
   args: 
-    1:  Source @796 ⏎ `Table{AbstractVector{Continuous}}`
-    2:  Source @471 ⏎ `AbstractVector{OrderedFactor{2}}`
+    1:  Source @096 ⏎ `Table{AbstractVector{Continuous}}`
+    2:  Source @200 ⏎ `AbstractVector{OrderedFactor{2}}`
 </code></pre></div>
 <p>Using the machines' report, we can idenity the best evaluation results.</p>
 <div class="highlight"><pre><span></span><code><span class="n">report</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">best_history_entry</span>
@@ -1095,7 +1095,7 @@ Extract:
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
   args: 
-    1:  Source @583 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @206 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Using <code>predict</code> allows us to determine the outliers in the test data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">ŷ</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
