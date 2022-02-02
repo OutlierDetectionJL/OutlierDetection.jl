@@ -1180,6 +1180,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">ABODDetector</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
              <span class="n">metric</span> <span class="o">=</span> <span class="n">Euclidean</span><span class="p">(),</span>
              <span class="n">algorithm</span> <span class="o">=</span> <span class="ss">:kdtree</span><span class="p">,</span>
+             <span class="n">static</span> <span class="o">=</span> <span class="ss">:auto</span><span class="p">,</span>
              <span class="n">leafsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
              <span class="n">reorder</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
              <span class="n">parallel</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
@@ -1197,6 +1198,9 @@
 <div class="highlight"><pre><span></span><code>algorithm::Symbol
 </code></pre></div>
 <p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
 <div class="highlight"><pre><span></span><code>leafsize::Int
 </code></pre></div>
 <p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
@@ -1242,6 +1246,9 @@
 <div class="highlight"><pre><span></span><code>algorithm::Symbol
 </code></pre></div>
 <p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
 <div class="highlight"><pre><span></span><code>leafsize::Int
 </code></pre></div>
 <p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
@@ -1283,6 +1290,9 @@
 <div class="highlight"><pre><span></span><code>algorithm::Symbol
 </code></pre></div>
 <p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
 <div class="highlight"><pre><span></span><code>leafsize::Int
 </code></pre></div>
 <p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
@@ -1324,6 +1334,9 @@
 <div class="highlight"><pre><span></span><code>algorithm::Symbol
 </code></pre></div>
 <p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
 <div class="highlight"><pre><span></span><code>leafsize::Int
 </code></pre></div>
 <p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
@@ -1369,6 +1382,9 @@
 <div class="highlight"><pre><span></span><code>algorithm::Symbol
 </code></pre></div>
 <p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
 <div class="highlight"><pre><span></span><code>leafsize::Int
 </code></pre></div>
 <p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>

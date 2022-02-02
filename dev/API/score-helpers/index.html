@@ -1226,7 +1226,7 @@
 <div class="highlight"><pre><span></span><code>augmented_scores::Tuple{AbstractVector{&lt;:Real}, AbstractVector{&lt;:Real}}
 </code></pre></div>
 <p>A tuple of raw training and test scores.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_helpers.jl#LL109-L126' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_helpers.jl#LL109-L126' class='documenter-source'>source</a><br></p>
 <p><a id='ScoreTransformer'></a></p>
 <p><a id='ScoreTransformer-1'></a></p>
 <h3 id="scoretransformer"><code>ScoreTransformer</code></h3>
@@ -1241,7 +1241,7 @@
 <div class="highlight"><pre><span></span><code>combine::Function
 </code></pre></div>
 <p>A function to reduce a matrix, where each row represents an instance and each column represents the score of specific detector, to a vector of scores for each instance. See <a href="./#OutlierDetection.combine_mean"><code>combine_mean</code></a> for a specific implementation.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_transformers.jl#LL9-L18' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_transformers.jl#LL9-L18' class='documenter-source'>source</a><br></p>
 <p><a id='ProbabilisticTransformer'></a></p>
 <p><a id='ProbabilisticTransformer-1'></a></p>
 <h3 id="probabilistictransformer"><code>ProbabilisticTransformer</code></h3>
@@ -1256,7 +1256,7 @@
 <div class="highlight"><pre><span></span><code>combine::Function
 </code></pre></div>
 <p>A function to reduce a matrix, where each row represents an instance and each column represents the score of specific detector, to a vector of scores for each instance. See <a href="./#OutlierDetection.combine_mean"><code>combine_mean</code></a> for a specific implementation.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_transformers.jl#LL24-L33' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_transformers.jl#LL24-L33' class='documenter-source'>source</a><br></p>
 <p><a id='DeterministicTransformer'></a></p>
 <p><a id='DeterministicTransformer-1'></a></p>
 <h3 id="deterministictransformer"><code>DeterministicTransformer</code></h3>
@@ -1272,7 +1272,7 @@
 <div class="highlight"><pre><span></span><code>combine::Function
 </code></pre></div>
 <p>A function to reduce a matrix, where each row represents an instance and each column represents the score of specific detector, to a vector of scores for each instance. See <a href="./#OutlierDetection.combine_mean"><code>combine_mean</code></a> for a specific implementation.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_transformers.jl#LL40-L50' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_transformers.jl#LL40-L50' class='documenter-source'>source</a><br></p>
 <p><a id='Wrappers'></a></p>
 <p><a id='Wrappers-1'></a></p>
 <h2 id="wrappers">Wrappers</h2>
@@ -1288,7 +1288,7 @@
                   <span class="n">named_detectors</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 <p>Transform one or more raw detectors into a single composite detector (that returns raw outlier scores).</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_wrappers.jl#LL136-L143' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_wrappers.jl#LL139-L146' class='documenter-source'>source</a><br></p>
 <p><a id='ProbabilisticDetector'></a></p>
 <p><a id='ProbabilisticDetector-1'></a></p>
 <h3 id="probabilisticdetector"><code>ProbabilisticDetector</code></h3>
@@ -1300,7 +1300,7 @@
                       <span class="n">named_detectors</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 <p>Transform one or more raw detectors into a single probabilistic detector (that returns outlier probabilities).</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_wrappers.jl#LL107-L114' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_wrappers.jl#LL110-L117' class='documenter-source'>source</a><br></p>
 <p><a id='DeterministicDetector'></a></p>
 <p><a id='DeterministicDetector-1'></a></p>
 <h3 id="deterministicdetector"><code>DeterministicDetector</code></h3>
@@ -1312,7 +1312,7 @@
                       <span class="n">named_detectors</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 <p>Transform one or more raw detectors into a single deterministic detector (that returns inlier and outlier classes).</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_wrappers.jl#LL121-L128' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_wrappers.jl#LL124-L131' class='documenter-source'>source</a><br></p>
 <p><a id='Normalization'></a></p>
 <p><a id='Normalization-1'></a></p>
 <h2 id="normalization">Normalization</h2>
@@ -1337,7 +1337,7 @@
 <div class="highlight"><pre><span></span><code>scores_train, scores_test = ([1, 2, 3], [4, 3, 2, 1, 0])
 scale_minmax(scores_train, scores_test) # ([0.0, 0.5, 1.0], [1.0, 1.0, 0.5, 0.0, 0.0])
 </code></pre></div>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/normalization.jl#LL4-L23' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/normalization.jl#LL4-L23' class='documenter-source'>source</a><br></p>
 <p><a id='scale_unify'></a></p>
 <p><a id='scale_unify-1'></a></p>
 <h3 id="scale_unify"><code>scale_unify</code></h3>
@@ -1360,7 +1360,7 @@ unify(scores_train, scores_test) # ([0.0, 0.0, 0.68..], [0.95.., 0.68.., 0.0, 0.
 </code></pre></div>
 <p><strong>References</strong></p>
 <p>Kriegel, Hans-Peter; Kroger, Peer; Schubert, Erich; Zimek, Arthur (2011): Interpreting and Unifying Outlier Scores.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/normalization.jl#LL32-L55' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/normalization.jl#LL32-L55' class='documenter-source'>source</a><br></p>
 <p><a id='Combination'></a></p>
 <p><a id='Combination-1'></a></p>
 <h2 id="combination">Combination</h2>
@@ -1385,7 +1385,7 @@ The combined scores, i.e. column-wise mean.
 <div class="highlight"><pre><span></span><code>scores = [1 2; 3 4; 5 6]
 combine_mean(scores) # [1.5, 3.5, 5.5]
 </code></pre></div>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/combination.jl#LL8-L27' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/combination.jl#LL8-L27' class='documenter-source'>source</a><br></p>
 <p><a id='combine_median'></a></p>
 <p><a id='combine_median-1'></a></p>
 <h3 id="combine_median"><code>combine_median</code></h3>
@@ -1406,7 +1406,7 @@ combine_mean(scores) # [1.5, 3.5, 5.5]
 <div class="highlight"><pre><span></span><code>scores = [1 2; 3 4; 5 6]
 combine_median(scores) # [1.5, 3.5, 5.5]
 </code></pre></div>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/combination.jl#LL32-L51' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/combination.jl#LL32-L51' class='documenter-source'>source</a><br></p>
 <p><a id='combine_max'></a></p>
 <p><a id='combine_max-1'></a></p>
 <h3 id="combine_max"><code>combine_max</code></h3>
@@ -1427,7 +1427,7 @@ combine_median(scores) # [1.5, 3.5, 5.5]
 <div class="highlight"><pre><span></span><code>scores = [1 2; 3 4; 5 6]
 combine_max(scores) # [2, 4, 6]
 </code></pre></div>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/combination.jl#LL56-L75' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/combination.jl#LL56-L75' class='documenter-source'>source</a><br></p>
 <p><a id='Classification'></a></p>
 <p><a id='Classification-1'></a></p>
 <h2 id="classification">Classification</h2>
@@ -1457,7 +1457,7 @@ scores_train, scores_test = ([1, 2, 3], [4, 3, 2])
 classify(scores_train, scores_train) # [&quot;inlier&quot;, &quot;inlier&quot;, &quot;outlier&quot;]
 classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;, &quot;inlier&quot;]
 </code></pre></div>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/classification.jl#LL3-L29' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/classification.jl#LL3-L29' class='documenter-source'>source</a><br></p>
 <p><a id='Output-helpers'></a></p>
 <p><a id='Output-helpers-1'></a></p>
 <h2 id="output-helpers">Output helpers</h2>
@@ -1476,7 +1476,7 @@ classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;,
 <div class="highlight"><pre><span></span><code>fit::UnivariateFiniteVector{OrderedFactor{2}}
 </code></pre></div>
 <p>The learned model of the given detector, which contains all the necessary information for later prediction and the achieved outlier scores of the given input data <code>X</code>.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_helpers.jl#LL1-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_helpers.jl#LL1-L15' class='documenter-source'>source</a><br></p>
 <p><a id='to_categorical'></a></p>
 <p><a id='to_categorical-1'></a></p>
 <h3 id="to_categorical"><code>to_categorical</code></h3>
@@ -1493,7 +1493,7 @@ classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;,
 <div class="highlight"><pre><span></span><code>fit::CategoricalVector{Union{Missing, String},UInt32}
 </code></pre></div>
 <p>The learned model of the given detector, which contains all the necessary information for later prediction and the achieved outlier scores of the given input data <code>X</code>.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_helpers.jl#LL21-L36' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_helpers.jl#LL21-L36' class='documenter-source'>source</a><br></p>
 <p><a id='from_univariate_finite'></a></p>
 <p><a id='from_univariate_finite-1'></a></p>
 <h3 id="from_univariate_finite"><code>from_univariate_finite</code></h3>
@@ -1510,7 +1510,7 @@ classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;,
 <div class="highlight"><pre><span></span><code>scores::[`Scores`](@ref)
 </code></pre></div>
 <p>A vector of raw scores.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_helpers.jl#LL45-L59' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_helpers.jl#LL45-L59' class='documenter-source'>source</a><br></p>
 <p><a id='from_categorical'></a></p>
 <p><a id='from_categorical-1'></a></p>
 <h3 id="from_categorical"><code>from_categorical</code></h3>
@@ -1527,7 +1527,7 @@ classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;,
 <div class="highlight"><pre><span></span><code>scores::[`Labels`](@ref)
 </code></pre></div>
 <p>A vector of raw classes.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/mlj_helpers.jl#LL63-L77' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/mlj_helpers.jl#LL63-L77' class='documenter-source'>source</a><br></p>
 <p><a id='Label-helpers'></a></p>
 <p><a id='Label-helpers-1'></a></p>
 <h2 id="label-helpers">Label helpers</h2>
@@ -1547,7 +1547,7 @@ classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;,
 <div class="highlight"><pre><span></span><code>outlier_fraction::Float64
 </code></pre></div>
 <p>The fraction of outliers.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/helpers.jl#LL1-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/helpers.jl#LL1-L15' class='documenter-source'>source</a><br></p>
 <p><a id='n_normal'></a></p>
 <p><a id='n_normal-1'></a></p>
 <h3 id="n_normal"><code>n_normal</code></h3>
@@ -1564,7 +1564,7 @@ classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;,
 <div class="highlight"><pre><span></span><code>n_normal::Int64
 </code></pre></div>
 <p>The amount of normal data points.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/helpers.jl#LL18-L31' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/helpers.jl#LL18-L31' class='documenter-source'>source</a><br></p>
 <p><a id='n_outlier'></a></p>
 <p><a id='n_outlier-1'></a></p>
 <h3 id="n_outlier"><code>n_outlier</code></h3>
@@ -1581,7 +1581,7 @@ classify(scores_train, scores_test) # [&quot;outlier&quot;, &quot;outlier&quot;,
 <div class="highlight"><pre><span></span><code>outliers::Int64
 </code></pre></div>
 <p>The amount of outlier data points.</p>
-<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/d4afca321263e8a9365e6cc9d3a2cdb9f13df1df/src/helpers.jl#LL34-L47' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/OutlierDetectionJL/OutlierDetection.jl/blob/e83a8dd3d5c88b1e9ddd58a9a1a6c932881c8937/src/helpers.jl#LL34-L47' class='documenter-source'>source</a><br></p>
                 
               
               
