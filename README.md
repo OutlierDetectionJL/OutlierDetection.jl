@@ -20,7 +20,7 @@ import Pkg;
 Pkg.add("OutlierDetection")
 ```
 
-If you would like to modify the package locally, you can use `Pkg.develop(OutlierDetection)` or `] dev OutlierDetection` in the Julia REPL. This fetches a full clone of the package to `~/.julia/dev/` (the path can be changed by setting the environment variable `JULIA_PKG_DEVDIR`).
+If you would like to modify the package locally, you can use `Pkg.develop("OutlierDetection")` or `] dev OutlierDetection` in the Julia REPL. This fetches a full clone of the package to `~/.julia/dev/` (the path can be changed by setting the environment variable `JULIA_PKG_DEVDIR`).
 
 ## Usage
 
