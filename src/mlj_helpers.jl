@@ -14,7 +14,7 @@ The learned model of the given detector, which contains all the necessary inform
 achieved outlier scores of the given input data `X`.
 """
 function to_univariate_finite(scores::Scores)
-    MLJ.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], scores; augment=true, pool=missing, ordered=true)
+    MLJ.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], scores; augment = true, pool = missing, ordered = true)
 end
 to_univariate_finite(scores::MLJ.AbstractNode) = MLJ.node(to_univariate_finite, scores)
 
@@ -36,9 +36,9 @@ achieved outlier scores of the given input data `X`.
 """
 function to_categorical(classes::Labels)
     # explicit cast to Vector{Union{String, Missing}} in case only missing values are passed
-    c = Vector{Union{String, Missing}}(classes)
+    c = Vector{Union{String,Missing}}(classes)
     # we cast to string if no missing values are present
-    MLJ.categorical(try Vector{String}(c) catch c end, ordered=true, levels=[CLASS_NORMAL, CLASS_OUTLIER])
+    MLJ.categorical(try Vector{String}(c) catch c end, ordered = true, levels = [CLASS_NORMAL, CLASS_OUTLIER])
 end
 to_categorical(classes::MLJ.AbstractNode) = MLJ.node(to_categorical, classes)
 
@@ -124,12 +124,12 @@ Returns
     augmented_scores::Tuple{AbstractVector{<:Real}, AbstractVector{<:Real}}
 A tuple of raw training and test scores.
 """
-function augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows=:)
+function augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows = :)
     check_mach(mach)
     return _augmented_transform(mach.model, to_fitresult(mach), selectrows(mach.model, rows, mach.data[1])...)
 end
 
-function augmented_transform(mach::DetectorComposites; rows=:)
+function augmented_transform(mach::DetectorComposites; rows = :)
     check_mach(mach)
     scores_train = mach.report.scores
     scores_test = mach.fitresult.transform(selectrows(mach.model, rows, mach.data[1])...)
@@ -151,5 +151,9 @@ end
 
 # 2. operations on machines, given *dynamic* data (nodes):
 function augmented_transform(mach::MLJ.Machine{<:OD.Detector}, X::MLJ.AbstractNode)
+    MLJ.node(augmented_transform, mach, X)
+end
+
+function augmented_transform(mach::DetectorComposites, X::MLJ.AbstractNode)
     MLJ.node(augmented_transform, mach, X)
 end
