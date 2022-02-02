@@ -12,9 +12,11 @@ jobs:
         version:
           - '1.5'
           - '1.6'
+          - '1'
         os:
           - ubuntu-latest
           - windows-latest
+          - macos-latest
         arch:
           - x64
     steps:
@@ -68,10 +70,10 @@ jobs:
     needs: docs
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/setup-node@v2
     - uses: actions/checkout@v2
       with:
         ref: gh-pages
-    - uses: actions/setup-node@v2
     - run: |
         node -e "var vm = require('vm'); var fs = require('fs'); var context = {}; var data = fs.readFileSync('versions.js'); vm.runInNewContext(data, context); var result = []; context.DOC_VERSIONS.forEach(function(version) { aliases = []; context.DOCUMENTER_NEWEST === version || aliases.push('dev'); context.DOCUMENTER_STABLE === version || aliases.push('stable'); result.push({'version': version, 'title': version, 'aliases': aliases}); }); fs.writeFileSync('./versions.json', JSON.stringify(result));"
     - run: |
