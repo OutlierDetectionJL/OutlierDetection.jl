@@ -100,25 +100,25 @@ If there are already so many algorithms available in Python - *why Julia, you mi
 ```julia
 using OutlierDetection, MLJ
 using BenchmarkTools: @benchmark
-X = rand(100000, 10);
+X = rand(10, 100000);
 LOF =  @iload LOFDetector pkg=OutlierDetectionNeighbors
 PyLOF =  @iload LOFDetector pkg=OutlierDetectionPython
-lof = machine(LOF(k=5, algorithm=:balltree, leafsize=30, parallel=true), X) |> fit!
-pylof = machine(PyLOF(n_neighbors=5, algorithm="ball_tree", leaf_size=30, n_jobs=-1), X) |> fit!
+lof = machine(LOF(k=5, algorithm=:kdtree, leafsize=30, parallel=true), X) |> fit!
+pylof = machine(PyLOF(n_neighbors=5, algorithm="kd_tree", leaf_size=30, n_jobs=-1), X) |> fit!
 ```
 
 Julia enables you to implement your favorite algorithm in no time, and it will be fast, *blazingly fast*.
 
 ```julia
 @benchmark transform(lof, X)
-> median time:      807.962 ms (0.00% GC)
+> median time:      341.464 ms (0.00% GC)
 ```
 
 Interoperating with Python is easy!
 
 ```julia
 @benchmark transform(pylof, X)
-> median time:      31.077 s (0.00% GC)
+> median time:      7.934 s (0.00% GC)
 ```
 
 ## Contributing
