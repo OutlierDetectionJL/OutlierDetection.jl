@@ -23,6 +23,7 @@ module OutlierDetection
     # helpers.jl
     export n_normal,
            n_outlier,
+           normal_fraction,
            outlier_fraction 
 
     # mlj_helpers.jl

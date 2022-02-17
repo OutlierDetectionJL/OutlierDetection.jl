@@ -117,6 +117,13 @@ sdmach = machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=sdscores)
         @test combine_max(minmax_test.([scores3, scores5])...) == [1.0, 1.0, 1.0]
         @test combine_max(minmax_test.([scores4, scores5])...) == [1.0, 1.0, 1.0]
     end
+
+    @testset "label utilities" begin
+        @test normal_fraction(y) ≈ 2/3
+        @test outlier_fraction(y) ≈ 1/3
+        @test n_normal(y) == 2
+        @test n_outlier(y) == 1
+    end
 end
 
 @testset "wrappers result in expected types" begin

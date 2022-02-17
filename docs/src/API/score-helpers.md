@@ -128,6 +128,12 @@ OutlierDetection.from_categorical
 
 ## Label helpers
 
+### `normal_fraction`
+
+```@docs
+OutlierDetection.normal_fraction
+```
+
 ### `outlier_fraction`
 
 ```@docs
