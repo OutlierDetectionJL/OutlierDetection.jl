@@ -1,9 +1,9 @@
-site_name:        OutlierDetection.jl
-repo_url:         https://github.com/OutlierDetectionJL/OutlierDetection.jl
+site_name: OutlierDetection.jl
+repo_url: https://github.com/OutlierDetectionJL/OutlierDetection.jl
 site_description: Fast, scalable and flexible outlier detection with Julia.
-site_author:      David Muhr <muhrdavid@gmail.com> and contributors
+site_author: David Muhr <muhrdavid@gmail.com> and contributors
 
-docs_dir: 'build'
+docs_dir: "build"
 
 theme:
   name: material
@@ -37,23 +37,23 @@ extra:
 nav:
   - Home: index.markdown
   - Documentation:
-    - Installation: documentation/installation.md
-    - Getting Started: documentation/getting-started.md
-    - Simple Usage: documentation/simple-usage.md
-    - Advanced Usage: documentation/advanced-usage.md
-    - Tutorials:
-      - Detector Evaluation: documentation/detector-evaluation.md
-      - Ensemble Learning: documentation/ensemble-learning.md
-      - Benchmark Datasets: documentation/benchmark-datasets.md
-    - For Contributors:
-      - Key Concepts: documentation/key-concepts.md
-      - Architecture: documentation/architecture.md
-      - Contributing: documentation/contributing.md
-      - Detector Creation: documentation/detector-creation.md
-      - Performance Tips: documentation/performance-tips.md
+      - Installation: documentation/installation.md
+      - Getting Started: documentation/getting-started.md
+      - Simple Usage: documentation/simple-usage.md
+      - Advanced Usage: documentation/advanced-usage.md
+      # - Tutorials:
+      #   - Detector Evaluation: documentation/detector-evaluation.md
+      #   - Ensemble Learning: documentation/ensemble-learning.md
+      #   - Benchmark Datasets: documentation/benchmark-datasets.md
+      - For Contributors:
+          - Key Concepts: documentation/key-concepts.md
+          # - Architecture: documentation/architecture.md
+          - Contributing: documentation/contributing.md
+          # - Detector Creation: documentation/detector-creation.md
+          - Performance Tips: documentation/performance-tips.md
   - API:
-    - Detectors: API/detectors.md
-    - Datasets: API/datasets.md
-    - Interface: API/interface.md
-    - Score Helpers: API/score-helpers.md
-    - Neural Networks: API/neural-networks.md
+      - Detectors: API/detectors.md
+      - Datasets: API/datasets.md
+      - Interface: API/interface.md
+      - Score Helpers: API/score-helpers.md
+      - Neural Networks: API/neural-networks.md
