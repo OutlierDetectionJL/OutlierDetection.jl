@@ -12,8 +12,8 @@ docs_html:
 	mkdocs build --clean --config-file=docs/mkdocs.yml
 docs_serve:
 	mkdocs serve --config-file=docs/mkdocs.yml
-docs_build: docs_markdown docs_html
-docs: docs_markdown docs_html docs_serve
+docs_build: docs_make docs_html
+docs: docs_make docs_html docs_serve
 
 # Benchmark
 benchmark:
