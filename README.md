@@ -16,7 +16,7 @@
 It is recommended to use [Pkg.jl](https://julialang.github.io/Pkg.jl) for installation. Follow the command below to install the latest official release or use `] add OutlierDetection` in the Julia REPL.
 
 ```julia
-import Pkg;
+import Pkg
 Pkg.add("OutlierDetection")
 ```
 
@@ -27,15 +27,15 @@ If you would like to modify the package locally, you can use `Pkg.develop("Outli
  *OutlierDetection.jl* is built on top of [MLJ](https://github.com/alan-turing-institute/MLJ.jl) and provides many `Detector` implementations for MLJ. A `Detector` simply assigns a real-valued score to each sample, which is defined to be increasing with increasing outlierness. The detectors live in sub-packages of [OutlierDetectionJL](https://github.com/OutlierDetectionJL/), e.g. [OutlierDetectionNeighbors](https://github.com/OutlierDetectionJL/OutlierDetectionNeighbors.jl),and can be loaded directly with MLJ, as shown below.
 
 ```julia
-using MLJ # or using MLJBase
+using MLJ
 using OutlierDetection
 using OutlierDetectionData: ODDS
 
 # download and open the thyroid benchmark dataset
-X, y = ODDS.load("thyroid");
+X, y = ODDS.load("thyroid")
 
 # use 50% of the data for training
-train, test = partition(eachindex(y), 0.5, shuffle=true);
+train, test = partition(eachindex(y), 0.5, shuffle=true)
 
 # load the detector
 KNN = @iload KNNDetector pkg=OutlierDetectionNeighbors
@@ -63,6 +63,33 @@ knn_classifier = machine(DeterministicDetector(knn), X) |> fit!
 
 # predict outlier classes based on the test data
 predict(knn_classifier, rows=test)
+```
+
+It is also possible to use *OutlierDetection.jl* without MLJ, however, note that more explicit steps are necessary.
+
+```julia
+using OutlierDetection: fit, transform, scale_minmax, classify_quantile, outlier_fraction
+using OutlierDetectionNeighbors: KNNDetector # explicitly import detector
+using OutlierDetectionData: ODDS
+
+X, y = ODDS.load("thyroid")
+knn = KNNDetector()
+
+# explicit conversion to a native array is necessary
+# note that we are using the transposed data, because column-major data is expected
+Xmatrix = Matrix(X)'
+
+# explicit fit result and training scores
+model, scores_train = fit(knn, Xmatrix[:, 11:end]; verbosity = 0)
+
+# transform the first 10 points to scores (not used for training)
+scores_test = transform(knn, model, Xmatrix[:, 1:10])
+
+# explicitly normalize train and test scores
+proba_train, proba_test = scale_minmax((scores_train, scores_test))
+
+# explicitly convert scores to labels (> 95th percentile would be an outlier)
+labels_train, labels_test = classify_quantile(0.95)((scores_train, scores_test))
 ```
 
 ## Algorithms (also known as Detectors)
@@ -100,7 +127,7 @@ If there are already so many algorithms available in Python - *why Julia, you mi
 ```julia
 using OutlierDetection, MLJ
 using BenchmarkTools: @benchmark
-X = rand(10, 100000);
+X = rand(10, 100000)
 LOF =  @iload LOFDetector pkg=OutlierDetectionNeighbors
 PyLOF =  @iload LOFDetector pkg=OutlierDetectionPython
 lof = machine(LOF(k=5, algorithm=:kdtree, leafsize=30, parallel=true), X) |> fit!
