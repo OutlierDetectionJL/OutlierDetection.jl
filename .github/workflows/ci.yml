@@ -75,7 +75,7 @@ jobs:
       with:
         ref: gh-pages
     - run: |
-        node -e "var vm = require('vm'); var fs = require('fs'); var context = {}; var data = fs.readFileSync('versions.js'); vm.runInNewContext(data, context); var result = []; context.DOC_VERSIONS.forEach(function(version) { aliases = []; context.DOCUMENTER_NEWEST === version || aliases.push('dev'); context.DOCUMENTER_STABLE === version || aliases.push('stable'); result.push({'version': version, 'title': version, 'aliases': aliases}); }); fs.writeFileSync('./versions.json', JSON.stringify(result));"
+        node -e "var vm=require('vm'),fs=require('fs'),context={},data=fs.readFileSync('./versions.js');vm.runInNewContext(data,context);var result=[];context.DOC_VERSIONS.forEach(function(s){aliases=[],context.DOCUMENTER_NEWEST.startsWith(s)&&aliases.push('dev'),context.DOCUMENTER_STABLE.startsWith(s)&&aliases.push('stable'),result.push({version:s,title:s,aliases:aliases})}),fs.writeFileSync('./versions.json',JSON.stringify(result));"
     - run: |
         git config user.name "versionize"
         git config user.email "davnn@users.noreply.github.com"
