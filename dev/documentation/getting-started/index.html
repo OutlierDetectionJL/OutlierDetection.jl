@@ -425,89 +425,12 @@
       
       
         <label class="md-nav__link" for="__nav_2_5">
-          Tutorials
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_5">
-          <span class="md-nav__icon md-icon"></span>
-          Tutorials
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../detector-evaluation/" class="md-nav__link">
-        Detector Evaluation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ensemble-learning/" class="md-nav__link">
-        Ensemble Learning
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../benchmark-datasets/" class="md-nav__link">
-        Benchmark Datasets
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2_6">
           For Contributors
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="For Contributors" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_6">
+        <label class="md-nav__title" for="__nav_2_5">
           <span class="md-nav__icon md-icon"></span>
           For Contributors
         </label>
@@ -533,36 +456,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/" class="md-nav__link">
-        Architecture
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../contributing/" class="md-nav__link">
         Contributing
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../detector-creation/" class="md-nav__link">
-        Detector Creation
       </a>
     </li>
   
@@ -811,7 +706,7 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 0 times; caches data
   args: 
-    1:  Source @817 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @314 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Learn models from the training data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
@@ -820,7 +715,7 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
   args: 
-    1:  Source @817 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @314 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Transform the test data into raw outlier scores.</p>
 <div class="highlight"><pre><span></span><code><span class="n">transform</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
