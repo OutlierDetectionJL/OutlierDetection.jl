@@ -797,14 +797,33 @@
  0.2614340621027081
 </code></pre></div>
 <p>Another exemplary helper function is <a href="../../API/score-helpers/#OutlierDetection.classify_quantile"><code>classify_quantile</code></a>, which is used to transform scores to classes. We only display the test scores using the <code>last</code> element of the tuple.</p>
-<p>```@example advanced
-last(scores |&gt; classify_quantile(0.9))
-<div class="highlight"><pre><span></span><code>Sometimes it&#39;s also necessary to combine scores from multiple detectors, which can, for example, be achieved with [`combine_mean`](../API/score-helpers.md#OutlierDetection.combine_mean).
-
-
-```julia
-combine_mean(scores, scores) == scores
-</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="n">last</span><span class="p">(</span><span class="n">scores</span> <span class="o">|&gt;</span> <span class="n">classify_quantile</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element Vector{String}:
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ ⋮
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+</code></pre></div>
+<p>Sometimes it's also necessary to combine scores from multiple detectors, which can, for example, be achieved with <a href="../../API/score-helpers/#OutlierDetection.combine_mean"><code>combine_mean</code></a>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">combine_mean</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span> <span class="o">==</span> <span class="n">scores</span>
+</code></pre></div>
 <div class="highlight"><pre><span></span><code>true
 </code></pre></div>
 <p>We can see that <code>combine_mean</code> can work with multiple train/test tuples and combines them into one final tuple. In this case the resulting tuple consists of the means of the individual train and test score vectors.</p>
@@ -877,8 +896,8 @@ combine_mean(scores, scores) == scores
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{ProbabilisticUnsupervisedDetectorSurrogate,…} trained 0 times; does not cache data
   args: 
-    1:  Source @749 ⏎ `Table{AbstractVector{Continuous}}`
-    2:  Source @671 ⏎ `AbstractVector{OrderedFactor{2}}`
+    1:  Source @723 ⏎ `Table{AbstractVector{Continuous}}`
+    2:  Source @935 ⏎ `AbstractVector{OrderedFactor{2}}`
 </code></pre></div>
 <p>We can <code>fit!</code> and <code>predict</code> with the resulting model as usual.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>

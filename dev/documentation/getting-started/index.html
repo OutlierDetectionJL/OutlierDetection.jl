@@ -706,7 +706,7 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 0 times; caches data
   args: 
-    1:  Source @743 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @740 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Learn models from the training data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
@@ -715,7 +715,7 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
   args: 
-    1:  Source @743 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @740 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Transform the test data into raw outlier scores.</p>
 <div class="highlight"><pre><span></span><code><span class="n">transform</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
@@ -768,8 +768,30 @@
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.955, outlier=&gt;0.0451)
 </code></pre></div>
 <p>Predict outlier classes based on the test data.</p>
-<p><code>@example ex
-predict(knn_deterministic, rows=test)</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">predict</span><span class="p">(</span><span class="n">knn_deterministic</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>1886-element CategoricalArrays.CategoricalArray{String,1,UInt32}:
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ ⋮
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+ &quot;normal&quot;
+</code></pre></div>
 <p><a id='Learn-more'></a></p>
 <p><a id='Learn-more-1'></a></p>
 <h2 id="learn-more">Learn more</h2>
