@@ -1,0 +1,1752 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Fast, scalable and flexible outlier detection with Julia.">
+      
+      
+      
+        <meta name="author" content="David Muhr <muhrdavid@gmail.com> and contributors">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>Detectors - OutlierDetection.jl</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../styles/custom.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#detectors" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OutlierDetection.jl" class="md-header__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OutlierDetection.jl
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Detectors
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../documentation/installation/" class="md-tabs__link">
+        Documentation
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        API
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OutlierDetection.jl" class="md-nav__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
+
+    </a>
+    OutlierDetection.jl
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Documentation" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/simple-usage/" class="md-nav__link">
+        Simple Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/advanced-usage/" class="md-nav__link">
+        Advanced Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_5">
+          For Contributors
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="For Contributors" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          For Contributors
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/key-concepts/" class="md-nav__link">
+        Key Concepts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/performance-tips/" class="md-nav__link">
+        Performance Tips
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Detectors
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Detectors
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#neighbor-based" class="md-nav__link">
+    Neighbor-based
+  </a>
+  
+    <nav class="md-nav" aria-label="Neighbor-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aboddetector" class="md-nav__link">
+    ABODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cofdetector" class="md-nav__link">
+    COFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnndetector" class="md-nav__link">
+    DNNDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#knndetector" class="md-nav__link">
+    KNNDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lofdetector" class="md-nav__link">
+    LOFDetector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#network-based" class="md-nav__link">
+    Network-based
+  </a>
+  
+    <nav class="md-nav" aria-label="Network-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aedetector" class="md-nav__link">
+    AEDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dsaddetector" class="md-nav__link">
+    DSADDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#esaddetector" class="md-nav__link">
+    ESADDetector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-based" class="md-nav__link">
+    Python-based
+  </a>
+  
+    <nav class="md-nav" aria-label="Python-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aboddetector_1" class="md-nav__link">
+    ABODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cblofdetector" class="md-nav__link">
+    CBLOFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cofdetector_1" class="md-nav__link">
+    COFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copoddetector" class="md-nav__link">
+    COPODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hbosdetector" class="md-nav__link">
+    HBOSDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iforestdetector" class="md-nav__link">
+    IForestDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#knndetector_1" class="md-nav__link">
+    KNNDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lmdddetector" class="md-nav__link">
+    LMDDDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lodadetector" class="md-nav__link">
+    LODADetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lofdetector_1" class="md-nav__link">
+    LOFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locidetector" class="md-nav__link">
+    LOCIDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcddetector" class="md-nav__link">
+    MCDDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ocsvmdetector" class="md-nav__link">
+    OCSVMDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pcadetector" class="md-nav__link">
+    PCADetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roddetector" class="md-nav__link">
+    RODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soddetector" class="md-nav__link">
+    SODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sosdetector" class="md-nav__link">
+    SOSDetector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasets/" class="md-nav__link">
+        Datasets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interface/" class="md-nav__link">
+        Interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../score-helpers/" class="md-nav__link">
+        Score Helpers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neural-networks/" class="md-nav__link">
+        Neural Networks
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#neighbor-based" class="md-nav__link">
+    Neighbor-based
+  </a>
+  
+    <nav class="md-nav" aria-label="Neighbor-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aboddetector" class="md-nav__link">
+    ABODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cofdetector" class="md-nav__link">
+    COFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnndetector" class="md-nav__link">
+    DNNDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#knndetector" class="md-nav__link">
+    KNNDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lofdetector" class="md-nav__link">
+    LOFDetector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#network-based" class="md-nav__link">
+    Network-based
+  </a>
+  
+    <nav class="md-nav" aria-label="Network-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aedetector" class="md-nav__link">
+    AEDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dsaddetector" class="md-nav__link">
+    DSADDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#esaddetector" class="md-nav__link">
+    ESADDetector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-based" class="md-nav__link">
+    Python-based
+  </a>
+  
+    <nav class="md-nav" aria-label="Python-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aboddetector_1" class="md-nav__link">
+    ABODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cblofdetector" class="md-nav__link">
+    CBLOFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cofdetector_1" class="md-nav__link">
+    COFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copoddetector" class="md-nav__link">
+    COPODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hbosdetector" class="md-nav__link">
+    HBOSDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iforestdetector" class="md-nav__link">
+    IForestDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#knndetector_1" class="md-nav__link">
+    KNNDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lmdddetector" class="md-nav__link">
+    LMDDDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lodadetector" class="md-nav__link">
+    LODADetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lofdetector_1" class="md-nav__link">
+    LOFDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locidetector" class="md-nav__link">
+    LOCIDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcddetector" class="md-nav__link">
+    MCDDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ocsvmdetector" class="md-nav__link">
+    OCSVMDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pcadetector" class="md-nav__link">
+    PCADetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roddetector" class="md-nav__link">
+    RODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soddetector" class="md-nav__link">
+    SODDetector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sosdetector" class="md-nav__link">
+    SOSDetector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/edit/master/docs/API/detectors.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <p><a id='Detectors'></a></p>
+<p><a id='Detectors-1'></a></p>
+<h1 id="detectors">Detectors</h1>
+<p>A <a href="../interface/#OutlierDetectionInterface.Detector"><code>Detector</code></a> is just a collection of hyperparameters. Each detector implements a <a href="../interface/#OutlierDetectionInterface.fit"><code>fit</code></a> and <a href="../interface/#OutlierDetectionInterface.transform"><code>transform</code></a> method, where <em>fit</em> refers to learning a model from training data and <em>transform</em> refers to using a learned model to calculate outlier scores of new data. Detectors typically do not classify samples into inliers and outliers; that's a <a href="../score-helpers/#OutlierDetection.DeterministicDetector"><code>DeterministicDetector</code></a> wrapper is used to convert the raw scores into binary labels.</p>
+<p><a id='Neighbor-based'></a></p>
+<p><a id='Neighbor-based-1'></a></p>
+<h2 id="neighbor-based">Neighbor-based</h2>
+<p><a id='ABODDetector'></a></p>
+<p><a id='ABODDetector-1'></a></p>
+<h3 id="aboddetector"><code>ABODDetector</code></h3>
+<p><a id='OutlierDetectionNeighbors.ABODDetector' href='#OutlierDetectionNeighbors.ABODDetector'>#</a>
+<strong><code>OutlierDetectionNeighbors.ABODDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ABODDetector</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+             <span class="n">metric</span> <span class="o">=</span> <span class="n">Euclidean</span><span class="p">(),</span>
+             <span class="n">algorithm</span> <span class="o">=</span> <span class="ss">:kdtree</span><span class="p">,</span>
+             <span class="n">static</span> <span class="o">=</span> <span class="ss">:auto</span><span class="p">,</span>
+             <span class="n">leafsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+             <span class="n">reorder</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+             <span class="n">parallel</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+             <span class="n">enhanced</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
+</code></pre></div>
+<p>Determine outliers based on the angles to its nearest neighbors. This implements the <code>FastABOD</code> variant described in the paper, that is, it uses the variance of angles to its nearest neighbors, not to the whole dataset, see [1]. </p>
+<p><em>Notice:</em> The scores are inverted, to conform to our notion that higher scores describe higher outlierness.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>k::Integer
+</code></pre></div>
+<p>Number of neighbors (must be greater than 0).</p>
+<div class="highlight"><pre><span></span><code>metric::Metric
+</code></pre></div>
+<p>This is one of the Metric types defined in the Distances.jl package. It is possible to define your own metrics by creating new types that are subtypes of Metric.</p>
+<div class="highlight"><pre><span></span><code>algorithm::Symbol
+</code></pre></div>
+<p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
+<div class="highlight"><pre><span></span><code>leafsize::Int
+</code></pre></div>
+<p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
+<div class="highlight"><pre><span></span><code>reorder::Bool
+</code></pre></div>
+<p>While building the tree this will put points close in distance close in memory since this helps with cache locality. In this case, a copy of the original data will be made so that the original data is left unmodified. This can have a significant impact on performance and is by default set to true.</p>
+<div class="highlight"><pre><span></span><code>parallel::Bool
+</code></pre></div>
+<p>Parallelize <code>score</code> and <code>predict</code> using all threads available. The number of threads can be set with the <code>JULIA_NUM_THREADS</code> environment variable. Note: <code>fit</code> is not parallel.</p>
+<div class="highlight"><pre><span></span><code>enhanced::Bool
+</code></pre></div>
+<p>When <code>enhanced=true</code>, it uses the enhanced ABOD (EABOD) adaptation proposed by [2].</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">ABODDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">ABODDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">test_scores</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Kriegel, Hans-Peter; S hubert, Matthias; Zimek, Arthur (2008): Angle-based outlier detection in high-dimensional data.</p>
+<p>[2] Li, Xiaojie; Lv, Jian Cheng; Cheng, Dongdong (2015): Angle-Based Outlier Detection Algorithm with More Stable Relationships.</p>
+<p><a id='COFDetector'></a></p>
+<p><a id='COFDetector-1'></a></p>
+<h3 id="cofdetector"><code>COFDetector</code></h3>
+<p><a id='OutlierDetectionNeighbors.COFDetector' href='#OutlierDetectionNeighbors.COFDetector'>#</a>
+<strong><code>OutlierDetectionNeighbors.COFDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">COFDetector</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="n">Euclidean</span><span class="p">(),</span>
+            <span class="n">algorithm</span> <span class="o">=</span> <span class="ss">:kdtree</span><span class="p">,</span>
+            <span class="n">leafsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">reorder</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+            <span class="n">parallel</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
+</code></pre></div>
+<p>Local outlier density based on chaining distance between graphs of neighbors, as described in [1].</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>k::Integer
+</code></pre></div>
+<p>Number of neighbors (must be greater than 0).</p>
+<div class="highlight"><pre><span></span><code>metric::Metric
+</code></pre></div>
+<p>This is one of the Metric types defined in the Distances.jl package. It is possible to define your own metrics by creating new types that are subtypes of Metric.</p>
+<div class="highlight"><pre><span></span><code>algorithm::Symbol
+</code></pre></div>
+<p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
+<div class="highlight"><pre><span></span><code>leafsize::Int
+</code></pre></div>
+<p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
+<div class="highlight"><pre><span></span><code>reorder::Bool
+</code></pre></div>
+<p>While building the tree this will put points close in distance close in memory since this helps with cache locality. In this case, a copy of the original data will be made so that the original data is left unmodified. This can have a significant impact on performance and is by default set to true.</p>
+<div class="highlight"><pre><span></span><code>parallel::Bool
+</code></pre></div>
+<p>Parallelize <code>score</code> and <code>predict</code> using all threads available. The number of threads can be set with the <code>JULIA_NUM_THREADS</code> environment variable. Note: <code>fit</code> is not parallel.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">COFDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">COFDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">test_scores</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Tang, Jian; Chen, Zhixiang; Fu, Ada Wai-Chee; Cheung, David Wai-Lok (2002): Enhancing Effectiveness of Outlier Detections for Low Density Patterns.</p>
+<p><a id='DNNDetector'></a></p>
+<p><a id='DNNDetector-1'></a></p>
+<h3 id="dnndetector"><code>DNNDetector</code></h3>
+<p><a id='OutlierDetectionNeighbors.DNNDetector' href='#OutlierDetectionNeighbors.DNNDetector'>#</a>
+<strong><code>OutlierDetectionNeighbors.DNNDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">DNNDetector</span><span class="p">(</span><span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="n">Euclidean</span><span class="p">(),</span>
+            <span class="n">algorithm</span> <span class="o">=</span> <span class="ss">:kdtree</span><span class="p">,</span>
+            <span class="n">leafsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">reorder</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+            <span class="n">parallel</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
+</code></pre></div>
+<p>Anomaly score based on the number of neighbors in a hypersphere of radius <code>d</code>. Knorr et al. [1] directly converted the resulting outlier scores to labels, thus this implementation does not fully reflect the approach from the paper.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>d::Real
+</code></pre></div>
+<p>The hypersphere radius used to calculate the global density of an instance.</p>
+<div class="highlight"><pre><span></span><code>metric::Metric
+</code></pre></div>
+<p>This is one of the Metric types defined in the Distances.jl package. It is possible to define your own metrics by creating new types that are subtypes of Metric.</p>
+<div class="highlight"><pre><span></span><code>algorithm::Symbol
+</code></pre></div>
+<p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
+<div class="highlight"><pre><span></span><code>leafsize::Int
+</code></pre></div>
+<p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
+<div class="highlight"><pre><span></span><code>reorder::Bool
+</code></pre></div>
+<p>While building the tree this will put points close in distance close in memory since this helps with cache locality. In this case, a copy of the original data will be made so that the original data is left unmodified. This can have a significant impact on performance and is by default set to true.</p>
+<div class="highlight"><pre><span></span><code>parallel::Bool
+</code></pre></div>
+<p>Parallelize <code>score</code> and <code>predict</code> using all threads available. The number of threads can be set with the <code>JULIA_NUM_THREADS</code> environment variable. Note: <code>fit</code> is not parallel.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">DNNDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">DNNDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">test_scores</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Knorr, Edwin M.; Ng, Raymond T. (1998): Algorithms for Mining Distance-Based Outliers in Large Datasets.</p>
+<p><a id='KNNDetector'></a></p>
+<p><a id='KNNDetector-1'></a></p>
+<h3 id="knndetector"><code>KNNDetector</code></h3>
+<p><a id='OutlierDetectionNeighbors.KNNDetector' href='#OutlierDetectionNeighbors.KNNDetector'>#</a>
+<strong><code>OutlierDetectionNeighbors.KNNDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">KNNDetector</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="n">Euclidean</span><span class="p">,</span>
+            <span class="n">algorithm</span><span class="o">=</span><span class="ss">:kdtree</span><span class="p">,</span>
+            <span class="n">leafsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">reorder</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span>
+            <span class="n">reduction</span><span class="o">=</span><span class="ss">:maximum</span><span class="p">)</span>
+</code></pre></div>
+<p>Calculate the anomaly score of an instance based on the distance to its k-nearest neighbors.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>k::Integer
+</code></pre></div>
+<p>Number of neighbors (must be greater than 0).</p>
+<div class="highlight"><pre><span></span><code>metric::Metric
+</code></pre></div>
+<p>This is one of the Metric types defined in the Distances.jl package. It is possible to define your own metrics by creating new types that are subtypes of Metric.</p>
+<div class="highlight"><pre><span></span><code>algorithm::Symbol
+</code></pre></div>
+<p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
+<div class="highlight"><pre><span></span><code>leafsize::Int
+</code></pre></div>
+<p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
+<div class="highlight"><pre><span></span><code>reorder::Bool
+</code></pre></div>
+<p>While building the tree this will put points close in distance close in memory since this helps with cache locality. In this case, a copy of the original data will be made so that the original data is left unmodified. This can have a significant impact on performance and is by default set to true.</p>
+<div class="highlight"><pre><span></span><code>parallel::Bool
+</code></pre></div>
+<p>Parallelize <code>score</code> and <code>predict</code> using all threads available. The number of threads can be set with the <code>JULIA_NUM_THREADS</code> environment variable. Note: <code>fit</code> is not parallel.</p>
+<div class="highlight"><pre><span></span><code>reduction::Symbol
+</code></pre></div>
+<p>One of <code>(:maximum, :median, :mean)</code>. (<code>reduction=:maximum</code>) was proposed by [1]. Angiulli et al. [2] proposed sum to reduce the distances, but mean has been implemented for numerical stability.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">KNNDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">KNNDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">test_scores</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Ramaswamy, Sridhar; Rastogi, Rajeev; Shim, Kyuseok (2000): Efficient Algorithms for Mining Outliers from Large Data Sets.</p>
+<p>[2] Angiulli, Fabrizio; Pizzuti, Clara (2002): Fast Outlier Detection in High Dimensional Spaces.</p>
+<p><a id='LOFDetector'></a></p>
+<p><a id='LOFDetector-1'></a></p>
+<h3 id="lofdetector"><code>LOFDetector</code></h3>
+<p><a id='OutlierDetectionNeighbors.LOFDetector' href='#OutlierDetectionNeighbors.LOFDetector'>#</a>
+<strong><code>OutlierDetectionNeighbors.LOFDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">LOFDetector</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="n">Euclidean</span><span class="p">(),</span>
+            <span class="n">algorithm</span> <span class="o">=</span> <span class="ss">:kdtree</span><span class="p">,</span>
+            <span class="n">leafsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">reorder</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+            <span class="n">parallel</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
+</code></pre></div>
+<p>Calculate an anomaly score based on the density of an instance in comparison to its neighbors. This algorithm introduced the notion of local outliers and was developed by Breunig et al., see [1].</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>k::Integer
+</code></pre></div>
+<p>Number of neighbors (must be greater than 0).</p>
+<div class="highlight"><pre><span></span><code>metric::Metric
+</code></pre></div>
+<p>This is one of the Metric types defined in the Distances.jl package. It is possible to define your own metrics by creating new types that are subtypes of Metric.</p>
+<div class="highlight"><pre><span></span><code>algorithm::Symbol
+</code></pre></div>
+<p>One of <code>(:kdtree, :balltree)</code>. In a <code>kdtree</code>, points are recursively split into groups using hyper-planes. Therefore a KDTree only works with axis aligned metrics which are: Euclidean, Chebyshev, Minkowski and Cityblock. A <em>brutetree</em> linearly searches all points in a brute force fashion and works with any Metric. A <em>balltree</em> recursively splits points into groups bounded by hyper-spheres and works with any Metric.</p>
+<div class="highlight"><pre><span></span><code>static::Union{Bool, Symbol}
+</code></pre></div>
+<p>One of <code>(true, false, :auto)</code>. Whether the input data for fitting and transform should be statically or dynamically allocated. If <code>true</code>, the data is statically allocated. If <code>false</code>, the data is dynamically allocated. If <code>:auto</code>, the data is dynamically allocated if the product of all dimensions except the last is greater than 100.</p>
+<div class="highlight"><pre><span></span><code>leafsize::Int
+</code></pre></div>
+<p>Determines at what number of points to stop splitting the tree further. There is a trade-off between traversing the tree and having to evaluate the metric function for increasing number of points.</p>
+<div class="highlight"><pre><span></span><code>reorder::Bool
+</code></pre></div>
+<p>While building the tree this will put points close in distance close in memory since this helps with cache locality. In this case, a copy of the original data will be made so that the original data is left unmodified. This can have a significant impact on performance and is by default set to true.</p>
+<div class="highlight"><pre><span></span><code>parallel::Bool
+</code></pre></div>
+<p>Parallelize <code>score</code> and <code>predict</code> using all threads available. The number of threads can be set with the <code>JULIA_NUM_THREADS</code> environment variable. Note: <code>fit</code> is not parallel.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">LOFDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">LOFDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">test_scores</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Breunig, Markus M.; Kriegel, Hans-Peter; Ng, Raymond T.; Sander, Jörg (2000): LOF: Identifying Density-Based Local Outliers.</p>
+<p><a id='Network-based'></a></p>
+<p><a id='Network-based-1'></a></p>
+<h2 id="network-based">Network-based</h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The neural-network detectors are <em>experimental</em> and subject to change.</p>
+</div>
+<p><a id='AEDetector'></a></p>
+<p><a id='AEDetector-1'></a></p>
+<h3 id="aedetector"><code>AEDetector</code></h3>
+<p><a id='OutlierDetectionNetworks.AEDetector' href='#OutlierDetectionNetworks.AEDetector'>#</a>
+<strong><code>OutlierDetectionNetworks.AEDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">AEDetector</span><span class="p">(</span><span class="n">encoder</span><span class="o">=</span> <span class="n">Chain</span><span class="p">(),</span>
+           <span class="n">decoder</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(),</span>
+           <span class="n">batchsize</span><span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+           <span class="n">epochs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+           <span class="n">shuffle</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+           <span class="n">partial</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+           <span class="n">opt</span> <span class="o">=</span> <span class="n">ADAM</span><span class="p">(),</span>
+           <span class="n">loss</span> <span class="o">=</span> <span class="n">mse</span><span class="p">)</span>
+</code></pre></div>
+<p>Calculate the anomaly score of an instance based on the reconstruction loss of an autoencoder, see [1] for an explanation of auto encoders.</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>encoder::Chain
+</code></pre></div>
+<p>Transforms the input data into a latent state with a fixed shape.</p>
+<div class="highlight"><pre><span></span><code>decoder::Chain
+</code></pre></div>
+<p>Transforms the latent state back into the shape of the input data.</p>
+<div class="highlight"><pre><span></span><code>batchsize::Integer
+</code></pre></div>
+<p>The number of samples to work through before updating the internal model parameters.</p>
+<div class="highlight"><pre><span></span><code>epochs::Integer
+</code></pre></div>
+<p>The number of passes of the entire training dataset the machine learning algorithm has completed. </p>
+<div class="highlight"><pre><span></span><code>shuffle::Bool
+</code></pre></div>
+<p>If <code>shuffle=true</code>, shuffles the observations each time iterations are re-started, else no shuffling is performed.</p>
+<div class="highlight"><pre><span></span><code>partial::Bool
+</code></pre></div>
+<p>If <code>partial=false</code>, drops the last mini-batch if it is smaller than the batchsize.</p>
+<div class="highlight"><pre><span></span><code>opt::Any
+</code></pre></div>
+<p>Any Flux-compatibale optimizer, typically a <code>struct</code>  that holds all the optimiser parameters along with a definition of <code>apply!</code> that defines how to apply the update rule associated with the optimizer.</p>
+<div class="highlight"><pre><span></span><code>loss::Function
+</code></pre></div>
+<p>The loss function used to calculate the reconstruction error, see <a href="https://fluxml.ai/Flux.jl/stable/models/losses/">https://fluxml.ai/Flux.jl/stable/models/losses/</a> for examples.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">AEDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">AEDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">test_scores</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Aggarwal, Charu C. (2017): Outlier Analysis.</p>
+<p><a id='DSADDetector'></a></p>
+<p><a id='DSADDetector-1'></a></p>
+<h3 id="dsaddetector"><code>DSADDetector</code></h3>
+<p><a id='OutlierDetectionNetworks.DSADDetector' href='#OutlierDetectionNetworks.DSADDetector'>#</a>
+<strong><code>OutlierDetectionNetworks.DSADDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">DSADDetector</span><span class="p">(</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(),</span>
+                <span class="n">decoder</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(),</span>
+                <span class="n">batchsize</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+                <span class="n">epochs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">shuffle</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+                <span class="n">partial</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+                <span class="n">opt</span> <span class="o">=</span> <span class="n">ADAM</span><span class="p">(),</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">mse</span><span class="p">,</span>
+                <span class="n">eta</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+                <span class="n">callback</span> <span class="o">=</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="p">())</span>
+</code></pre></div>
+<p>Deep Semi-Supervised Anomaly detection technique based on the distance to a hypersphere center as described in [1].</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>encoder::Chain
+</code></pre></div>
+<p>Transforms the input data into a latent state with a fixed shape.</p>
+<div class="highlight"><pre><span></span><code>decoder::Chain
+</code></pre></div>
+<p>Transforms the latent state back into the shape of the input data.</p>
+<div class="highlight"><pre><span></span><code>batchsize::Integer
+</code></pre></div>
+<p>The number of samples to work through before updating the internal model parameters.</p>
+<div class="highlight"><pre><span></span><code>epochs::Integer
+</code></pre></div>
+<p>The number of passes of the entire training dataset the machine learning algorithm has completed. </p>
+<div class="highlight"><pre><span></span><code>shuffle::Bool
+</code></pre></div>
+<p>If <code>shuffle=true</code>, shuffles the observations each time iterations are re-started, else no shuffling is performed.</p>
+<div class="highlight"><pre><span></span><code>partial::Bool
+</code></pre></div>
+<p>If <code>partial=false</code>, drops the last mini-batch if it is smaller than the batchsize.</p>
+<div class="highlight"><pre><span></span><code>opt::Any
+</code></pre></div>
+<p>Any Flux-compatibale optimizer, typically a <code>struct</code>  that holds all the optimiser parameters along with a definition of <code>apply!</code> that defines how to apply the update rule associated with the optimizer.</p>
+<div class="highlight"><pre><span></span><code>loss::Function
+</code></pre></div>
+<p>The loss function used to calculate the reconstruction error, see <a href="https://fluxml.ai/Flux.jl/stable/models/losses/">https://fluxml.ai/Flux.jl/stable/models/losses/</a> for examples.</p>
+<div class="highlight"><pre><span></span><code>eta::Real
+</code></pre></div>
+<p>Weighting parameter for the labeled data; i.e. higher values of eta assign higher weight to labeled data in the svdd loss function. For a sensitivity analysis of this parameter, see [1].</p>
+<div class="highlight"><pre><span></span><code>eps::Real
+</code></pre></div>
+<p>Because the inverse distance used in the svdd loss can lead to division by zero, the parameters <code>eps</code> is added for numerical stability.</p>
+<div class="highlight"><pre><span></span><code>callback::Function
+</code></pre></div>
+<p><em>Experimental parameter that might change</em>. A function to be called after the model parameters have been updated that can call Flux's callback helpers, see <a href="https://fluxml.ai/Flux.jl/stable/utilities/#Callback-Helpers-1">https://fluxml.ai/Flux.jl/stable/utilities/#Callback-Helpers-1</a>.</p>
+<p><strong>Notice:</strong> The parameters <code>batchsize</code>, <code>epochs</code>, <code>shuffle</code>, <code>partial</code>, <code>opt</code> and <code>callback</code> can also be tuples of size 2, specifying the corresponding values for (1) pretraining and (2) training; otherwise the same values are used for pretraining and training.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">DSADDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">DSADDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rand</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">train_scores</span><span class="p">,</span> <span class="n">test_scores</span> <span class="o">=</span> <span class="n">score</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Ruff, Lukas; Vandermeulen, Robert A.; Görnitz, Nico; Binder, Alexander; Müller, Emmanuel; Müller, Klaus-Robert; Kloft, Marius (2019): Deep Semi-Supervised Anomaly Detection.</p>
+<p><a id='ESADDetector'></a></p>
+<p><a id='ESADDetector-1'></a></p>
+<h3 id="esaddetector"><code>ESADDetector</code></h3>
+<p><a id='OutlierDetectionNetworks.ESADDetector' href='#OutlierDetectionNetworks.ESADDetector'>#</a>
+<strong><code>OutlierDetectionNetworks.ESADDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ESADDetector</span><span class="p">(</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(),</span>
+            <span class="n">decoder</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(),</span>
+            <span class="n">batchsize</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">epochs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">shuffle</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+            <span class="n">partial</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+            <span class="n">opt</span> <span class="o">=</span> <span class="n">ADAM</span><span class="p">(),</span>
+            <span class="n">λ1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">λ2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">noise</span> <span class="o">=</span> <span class="n">identity</span><span class="p">)</span>
+</code></pre></div>
+<p>End-to-End semi-supervised anomaly detection algorithm similar to DeepSAD, but without the pretraining phase. The algorithm was published by Huang et al., see [1].</p>
+<p><strong>Parameters</strong></p>
+<div class="highlight"><pre><span></span><code>encoder::Chain
+</code></pre></div>
+<p>Transforms the input data into a latent state with a fixed shape.</p>
+<div class="highlight"><pre><span></span><code>decoder::Chain
+</code></pre></div>
+<p>Transforms the latent state back into the shape of the input data.</p>
+<div class="highlight"><pre><span></span><code>batchsize::Integer
+</code></pre></div>
+<p>The number of samples to work through before updating the internal model parameters.</p>
+<div class="highlight"><pre><span></span><code>epochs::Integer
+</code></pre></div>
+<p>The number of passes of the entire training dataset the machine learning algorithm has completed. </p>
+<div class="highlight"><pre><span></span><code>shuffle::Bool
+</code></pre></div>
+<p>If <code>shuffle=true</code>, shuffles the observations each time iterations are re-started, else no shuffling is performed.</p>
+<div class="highlight"><pre><span></span><code>partial::Bool
+</code></pre></div>
+<p>If <code>partial=false</code>, drops the last mini-batch if it is smaller than the batchsize.</p>
+<div class="highlight"><pre><span></span><code>opt::Any
+</code></pre></div>
+<p>Any Flux-compatibale optimizer, typically a <code>struct</code>  that holds all the optimiser parameters along with a definition of <code>apply!</code> that defines how to apply the update rule associated with the optimizer.</p>
+<div class="highlight"><pre><span></span><code>λ1::Real
+</code></pre></div>
+<p>Weighting parameter of the norm loss, which minimizes the empirical variance and thus minimizes entropy.</p>
+<div class="highlight"><pre><span></span><code>λ2::Real
+</code></pre></div>
+<p>Weighting parameter of the assistent loss function to define the consistency between the two encoders.</p>
+<div class="highlight"><pre><span></span><code>noise::Function (AbstractArray{T} -&gt; AbstractArray{T})
+</code></pre></div>
+<p>A function to be applied to a batch of input data to add noise, see [1] for an explanation.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">OutlierDetection</span><span class="o">:</span> <span class="n">ESADDetector</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">score</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">ESADDetector</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rand</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">train_scores</span><span class="p">,</span> <span class="n">test_scores</span> <span class="o">=</span> <span class="n">score</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>References</strong></p>
+<p>[1] Huang, Chaoqin; Ye, Fei; Zhang, Ya; Wang, Yan-Feng; Tian, Qi (2020): ESAD: End-to-end Deep Semi-supervised Anomaly Detection.</p>
+<p><a id='Python-based'></a></p>
+<p><a id='Python-based-1'></a></p>
+<h2 id="python-based">Python-based</h2>
+<p>Using <a href="https://github.com/JuliaPy/PyCall.jl">PyCall</a>, we can easily integrate existing python outlier detection algorithms. Currently, almost every <a href="https://github.com/yzhao062/pyod">PyOD</a> algorithm is integrated and can thus be easily used directly from Julia.</p>
+<p><a id='ABODDetector-2'></a></p>
+<h3 id="aboddetector_1"><code>ABODDetector</code></h3>
+<p><a id='OutlierDetectionPython.ABODDetector' href='#OutlierDetectionPython.ABODDetector'>#</a>
+<strong><code>OutlierDetectionPython.ABODDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ABODDetector</span><span class="p">(</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+                  <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;fast&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.abod">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.abod</a></p>
+<p><a id='CBLOFDetector'></a></p>
+<p><a id='CBLOFDetector-1'></a></p>
+<h3 id="cblofdetector"><code>CBLOFDetector</code></h3>
+<p><a id='OutlierDetectionPython.CBLOFDetector' href='#OutlierDetectionPython.CBLOFDetector'>#</a>
+<strong><code>OutlierDetectionPython.CBLOFDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">CBLOFDetector</span><span class="p">(</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+                   <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+                   <span class="n">beta</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+                   <span class="n">use_weights</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+                   <span class="n">random_state</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">,</span>
+                   <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.cblof">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.cblof</a></p>
+<p><a id='COFDetector-2'></a></p>
+<h3 id="cofdetector_1"><code>COFDetector</code></h3>
+<p><a id='OutlierDetectionPython.COFDetector' href='#OutlierDetectionPython.COFDetector'>#</a>
+<strong><code>OutlierDetectionPython.COFDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">COFDetector</span><span class="p">(</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.cof">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.cof</a></p>
+<p><a id='COPODDetector'></a></p>
+<p><a id='COPODDetector-1'></a></p>
+<h3 id="copoddetector"><code>COPODDetector</code></h3>
+<p><a id='OutlierDetectionPython.COPODDetector' href='#OutlierDetectionPython.COPODDetector'>#</a>
+<strong><code>OutlierDetectionPython.COPODDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">COPODDetector</span><span class="p">()</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.copod">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.copod</a></p>
+<p><a id='HBOSDetector'></a></p>
+<p><a id='HBOSDetector-1'></a></p>
+<h3 id="hbosdetector"><code>HBOSDetector</code></h3>
+<p><a id='OutlierDetectionPython.HBOSDetector' href='#OutlierDetectionPython.HBOSDetector'>#</a>
+<strong><code>OutlierDetectionPython.HBOSDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">HBOSDetector</span><span class="p">(</span><span class="n">n_bins</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+          <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+          <span class="n">tol</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.hbos">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.hbos</a></p>
+<p><a id='IForestDetector'></a></p>
+<p><a id='IForestDetector-1'></a></p>
+<h3 id="iforestdetector"><code>IForestDetector</code></h3>
+<p><a id='OutlierDetectionPython.IForestDetector' href='#OutlierDetectionPython.IForestDetector'>#</a>
+<strong><code>OutlierDetectionPython.IForestDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">IForestDetector</span><span class="p">(</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                     <span class="n">max_samples</span> <span class="o">=</span> <span class="s">&quot;auto&quot;</span><span class="p">,</span>
+                     <span class="n">max_features</span> <span class="o">=</span> <span class="mf">1.0</span>
+                     <span class="n">bootstrap</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+                     <span class="n">behaviour</span> <span class="o">=</span> <span class="s">&quot;new&quot;</span><span class="p">,</span>
+                     <span class="n">random_state</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">,</span>
+                     <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                     <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.iforest">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.iforest</a></p>
+<p><a id='KNNDetector-2'></a></p>
+<h3 id="knndetector_1"><code>KNNDetector</code></h3>
+<p><a id='OutlierDetectionPython.KNNDetector' href='#OutlierDetectionPython.KNNDetector'>#</a>
+<strong><code>OutlierDetectionPython.KNNDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">KNNDetector</span><span class="p">(</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+         <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;largest&quot;</span><span class="p">,</span>
+         <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+         <span class="n">algorithm</span> <span class="o">=</span> <span class="s">&quot;auto&quot;</span><span class="p">,</span>
+         <span class="n">leaf_size</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+         <span class="n">metric</span> <span class="o">=</span> <span class="s">&quot;minkowski&quot;</span><span class="p">,</span>
+         <span class="n">p</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+         <span class="n">metric_params</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">,</span>
+         <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.knn">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.knn</a></p>
+<p><a id='LMDDDetector'></a></p>
+<p><a id='LMDDDetector-1'></a></p>
+<h3 id="lmdddetector"><code>LMDDDetector</code></h3>
+<p><a id='OutlierDetectionPython.LMDDDetector' href='#OutlierDetectionPython.LMDDDetector'>#</a>
+<strong><code>OutlierDetectionPython.LMDDDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">LMDDDetector</span><span class="p">(</span><span class="n">n_iter</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+                  <span class="n">dis_measure</span> <span class="o">=</span> <span class="s">&quot;aad&quot;</span><span class="p">,</span>
+                  <span class="n">random_state</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.lmdd">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.lmdd</a></p>
+<p><a id='LODADetector'></a></p>
+<p><a id='LODADetector-1'></a></p>
+<h3 id="lodadetector"><code>LODADetector</code></h3>
+<p><a id='OutlierDetectionPython.LODADetector' href='#OutlierDetectionPython.LODADetector'>#</a>
+<strong><code>OutlierDetectionPython.LODADetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">LODADetector</span><span class="p">(</span><span class="n">n_bins</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                  <span class="n">n_random_cuts</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.loda">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.loda</a></p>
+<p><a id='LOFDetector-2'></a></p>
+<h3 id="lofdetector_1"><code>LOFDetector</code></h3>
+<p><a id='OutlierDetectionPython.LOFDetector' href='#OutlierDetectionPython.LOFDetector'>#</a>
+<strong><code>OutlierDetectionPython.LOFDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">LOFDetector</span><span class="p">(</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;largest&quot;</span><span class="p">,</span>
+                 <span class="n">algorithm</span> <span class="o">=</span> <span class="s">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">leaf_size</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+                 <span class="n">metric</span> <span class="o">=</span> <span class="s">&quot;minkowski&quot;</span><span class="p">,</span>
+                 <span class="n">p</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                 <span class="n">metric_params</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">,</span>
+                 <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.lof">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.lof</a></p>
+<p><a id='LOCIDetector'></a></p>
+<p><a id='LOCIDetector-1'></a></p>
+<h3 id="locidetector"><code>LOCIDetector</code></h3>
+<p><a id='OutlierDetectionPython.LOCIDetector' href='#OutlierDetectionPython.LOCIDetector'>#</a>
+<strong><code>OutlierDetectionPython.LOCIDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">LOCIDetector</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                  <span class="n">k</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.loci">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.loci</a></p>
+<p><a id='MCDDetector'></a></p>
+<p><a id='MCDDetector-1'></a></p>
+<h3 id="mcddetector"><code>MCDDetector</code></h3>
+<p><a id='OutlierDetectionPython.MCDDetector' href='#OutlierDetectionPython.MCDDetector'>#</a>
+<strong><code>OutlierDetectionPython.MCDDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">MCDDetector</span><span class="p">(</span><span class="n">store_precision</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+                 <span class="n">assume_centered</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+                 <span class="n">support_fraction</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">,</span>
+                 <span class="n">random_state</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.mcd">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.mcd</a></p>
+<p><a id='OCSVMDetector'></a></p>
+<p><a id='OCSVMDetector-1'></a></p>
+<h3 id="ocsvmdetector"><code>OCSVMDetector</code></h3>
+<p><a id='OutlierDetectionPython.OCSVMDetector' href='#OutlierDetectionPython.OCSVMDetector'>#</a>
+<strong><code>OutlierDetectionPython.OCSVMDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">OCSVMDetector</span><span class="p">(</span><span class="n">kernel</span> <span class="o">=</span> <span class="s">&quot;rbf&quot;</span><span class="p">,</span>
+                   <span class="n">degree</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+                   <span class="n">gamma</span> <span class="o">=</span> <span class="s">&quot;auto&quot;</span><span class="p">,</span>
+                   <span class="n">coef0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                   <span class="n">tol</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+                   <span class="n">nu</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                   <span class="n">shrinking</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+                   <span class="n">cache_size</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+                   <span class="n">verbose</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+                   <span class="n">max_iter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.ocsvm">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.ocsvm</a></p>
+<p><a id='PCADetector'></a></p>
+<p><a id='PCADetector-1'></a></p>
+<h3 id="pcadetector"><code>PCADetector</code></h3>
+<p><a id='OutlierDetectionPython.PCADetector' href='#OutlierDetectionPython.PCADetector'>#</a>
+<strong><code>OutlierDetectionPython.PCADetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">PCADetector</span><span class="p">(</span><span class="n">n_components</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">,</span>
+                 <span class="n">n_selected_components</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">,</span>
+                 <span class="n">copy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+                 <span class="n">whiten</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+                 <span class="n">svd_solver</span> <span class="o">=</span> <span class="s">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">tol</span> <span class="o">=</span> <span class="mf">0.0</span>
+                 <span class="n">iterated_power</span> <span class="o">=</span> <span class="s">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">standardization</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+                 <span class="n">weighted</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+                 <span class="n">random_state</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.pca">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.pca</a></p>
+<p><a id='RODDetector'></a></p>
+<p><a id='RODDetector-1'></a></p>
+<h3 id="roddetector"><code>RODDetector</code></h3>
+<p><a id='OutlierDetectionPython.RODDetector' href='#OutlierDetectionPython.RODDetector'>#</a>
+<strong><code>OutlierDetectionPython.RODDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">RODDetector</span><span class="p">(</span><span class="n">parallel_execution</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.rod">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.rod</a></p>
+<p><a id='SODDetector'></a></p>
+<p><a id='SODDetector-1'></a></p>
+<h3 id="soddetector"><code>SODDetector</code></h3>
+<p><a id='OutlierDetectionPython.SODDetector' href='#OutlierDetectionPython.SODDetector'>#</a>
+<strong><code>OutlierDetectionPython.SODDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">SODDetector</span><span class="p">(</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+                 <span class="n">ref_set</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                 <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.sod">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.sod</a></p>
+<p><a id='SOSDetector'></a></p>
+<p><a id='SOSDetector-1'></a></p>
+<h3 id="sosdetector"><code>SOSDetector</code></h3>
+<p><a id='OutlierDetectionPython.SOSDetector' href='#OutlierDetectionPython.SOSDetector'>#</a>
+<strong><code>OutlierDetectionPython.SOSDetector</code></strong> &mdash; <em>Type</em>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">SOSDetector</span><span class="p">(</span><span class="n">perplexity</span> <span class="o">=</span> <span class="mf">4.5</span><span class="p">,</span>
+         <span class="n">metric</span> <span class="o">=</span> <span class="s">&quot;minkowski&quot;</span><span class="p">,</span>
+         <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">)</span>
+</code></pre></div>
+<p><a href="https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.sos">https://pyod.readthedocs.io/en/latest/pyod.models.html#module-pyod.models.sos</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../../documentation/performance-tips/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Performance Tips" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Performance Tips
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../datasets/" class="md-footer__link md-footer__link--next" aria-label="Next: Datasets" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Datasets
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.instant", "navigation.sections"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"provider": "mike", "default": "stable"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>
