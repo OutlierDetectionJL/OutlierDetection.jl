@@ -981,7 +981,7 @@
 <h3 id="label"><code>Label</code></h3>
 <p><a id='OutlierDetectionInterface.Labels' href='#OutlierDetectionInterface.Labels'>#</a>
 <strong><code>OutlierDetectionInterface.Labels</code></strong> &mdash; <em>Type</em>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">Labels</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">Union</span><span class="p">{</span><span class="kt">Missing</span><span class="p">,</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">CategoricalValue</span><span class="p">{</span><span class="kt">String</span><span class="p">,</span> <span class="o">&lt;:</span><span class="kt">Integer</span><span class="p">}}}</span>
+<div class="highlight"><pre><span></span><code><span class="n">Labels</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">Union</span><span class="p">{</span><span class="kt">Missing</span><span class="p">,</span><span class="kt">CategoricalValue</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">T</span><span class="p">,</span><span class="o">&lt;:</span><span class="kt">Integer</span><span class="p">}}}</span> <span class="k">where</span> <span class="p">{</span><span class="kt">T</span><span class="p">}</span>
 </code></pre></div>
 <p>Labels are used for supervision and evaluation and are defined as an (categorical) vectors of strings. The convention for labels is that <code>"outlier"</code> indicates outliers, <code>"normal"</code> indicates inliers and <code>missing</code> indicates unlabeled data.</p>
 <p><a id='Fit'></a></p>

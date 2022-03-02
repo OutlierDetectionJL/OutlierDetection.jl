@@ -1435,9 +1435,27 @@
 </code></pre></div>
 <p>End-to-End semi-supervised anomaly detection algorithm similar to DeepSAD, but without the pretraining phase. The algorithm was published by Huang et al., see [1].</p>
 <p><strong>Parameters</strong></p>
-<div class="highlight"><pre><span></span><code>loss::Function
+<div class="highlight"><pre><span></span><code>encoder::Chain
 </code></pre></div>
-<p>The loss function used to calculate the reconstruction error, see <a href="https://fluxml.ai/Flux.jl/stable/models/losses/">https://fluxml.ai/Flux.jl/stable/models/losses/</a> for examples.</p>
+<p>Transforms the input data into a latent state with a fixed shape.</p>
+<div class="highlight"><pre><span></span><code>decoder::Chain
+</code></pre></div>
+<p>Transforms the latent state back into the shape of the input data.</p>
+<div class="highlight"><pre><span></span><code>batchsize::Integer
+</code></pre></div>
+<p>The number of samples to work through before updating the internal model parameters.</p>
+<div class="highlight"><pre><span></span><code>epochs::Integer
+</code></pre></div>
+<p>The number of passes of the entire training dataset the machine learning algorithm has completed. </p>
+<div class="highlight"><pre><span></span><code>shuffle::Bool
+</code></pre></div>
+<p>If <code>shuffle=true</code>, shuffles the observations each time iterations are re-started, else no shuffling is performed.</p>
+<div class="highlight"><pre><span></span><code>partial::Bool
+</code></pre></div>
+<p>If <code>partial=false</code>, drops the last mini-batch if it is smaller than the batchsize.</p>
+<div class="highlight"><pre><span></span><code>opt::Any
+</code></pre></div>
+<p>Any Flux-compatibale optimizer, typically a <code>struct</code>  that holds all the optimiser parameters along with a definition of <code>apply!</code> that defines how to apply the update rule associated with the optimizer.</p>
 <div class="highlight"><pre><span></span><code>λ1::Real
 </code></pre></div>
 <p>Weighting parameter of the norm loss, which minimizes the empirical variance and thus minimizes entropy.</p>
