@@ -6,12 +6,12 @@ Convert normalized scores to a vector of univariate finite distributions.
 Parameters
 ----------
     scores::[`Scores`](@ref)
+Raw vector of scores.
 
 Returns
 ----------
-    fit::UnivariateFiniteVector{OrderedFactor{2}}
-The learned model of the given detector, which contains all the necessary information for later prediction and the
-achieved outlier scores of the given input data `X`.
+    scores::UnivariateFiniteVector{OrderedFactor{2}}
+Univariate finite vector of scores.
 """
 function to_univariate_finite(scores::Scores)
     MLJ.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], scores; augment = true, pool = missing, ordered = true)
@@ -19,7 +19,7 @@ end
 to_univariate_finite(scores::MLJ.AbstractNode) = MLJ.node(to_univariate_finite, scores)
 
 """
-    to_categorical(classes::Labels)
+    to_categorical(classes::AbstractVector{String})
 
 Convert a vector of classes (with possible missing values) to a categorical vector.
 
@@ -30,20 +30,25 @@ A vector of classes.
 
 Returns
 ----------
-    fit::CategoricalVector{Union{Missing, String},UInt32}
-The learned model of the given detector, which contains all the necessary information for later prediction and the
-achieved outlier scores of the given input data `X`.
+    classes::CategoricalVector{Union{Missing,String}, UInt32}
+A categorical vector of classes.
 """
-function to_categorical(classes::Labels)
+function to_categorical(classes::AbstractVector{String})
+    levels = [CLASS_NORMAL, CLASS_OUTLIER]
+
+    for class in unique(skipmissing(classes))
+        @assert class in levels "Class $class must be in $levels"
+    end
+
     # explicit cast to Vector{Union{String, Missing}} in case only missing values are passed
     c = Vector{Union{String,Missing}}(classes)
     # we cast to string if no missing values are present
-    MLJ.categorical(try Vector{String}(c) catch c end, ordered = true, levels = [CLASS_NORMAL, CLASS_OUTLIER])
+    MLJ.categorical(try Vector{String}(c) catch c end, ordered = true, levels = levels)
 end
 to_categorical(classes::MLJ.AbstractNode) = MLJ.node(to_categorical, classes)
 
 """
-    raw_scores(scores)
+    from_univariate_finite(scores)
 
 Extract the raw scores from a vector of univariate finite distributions.
 
@@ -61,23 +66,22 @@ from_univariate_finite(scores) = MLJ.pdf.(scores, CLASS_OUTLIER)
 from_univariate_finite(scores::MLJ.Node) = MLJ.node(from_univariate_finite, scores)
 
 """
-    raw_scores(scores)
+    from_categorical(classes)
 
 Extract the raw classes from categorical arrays.
 
 Parameters
 ----------
-    scores::MLJ.CategoricalVector
+    classes::MLJ.CategoricalVector
 A vector of categorical values.
 
 Returns
 ----------
-    scores::[`Labels`](@ref)
+    classes::[`Labels`](@ref)
 A vector of raw classes.
 """
 from_categorical(categorical) = MLJ.unwrap.(categorical)
 from_categorical(categorical::MLJ.Node) = MLJ.node(from_categorical, categorical)
-
 
 # transform a fitresult (containing only the model) back to a Fit containing the model and training scores
 to_fitresult(mach::MLJ.Machine{<:OD.Detector})::Fit = (mach.fitresult, mach.report.scores)
