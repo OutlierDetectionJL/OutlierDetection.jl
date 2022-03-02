@@ -17,7 +17,7 @@ A tuple consisting of two vectors representing training and test scores.
 
 Returns
 ----------
-    classes::AbstractVector{String}
+    classes::Tuple{Vector{String}, Vector{String}}
 The vector of classes consisting of `"outlier"` and `"normal"` elements.
 
 Examples
@@ -28,7 +28,7 @@ Examples
     classify(scores_train, scores_test) # ["outlier", "outlier", "inlier"]
 """
 function classify_quantile(threshold::Real)
-    function percentile(scores::Tuple{Scores, Scores})::Tuple{Labels, Labels}
+    function percentile(scores::Tuple{Scores, Scores})::Tuple{Vector{String}, Vector{String}}
         scores_train, scores_test = scores
         @assert 0 < threshold < 1
         t = quantile(scores_train, threshold)
