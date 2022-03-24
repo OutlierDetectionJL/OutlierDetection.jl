@@ -862,7 +862,7 @@
 <span class="n">fit!</span><span class="p">(</span><span class="n">mach</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
 <span class="n">predict</span><span class="p">(</span><span class="n">mach</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>3600-element MLJBase.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.991, outlier=&gt;0.00914)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.978, outlier=&gt;0.0224)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.963, outlier=&gt;0.0365)
@@ -895,15 +895,16 @@
 <span class="n">knn_std</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="n">ProbabilisticUnsupervisedDetector</span><span class="p">(),</span> <span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">;</span> <span class="n">predict</span><span class="o">=</span><span class="n">ŷ</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{ProbabilisticUnsupervisedDetectorSurrogate,…} trained 0 times; does not cache data
+  model: MLJBase.ProbabilisticUnsupervisedDetectorSurrogate
   args: 
-    1:  Source @723 ⏎ `Table{AbstractVector{Continuous}}`
-    2:  Source @935 ⏎ `AbstractVector{OrderedFactor{2}}`
+    1:  Source @931 ⏎ `Table{AbstractVector{Continuous}}`
+    2:  Source @742 ⏎ `AbstractVector{OrderedFactor{2}}`
 </code></pre></div>
 <p>We can <code>fit!</code> and <code>predict</code> with the resulting model as usual.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
 <span class="n">predict</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>3600-element MLJBase.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.988, outlier=&gt;0.0116)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.977, outlier=&gt;0.0229)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.964, outlier=&gt;0.0359)
@@ -933,7 +934,7 @@
 <span class="n">fit!</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
 <span class="n">predict</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>3600-element MLJBase.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.988, outlier=&gt;0.0116)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.977, outlier=&gt;0.0229)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.964, outlier=&gt;0.0359)
@@ -1003,7 +1004,7 @@
 <span class="n">fit!</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
 <span class="n">predict</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>3600-element MLJBase.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.903, outlier=&gt;0.0972)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.874, outlier=&gt;0.126)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.917, outlier=&gt;0.0826)

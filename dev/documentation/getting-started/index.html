@@ -705,8 +705,9 @@
 <span class="n">knn_deterministic</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="n">DeterministicDetector</span><span class="p">(</span><span class="n">knn</span><span class="p">),</span> <span class="n">X</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 0 times; caches data
+  model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
   args: 
-    1:  Source @740 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @552 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Learn models from the training data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
@@ -714,8 +715,9 @@
 <span class="n">fit!</span><span class="p">(</span><span class="n">knn_deterministic</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
+  model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
   args: 
-    1:  Source @740 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @552 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Transform the test data into raw outlier scores.</p>
 <div class="highlight"><pre><span></span><code><span class="n">transform</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
@@ -745,7 +747,7 @@
 <p>Predict outlier probabilities based on the test data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">predict</span><span class="p">(</span><span class="n">knn_probabilistic</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>1886-element MLJBase.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+<div class="highlight"><pre><span></span><code>1886-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.96, outlier=&gt;0.0403)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.931, outlier=&gt;0.069)
  UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.81, outlier=&gt;0.19)
