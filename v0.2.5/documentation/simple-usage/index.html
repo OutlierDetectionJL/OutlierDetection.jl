@@ -1,0 +1,1121 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Fast, scalable and flexible outlier detection with Julia.">
+      
+      
+      
+        <meta name="author" content="David Muhr <muhrdavid@gmail.com> and contributors">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>Simple Usage - OutlierDetection.jl</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../styles/custom.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#simple-usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OutlierDetection.jl" class="md-header__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OutlierDetection.jl
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Simple Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../installation/" class="md-tabs__link md-tabs__link--active">
+        Documentation
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API/detectors/" class="md-tabs__link">
+        API
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OutlierDetection.jl" class="md-nav__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
+
+    </a>
+    OutlierDetection.jl
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Documentation" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Simple Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Simple Usage
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#loading-data" class="md-nav__link">
+    Loading data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-formats" class="md-nav__link">
+    Data formats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-models" class="md-nav__link">
+    Loading models
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-evaluation" class="md-nav__link">
+    Model evaluation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-optimization" class="md-nav__link">
+    Model optimization
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-usage" class="md-nav__link">
+    Model usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-persistence" class="md-nav__link">
+    Model persistence
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-usage/" class="md-nav__link">
+        Advanced Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_5">
+          For Contributors
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="For Contributors" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          For Contributors
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../key-concepts/" class="md-nav__link">
+        Key Concepts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../performance-tips/" class="md-nav__link">
+        Performance Tips
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/detectors/" class="md-nav__link">
+        Detectors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/datasets/" class="md-nav__link">
+        Datasets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/interface/" class="md-nav__link">
+        Interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/score-helpers/" class="md-nav__link">
+        Score Helpers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/neural-networks/" class="md-nav__link">
+        Neural Networks
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#loading-data" class="md-nav__link">
+    Loading data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-formats" class="md-nav__link">
+    Data formats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-models" class="md-nav__link">
+    Loading models
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-evaluation" class="md-nav__link">
+    Model evaluation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-optimization" class="md-nav__link">
+    Model optimization
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-usage" class="md-nav__link">
+    Model usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-persistence" class="md-nav__link">
+    Model persistence
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/edit/master/docs/documentation/simple-usage.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <p><a id='Simple-Usage'></a></p>
+<p><a id='Simple-Usage-1'></a></p>
+<h1 id="simple-usage">Simple Usage</h1>
+<p>Let's import the necessary packages first.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span> <span class="n">MLJ</span>
+<span class="k">using</span> <span class="n">OutlierDetection</span>
+<span class="k">using</span> <span class="n">OutlierDetectionData</span><span class="o">:</span> <span class="n">ODDS</span>
+</code></pre></div>
+<p><a id='Loading-data'></a></p>
+<p><a id='Loading-data-1'></a></p>
+<h2 id="loading-data">Loading data</h2>
+<p>We can list the available datasets in the imported <code>ODDS</code> dataset collection with <a href="../../API/datasets/#OutlierDetectionData.list"><code>list</code></a></p>
+<div class="highlight"><pre><span></span><code><span class="n">ODDS</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>27-element Vector{String}:
+ &quot;annthyroid&quot;
+ &quot;arrhythmia&quot;
+ &quot;breastw&quot;
+ &quot;cardio&quot;
+ &quot;cover&quot;
+ &quot;glass&quot;
+ &quot;http&quot;
+ &quot;ionosphere&quot;
+ &quot;letter&quot;
+ &quot;lympho&quot;
+ ⋮
+ &quot;satimage-2&quot;
+ &quot;shuttle&quot;
+ &quot;smtp&quot;
+ &quot;speech&quot;
+ &quot;thyroid&quot;
+ &quot;vertebral&quot;
+ &quot;vowels&quot;
+ &quot;wbc&quot;
+ &quot;wine&quot;
+</code></pre></div>
+<p>We can now <a href="../../API/datasets/#OutlierDetectionData.load"><code>load</code></a> a dataset by specifying its name.</p>
+<div class="highlight"><pre><span></span><code><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ODDS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;annthyroid&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>(7200×6 DataFrame
+  Row │ x1       x2       x3       x4       x5       x6
+      │ Float64  Float64  Float64  Float64  Float64  Float64
+──────┼──────────────────────────────────────────────────────
+    1 │    0.73  0.0006    0.015   0.12       0.082  0.146
+    2 │    0.24  0.00025   0.03    0.143      0.133  0.108
+    3 │    0.47  0.0019    0.024   0.102      0.131  0.078
+    4 │    0.64  0.0009    0.017   0.077      0.09   0.085
+    5 │    0.23  0.00025   0.026   0.139      0.09   0.153
+    6 │    0.69  0.00025   0.016   0.086      0.07   0.123
+    7 │    0.85  0.00025   0.023   0.128      0.104  0.121
+    8 │    0.48  0.00208   0.02    0.086      0.078  0.11
+  ⋮   │    ⋮        ⋮        ⋮        ⋮        ⋮        ⋮
+ 7194 │    0.7   0.0009    0.015   0.104      0.095  0.109
+ 7195 │    0.79  0.0049    0.0201  0.077      0.082  0.094
+ 7196 │    0.59  0.0025    0.0208  0.079      0.099  0.08
+ 7197 │    0.51  0.106     0.006   0.005      0.089  0.0055
+ 7198 │    0.51  0.00076   0.0201  0.09       0.067  0.134
+ 7199 │    0.35  0.0028    0.0201  0.09       0.089  0.101
+ 7200 │    0.73  0.00056   0.0201  0.081      0.09   0.09
+                                            7185 rows omitted, CategoricalArrays.CategoricalValue{String, UInt32}[&quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;  …  &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;outlier&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;])
+</code></pre></div>
+<p><a id='Data-formats'></a></p>
+<p><a id='Data-formats-1'></a></p>
+<h2 id="data-formats">Data formats</h2>
+<p>Because <code>OutlierDetection.jl</code> is built upon MLJ, there are some things to know regarding the data used in outlier detection tasks. A detector can typically be instantiated with continuous data <code>X</code> satisfying the <a href="https://tables.juliadata.org/stable/"><code>Tables.jl</code></a> interface. Often we use <a href="https://dataframes.juliadata.org/stable/"><code>DataFrames.jl</code></a> to create such tables. An important distinction to know is the difference between <em>machine types</em> and <em>scientific types</em>.</p>
+<ul>
+<li>The <em>machine</em> type refers to the Julia type being used to represent the object (for instance, Float64).</li>
+<li>The <em>scientific</em> type is one of the types defined in <a href="https://juliaai.github.io/ScientificTypes.jl/stable/"><code>ScientificTypes.jl</code></a> reflecting how the object should be interpreted (for instance, <code>Continuous</code> or <code>Multiclass</code>).</li>
+</ul>
+<p>We can examine the machine and scientific types of our loaded dataframe <code>X</code> with <code>ScientificTypes.schema</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">schema</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>┌───────┬────────────┬─────────┐
+│ names │ scitypes   │ types   │
+├───────┼────────────┼─────────┤
+│ x1    │ Continuous │ Float64 │
+│ x2    │ Continuous │ Float64 │
+│ x3    │ Continuous │ Float64 │
+│ x4    │ Continuous │ Float64 │
+│ x5    │ Continuous │ Float64 │
+│ x6    │ Continuous │ Float64 │
+└───────┴────────────┴─────────┘
+</code></pre></div>
+<p>Fortunately, our table contains only <code>Continuous</code> data as expected. Labels in outlier detection are always encoded as a categorical vectors with classes <code>"normal"</code> and <code>"outlier"</code> and scitype <code>OrderedFactor{2}</code>. Data with type <code>OrderedFactor{2}</code> is considered to have an intrinsic "positive" class, in our case <code>"outlier"</code>. Measures, such as <code>true_positive</code> assume the second class in the ordering is the "positive" class. Using the helper <a href="../../API/score-helpers/#OutlierDetection.to_categorical"><code>to_categorical</code></a>, we can transform a <code>Vector{String}</code> to a categorical vector, which ensures there are only two classes and the positive class is <code>"outlier"</code>. We don't need to coerce <code>y</code> to a categorical array in our example because <code>load</code> already returns categorical vectors.</p>
+<div class="highlight"><pre><span></span><code><span class="n">to_categorical</span><span class="p">([</span><span class="s">&quot;normal&quot;</span><span class="p">,</span> <span class="s">&quot;normal&quot;</span><span class="p">,</span> <span class="s">&quot;outlier&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3-element CategoricalArrays.CategoricalArray{String,1,UInt32}:
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+</code></pre></div>
+<p><a id='Loading-models'></a></p>
+<p><a id='Loading-models-1'></a></p>
+<h2 id="loading-models">Loading models</h2>
+<p>Having the data ready, we can list all available detectors in MLJ. By convention, a detector is named <code>$(Name)Detector</code> in MLJ, e.g. <code>KNNDetector</code> and we can thus simply search for "Detector".</p>
+<div class="highlight"><pre><span></span><code><span class="n">models</span><span class="p">(</span><span class="s">&quot;Detector&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>25-element Vector{NamedTuple{(:name, :package_name, :is_supervised, :abstract_type, :deep_properties, :docstring, :fit_data_scitype, :human_name, :hyperparameter_ranges, :hyperparameter_types, :hyperparameters, :implemented_methods, :inverse_transform_scitype, :is_pure_julia, :is_wrapper, :iteration_parameter, :load_path, :package_license, :package_url, :package_uuid, :predict_scitype, :prediction_type, :supports_class_weights, :supports_online, :supports_training_losses, :supports_weights, :transform_scitype, :input_scitype, :target_scitype, :output_scitype)}}:
+ (name = ABODDetector, package_name = OutlierDetectionNeighbors, ... )
+ (name = ABODDetector, package_name = OutlierDetectionPython, ... )
+ (name = AEDetector, package_name = OutlierDetectionNetworks, ... )
+ (name = CBLOFDetector, package_name = OutlierDetectionPython, ... )
+ (name = COFDetector, package_name = OutlierDetectionNeighbors, ... )
+ (name = COFDetector, package_name = OutlierDetectionPython, ... )
+ (name = COPODDetector, package_name = OutlierDetectionPython, ... )
+ (name = DNNDetector, package_name = OutlierDetectionNeighbors, ... )
+ (name = DSADDetector, package_name = OutlierDetectionNetworks, ... )
+ (name = ESADDetector, package_name = OutlierDetectionNetworks, ... )
+ ⋮
+ (name = LODADetector, package_name = OutlierDetectionPython, ... )
+ (name = LOFDetector, package_name = OutlierDetectionNeighbors, ... )
+ (name = LOFDetector, package_name = OutlierDetectionPython, ... )
+ (name = MCDDetector, package_name = OutlierDetectionPython, ... )
+ (name = OCSVMDetector, package_name = OutlierDetectionPython, ... )
+ (name = PCADetector, package_name = OutlierDetectionPython, ... )
+ (name = RODDetector, package_name = OutlierDetectionPython, ... )
+ (name = SODDetector, package_name = OutlierDetectionPython, ... )
+ (name = SOSDetector, package_name = OutlierDetectionPython, ... )
+</code></pre></div>
+<p>Loading a detector of your choice is simple with <code>@load</code> or <code>@iload</code>, see <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/loading_model_code/">loading model code</a>. There are multiple detectors named <code>KNNDetector</code>, thus we specify the package beforehand.</p>
+<div class="highlight"><pre><span></span><code><span class="n">KNN</span> <span class="o">=</span> <span class="nd">@iload</span> <span class="n">KNNDetector</span> <span class="n">pkg</span><span class="o">=</span><span class="n">OutlierDetectionNeighbors</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>OutlierDetectionNeighbors.KNNDetector
+</code></pre></div>
+<p>To enable later evaluation, we wrap a raw detector (which only defines <code>transform</code> returning raw outlier scores) in a <a href="../../API/score-helpers/#OutlierDetection.ProbabilisticDetector"><code>ProbabilisticDetector</code></a>; this enables us to <code>predict</code> outlier probabilities from the raw scores.</p>
+<div class="highlight"><pre><span></span><code><span class="n">knn</span> <span class="o">=</span> <span class="n">ProbabilisticDetector</span><span class="p">(</span><span class="n">KNN</span><span class="p">())</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>ProbabilisticUnsupervisedCompositeDetector(
+    normalize = OutlierDetection.scale_minmax,
+    combine = OutlierDetection.combine_mean,
+    detector = KNNDetector(
+            k = 5,
+            metric = Distances.Euclidean(0.0),
+            algorithm = :kdtree,
+            static = :auto,
+            leafsize = 10,
+            reorder = true,
+            parallel = false,
+            reduction = :maximum))
+</code></pre></div>
+<p>Note that the call above assumes that you want to use the default parameters to instantiate the <a href="../../API/detectors/#OutlierDetectionNeighbors.KNNDetector"><code>OutlierDetectionNeighbors.KNNDetector</code></a> and <a href="../../API/score-helpers/#OutlierDetection.ProbabilisticDetector"><code>ProbabilisticDetector</code></a>, e.g. <code>k=5</code> so on.</p>
+<p><a id='Model-evaluation'></a></p>
+<p><a id='Model-evaluation-1'></a></p>
+<h2 id="model-evaluation">Model evaluation</h2>
+<p>We can now evaluate how such a model performs. By default, a probabilistic detector is evaluated using <code>area_under_curve</code>, but there are a lot of other evaluation strategies available, see the <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/performance_measures/#List-of-measures">list of measures</a>. We use stratified five-fold cross validation to evaluate our model, but other <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/evaluating_model_performance/#Built-in-resampling-strategies">resampling strategies</a> are possible as well.</p>
+<div class="highlight"><pre><span></span><code><span class="n">cv</span> <span class="o">=</span> <span class="n">StratifiedCV</span><span class="p">(</span><span class="n">nfolds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">evaluate</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span> <span class="n">resampling</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>PerformanceEvaluation object with these fields:
+  measure, measurement, operation, per_fold,
+  per_observation, fitted_params_per_fold,
+  report_per_fold, train_test_pairs
+Extract:
+┌──────────────────┬─────────────┬───────────┬──────────────────────────────────
+│ measure          │ measurement │ operation │ per_fold                        ⋯
+├──────────────────┼─────────────┼───────────┼──────────────────────────────────
+│ AreaUnderCurve() │ 0.747       │ predict   │ [0.767, 0.725, 0.707, 0.753, 0. ⋯
+└──────────────────┴─────────────┴───────────┴──────────────────────────────────
+                                                                1 column omitted
+</code></pre></div>
+<p><a id='Model-optimization'></a></p>
+<p><a id='Model-optimization-1'></a></p>
+<h2 id="model-optimization">Model optimization</h2>
+<p>As previously mentioned, we used the default parameters to create our model. However, we typically don't know an appropriate amount of neighbors (<code>k</code>) beforehand. Using MLJ's built-in model tuning we can identify the best <code>k</code> given some performance measure.</p>
+<p>Let's first define a range of possible parameter values for <code>k</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span> <span class="o">:</span><span class="p">(</span><span class="n">detector</span><span class="o">.</span><span class="n">k</span><span class="p">),</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">:</span><span class="mi">5</span><span class="o">:</span><span class="mi">100</span><span class="o">...</span><span class="p">])</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>NominalRange(detector.k = 1, 2, 3, ...)
+</code></pre></div>
+<p>We can then use this range, or multiple ranges, to create a tuned model by additionally specifing a <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/tuning_models/">tuning-strategy</a>, which defines how to efficiently evaluate ranges. In our case we use a simple grid search to evaluate all the given parameter options.</p>
+<div class="highlight"><pre><span></span><code><span class="n">t</span> <span class="o">=</span> <span class="n">TunedModel</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">knn</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">tuning</span><span class="o">=</span><span class="n">Grid</span><span class="p">(),</span> <span class="n">range</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">acceleration</span><span class="o">=</span><span class="n">CPUThreads</span><span class="p">())</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>ProbabilisticTunedModel(
+    model = ProbabilisticUnsupervisedCompositeDetector(
+            normalize = OutlierDetection.scale_minmax,
+            combine = OutlierDetection.combine_mean,
+            detector = KNNDetector),
+    tuning = Grid(
+            goal = nothing,
+            resolution = 10,
+            shuffle = true,
+            rng = Random._GLOBAL_RNG()),
+    resampling = StratifiedCV(
+            nfolds = 5,
+            shuffle = true,
+            rng = Random.MersenneTwister(0, (0, 11022, 10020, 443))),
+    measure = AreaUnderCurve(),
+    weights = nothing,
+    operation = nothing,
+    range = NominalRange(detector.k = 1, 2, 3, ...),
+    selection_heuristic = MLJTuning.NaiveSelection(nothing),
+    train_best = true,
+    repeats = 1,
+    n = nothing,
+    acceleration = ComputationalResources.CPUThreads{Int64}(1),
+    acceleration_resampling = ComputationalResources.CPU1{Nothing}(nothing),
+    check_measure = true,
+    cache = true)
+</code></pre></div>
+<p>We can again bind that model to data and fit it. Fitting a tuned model instigates a search for optimal model hyperparameters, within specified <code>range</code>s, and then uses all supplied data to train the best model.</p>
+<div class="highlight"><pre><span></span><code><span class="n">m</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">fit!</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Machine{ProbabilisticTunedModel{Grid,…},…} trained 1 time; caches data
+  model: MLJTuning.ProbabilisticTunedModel{MLJTuning.Grid, OutlierDetection.ProbabilisticUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}}
+  args: 
+    1:  Source @878 ⏎ `Table{AbstractVector{Continuous}}`
+    2:  Source @283 ⏎ `AbstractVector{OrderedFactor{2}}`
+</code></pre></div>
+<p>Using the machines' report, we can idenity the best evaluation results.</p>
+<div class="highlight"><pre><span></span><code><span class="n">report</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">best_history_entry</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>(model = ProbabilisticUnsupervisedCompositeDetector{,…},
+ measure = [AreaUnderCurve()],
+ measurement = [0.7674529768473908],
+ per_fold = [[0.7635922604735368, 0.7779655194172375, 0.7775027869116812, 0.7748175361597409, 0.743386781274758]],)
+</code></pre></div>
+<p>Additionally, we can easily extract the best identified model.</p>
+<div class="highlight"><pre><span></span><code><span class="n">b</span> <span class="o">=</span> <span class="n">report</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">best_model</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>ProbabilisticUnsupervisedCompositeDetector(
+    normalize = OutlierDetection.scale_minmax,
+    combine = OutlierDetection.combine_mean,
+    detector = KNNDetector(
+            k = 1,
+            metric = Distances.Euclidean(0.0),
+            algorithm = :kdtree,
+            static = :auto,
+            leafsize = 10,
+            reorder = true,
+            parallel = false,
+            reduction = :maximum))
+</code></pre></div>
+<p>Let's evaluate the best model again to make sure it achieves the expected performance.</p>
+<div class="highlight"><pre><span></span><code><span class="n">evaluate</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>PerformanceEvaluation object with these fields:
+  measure, measurement, operation, per_fold,
+  per_observation, fitted_params_per_fold,
+  report_per_fold, train_test_pairs
+Extract:
+┌──────────────────┬─────────────┬───────────┬──────────────────────────────────
+│ measure          │ measurement │ operation │ per_fold                        ⋯
+├──────────────────┼─────────────┼───────────┼──────────────────────────────────
+│ AreaUnderCurve() │ 0.767       │ predict   │ [0.764, 0.778, 0.778, 0.775, 0. ⋯
+└──────────────────┴─────────────┴───────────┴──────────────────────────────────
+                                                                1 column omitted
+</code></pre></div>
+<p><a id='Model-usage'></a></p>
+<p><a id='Model-usage-1'></a></p>
+<h2 id="model-usage">Model usage</h2>
+<p>Now that we have found the best model, we can use it to determine outliers in the data. Converting scores to classes can be achieved with a <a href="../../API/score-helpers/#OutlierDetection.DeterministicDetector"><code>DeterministicDetector</code></a>. Let's create some fake train/test indices and suppose we want to identify outliers in the test data.</p>
+<div class="highlight"><pre><span></span><code><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">partition</span><span class="p">(</span><span class="n">eachindex</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>([2031, 4888, 6696, 4906, 527, 2594, 303, 1542, 4275, 6202  …  4723, 3464, 1779, 3003, 5096, 3151, 5887, 2305, 3819, 922], [899, 6722, 253, 514, 5683, 4430, 4214, 6985, 2566, 1357  …  214, 3589, 4588, 3590, 2444, 5272, 5401, 276, 4497, 83])
+</code></pre></div>
+<p>Let's determine the <a href="../../API/score-helpers/#OutlierDetection.outlier_fraction"><code>outlier_fraction</code></a> in the training data, which we then use to determine a threshold to convert the outlier scores into classes. Using <a href="../../API/score-helpers/#OutlierDetection.classify_quantile"><code>classify_quantile</code></a>, we can create a classification function based on quantiles of the training data. In the following example we define an outlier's score to lie above the <em>1 - outlier_fraction</em> training scores' quantile.</p>
+<div class="highlight"><pre><span></span><code><span class="n">threshold</span> <span class="o">=</span> <span class="n">classify_quantile</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">outlier_fraction</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">]))</span>
+<span class="n">final</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="n">DeterministicDetector</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">detector</span><span class="p">,</span> <span class="n">classify</span><span class="o">=</span><span class="n">threshold</span><span class="p">),</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">fit!</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
+  model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
+  args: 
+    1:  Source @157 ⏎ `Table{AbstractVector{Continuous}}`
+</code></pre></div>
+<p>Using <code>predict</code> allows us to determine the outliers in the test data.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ŷ</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element CategoricalArrays.CategoricalArray{String,1,UInt32}:
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ ⋮
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+</code></pre></div>
+<p><a id='Model-persistence'></a></p>
+<p><a id='Model-persistence-1'></a></p>
+<h2 id="model-persistence">Model persistence</h2>
+<p>Finally, we can store the model with <code>MLJ.save</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">MLJ</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;final.jlso&quot;</span><span class="p">,</span> <span class="n">final</span><span class="p">)</span>
+</code></pre></div>
+<p>Loading the model again, the machine is not bound to data anymore, but we can bind it to data if we supply <code>X</code> again.</p>
+<div class="highlight"><pre><span></span><code><span class="n">final</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="s">&quot;final.jlso&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
+  model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
+  args: 
+</code></pre></div>
+<p>We can still use the machine to predict, even though its not bound to data.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ŷ</span> <span class="o">==</span> <span class="n">predict</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">,</span> <span class="o">:</span><span class="p">])</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>true
+</code></pre></div>
+<p>If you would like to know how you can combine detectors or how to develop your own detectors, continue with the <a href="../advanced-usage">Advanced Usage</a> guide.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting Started" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Getting Started
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../advanced-usage/" class="md-footer__link md-footer__link--next" aria-label="Next: Advanced Usage" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Advanced Usage
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.instant", "navigation.sections"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"provider": "mike", "default": "stable"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>
