@@ -155,9 +155,8 @@ function return_with_scores!(network_mach, model, verbosity, scores_train, X)
 end
 
 # augment the test scores with the training scores from the fit result (report)
-augment(Xs) = mach -> MLJ.node((mach, Xs) -> (mach.report.scores, MLJ.transform(mach, Xs)), mach, Xs)
-augment_scores(model, Xs) = augment(Xs).(map(d -> MLJ.machine(d, Xs), getfield(model, :detectors)))
-augment_scores(model, Xs, ys) = augment(Xs).(map(d -> MLJ.machine(d, Xs, ys), getfield(model, :detectors)))
+augment_scores(model, Xs) = map(d -> augmented_transform(MLJ.machine(d, Xs), Xs), getfield(model, :detectors))
+augment_scores(model, Xs, ys) = map(d -> augmented_transform(MLJ.machine(d, Xs, ys), Xs), getfield(model, :detectors))
 apply_to_scores(normalize, combine, augmented_scores) = begin
     _to_scores(scores...) = to_scores(normalize, combine, scores...)
     scores = MLJ.node(_to_scores, augmented_scores...)
@@ -175,7 +174,7 @@ function supervised_transformer(model, Xs, ys)
     return scores
 end
 
-function MLJ.fit(model::ProbabilisticUnsupervisedCompositeDetector, verbosity::Int64, X)
+function MLJ.fit(model::ProbabilisticUnsupervisedCompositeDetector, verbosity::Integer, X)
     Xs = MLJ.source(X)
     scores = unsupervised_transformer(model, Xs)
     scores_train, scores_test = first(scores), last(scores)
@@ -185,7 +184,7 @@ function MLJ.fit(model::ProbabilisticUnsupervisedCompositeDetector, verbosity::I
     return_with_scores!(network_mach, model, verbosity, scores_train, X)
 end
 
-function MLJ.fit(model::DeterministicUnsupervisedCompositeDetector, verbosity::Int64, X)
+function MLJ.fit(model::DeterministicUnsupervisedCompositeDetector, verbosity::Integer, X)
     Xs = MLJ.source(X)
     scores = unsupervised_transformer(model, Xs)
     scores_train, scores_test = first(scores), last(scores)
@@ -196,7 +195,7 @@ function MLJ.fit(model::DeterministicUnsupervisedCompositeDetector, verbosity::I
     return_with_scores!(network_mach, model, verbosity, scores_train, X)
 end
 
-function MLJ.fit(model::ProbabilisticSupervisedCompositeDetector, verbosity::Int64, X, y)
+function MLJ.fit(model::ProbabilisticSupervisedCompositeDetector, verbosity::Integer, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
     scores = supervised_transformer(model, Xs, ys)
     scores_train, scores_test = first(scores), last(scores)
@@ -206,7 +205,7 @@ function MLJ.fit(model::ProbabilisticSupervisedCompositeDetector, verbosity::Int
     return_with_scores!(network_mach, model, verbosity, scores_train, X)
 end
 
-function MLJ.fit(model::DeterministicSupervisedCompositeDetector, verbosity::Int64, X, y)
+function MLJ.fit(model::DeterministicSupervisedCompositeDetector, verbosity::Integer, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
     scores = supervised_transformer(model, Xs, ys)
     scores_train, scores_test = first(scores), last(scores)
