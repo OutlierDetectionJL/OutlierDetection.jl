@@ -53,18 +53,4 @@ module OutlierDetection
     include("mlj_helpers.jl")
     include("mlj_transformers.jl")
     include("mlj_wrappers.jl")
-
-    # add default data frontend
-    MODELS = [:ProbabilisticUnsupervisedCompositeDetector,
-              :DeterministicUnsupervisedCompositeDetector,
-              :ProbabilisticSupervisedCompositeDetector,
-              :DeterministicSupervisedCompositeDetector,
-              :UnsupervisedCompositeDetector,
-              :SupervisedCompositeDetector]
-
-    for model in MODELS
-       @eval begin
-           OD.@default_frontend $model
-       end
-   end
 end
