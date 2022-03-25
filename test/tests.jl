@@ -1,65 +1,140 @@
 # helper to create fake data from scores such that the detectors return the scores again
 to_table(points) = reshape(repeat(points, length(points)), (length(points), length(points))) |> table
-const base = [1., 2, 3]
+const base = [1.0, 2, 3]
 const test_scores = [base, # train and test equal
-                     [1.,2], # len(test) < len(train)
-                     [-Inf, 0., 1, 2, 3, 4, Inf], # len(test) > len(train)
-                     [1.,1,1],  # len(test) = len(train)
-                     [2.,2,2],
-                     [3.,3,3]]
+    [1.0, 2], # len(test) < len(train)
+    [-Inf, 0.0, 1, 2, 3, 4, Inf], # len(test) > len(train)
+    [1.0, 1, 1],  # len(test) = len(train)
+    [2.0, 2, 2],
+    [3.0, 3, 3]]
 const scores0, scores1, scores2, scores3, scores4, scores5 = map(t -> (base, t), test_scores)
 const X_test0, X_test1, X_test2, X_test3, X_test4, X_test5 = map(to_table, test_scores)
 const X = to_table(base)
 const y = to_categorical(["normal", "normal", "outlier"])
 
-# # fake detectors
+# detectors
 supervised = MinimalSupervisedDetector()
 unsupervised = MinimalUnsupervisedDetector()
+raw_supervised = MMISupervisedDetector()
+raw_unsupervised = MMIUnsupervisedDetector()
 
-# # fake machines
-u = machine(unsupervised, X) |> fit!
-s = machine(supervised, X, y) |> fit!
-raw_machines = [u, s]
+# raw machines
+unsupervised_machine = machine(unsupervised, X) |> fit!
+raw_unsupervised_machine = machine(raw_unsupervised, X) |> fit!
+supervised_machine = machine(supervised, X, y) |> fit!
+raw_supervised_machine = machine(raw_supervised, X, y) |> fit!
+raw_machines = [
+    unsupervised_machine,
+    raw_unsupervised_machine,
+    supervised_machine,
+    raw_supervised_machine]
 
-uc = machine(CompositeDetector(unsupervised), X) |> fit!
-sc = machine(CompositeDetector(supervised), X, y) |> fit!
-up = machine(ProbabilisticDetector(unsupervised), X) |> fit!
-sp = machine(ProbabilisticDetector(supervised), X, y) |> fit!
-ud = machine(DeterministicDetector(unsupervised), X) |> fit!
-sd = machine(DeterministicDetector(supervised), X, y) |> fit!
-composite_machines = [uc, sc, up, sp, ud, sd]
+transform(supervised_machine)
+transform(unsupervised_machine)
+transform(raw_supervised_machine)
+transform(raw_unsupervised_machine)
 
-upc = machine(ProbabilisticDetector(CompositeDetector(unsupervised)), X) |> fit!
-spc = machine(ProbabilisticDetector(CompositeDetector(supervised)), X, y) |> fit!
-udc = machine(DeterministicDetector(CompositeDetector(unsupervised)), X) |> fit!
-sdc = machine(DeterministicDetector(CompositeDetector(supervised)), X, y) |> fit!
-wrapped_machines = [upc, spc, udc, sdc]
+# composite machines
+unsupervised_composite = machine(CompositeDetector(unsupervised), X) |> fit!
+raw_unsupervised_composite = machine(CompositeDetector(raw_unsupervised), X) |> fit!
+supervised_composite = machine(CompositeDetector(supervised), X, y) |> fit!
+raw_supervised_composite = machine(CompositeDetector(raw_supervised), X, y) |> fit!
+unsupervised_probabilistic = machine(ProbabilisticDetector(unsupervised), X) |> fit!
+raw_unsupervised_probabilistic = machine(ProbabilisticDetector(raw_unsupervised), X) |> fit!
+supervised_probabilistic = machine(ProbabilisticDetector(supervised), X, y) |> fit!
+raw_supervised_probabilistic = machine(ProbabilisticDetector(raw_supervised), X, y) |> fit!
+unsupervised_deterministic = machine(DeterministicDetector(unsupervised), X) |> fit!
+raw_unsupervised_deterministic = machine(DeterministicDetector(raw_unsupervised), X) |> fit!
+supervised_deterministic = machine(DeterministicDetector(supervised), X, y) |> fit!
+raw_supervised_deterministic = machine(DeterministicDetector(raw_supervised), X, y) |> fit!
+composite_machines = [
+    unsupervised_composite,
+    raw_unsupervised_composite,
+    supervised_composite,
+    raw_supervised_composite,
+    unsupervised_probabilistic,
+    raw_unsupervised_probabilistic,
+    supervised_probabilistic,
+    raw_supervised_probabilistic,
+    unsupervised_deterministic,
+    raw_unsupervised_deterministic,
+    supervised_deterministic,
+    raw_supervised_deterministic]
 
-usc = machine(CompositeDetector(u=unsupervised, s=supervised), X, y) |> fit!
-usp = machine(ProbabilisticDetector(u=unsupervised, s=supervised), X, y) |> fit!
-usd = machine(DeterministicDetector(u=unsupervised, s=supervised), X, y) |> fit!
-combined_machines = [usc, usp, usd]
+# wrapped composite machines
+unsupervised_probabilistic_composite =
+    machine(ProbabilisticDetector(CompositeDetector(unsupervised)), X) |> fit!
+raw_unsupervised_probabilistic_composite =
+    machine(ProbabilisticDetector(CompositeDetector(raw_unsupervised)), X) |> fit!
+supervised_probabilistic_composite =
+    machine(ProbabilisticDetector(CompositeDetector(supervised)), X, y) |> fit!
+raw_supervised_probabilistic_composite =
+    machine(ProbabilisticDetector(CompositeDetector(raw_supervised)), X, y) |> fit!
+unsupervised_deterministic_composite =
+    machine(DeterministicDetector(CompositeDetector(unsupervised)), X) |> fit!
+raw_unsupervised_deterministic_composite =
+    machine(DeterministicDetector(CompositeDetector(raw_unsupervised)), X) |> fit!
+supervised_deterministic_composite =
+    machine(DeterministicDetector(CompositeDetector(supervised)), X, y) |> fit!
+raw_supervised_deterministic_composite =
+    machine(DeterministicDetector(CompositeDetector(raw_supervised)), X, y) |> fit!
+wrapped_machines = [
+    unsupervised_probabilistic_composite,
+    raw_unsupervised_probabilistic_composite,
+    supervised_probabilistic_composite,
+    raw_supervised_probabilistic_composite,
+    unsupervised_deterministic_composite,
+    raw_unsupervised_deterministic_composite,
+    supervised_deterministic_composite,
+    raw_supervised_deterministic_composite]
+
+# multiple detector composites
+unsupervised_supervised_composite =
+    machine(CompositeDetector(u=unsupervised, s=supervised), X, y) |> fit!
+raw_unsupervised_supervised_composite =
+    machine(CompositeDetector(u=raw_unsupervised, s=raw_supervised), X, y) |> fit!
+raw_unsupervised_supervised_mixed_composite =
+    machine(CompositeDetector(u=unsupervised, s=raw_supervised), X, y) |> fit!
+unsupervised_supervised_probabilistic =
+    machine(ProbabilisticDetector(u=unsupervised, s=supervised), X, y) |> fit!
+raw_unsupervised_supervised_probabilistic =
+    machine(ProbabilisticDetector(u=raw_unsupervised, s=raw_supervised), X, y) |> fit!
+unsupervised_supervised_deterministic =
+    machine(DeterministicDetector(u=unsupervised, s=supervised), X, y) |> fit!
+raw_unsupervised_supervised_deterministic =
+    machine(DeterministicDetector(u=raw_unsupervised, s=raw_supervised), X, y) |> fit!
+combined_machines = [
+    unsupervised_supervised_composite,
+    raw_unsupervised_supervised_composite,
+    raw_unsupervised_supervised_mixed_composite,
+    unsupervised_supervised_probabilistic,
+    raw_unsupervised_supervised_probabilistic,
+    unsupervised_supervised_deterministic,
+    raw_unsupervised_supervised_deterministic]
 
 machines = [composite_machines..., wrapped_machines..., combined_machines...]
-probabilistic_machines = [up, sp, upc, spc, usp]
-deterministic_machines = [ud, sd, udc, sdc, usd]
-
-# create a simple detector learning network
-Xs = source()
-ys = source()
-uscores = augmented_transform(machine(unsupervised, Xs), Xs)
-sscores = augmented_transform(machine(supervised, Xs, ys), Xs)
-upscores = predict(machine(ProbabilisticTransformer()), uscores)
-spscores = predict(machine(ProbabilisticTransformer()), sscores)
-udscores = predict(machine(DeterministicTransformer()), uscores)
-sdscores = predict(machine(DeterministicTransformer()), sscores)
-
-# TODO: The empty source for ys in unsupervised models is currently necessary to enable evaluation, but
-# we could fix this in MLJBase
-upmach = machine(OD.ProbabilisticUnsupervisedDetector(), Xs, source(); predict=upscores)
-spmach = machine(OD.ProbabilisticSupervisedDetector(), Xs, ys; predict=spscores)
-udmach = machine(OD.DeterministicUnsupervisedDetector(), Xs, source(); predict=udscores)
-sdmach = machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=sdscores)
+probabilistic_machines = [
+    unsupervised_probabilistic,
+    raw_unsupervised_probabilistic,
+    supervised_probabilistic,
+    raw_supervised_probabilistic,
+    unsupervised_probabilistic_composite,
+    raw_unsupervised_probabilistic_composite,
+    supervised_probabilistic_composite,
+    raw_supervised_probabilistic_composite,
+    unsupervised_supervised_probabilistic,
+    raw_unsupervised_supervised_probabilistic]
+deterministic_machines = [
+    unsupervised_deterministic,
+    raw_unsupervised_deterministic,
+    supervised_deterministic,
+    raw_supervised_deterministic,
+    unsupervised_deterministic_composite,
+    raw_unsupervised_deterministic_composite,
+    supervised_deterministic_composite,
+    raw_supervised_deterministic_composite,
+    unsupervised_supervised_deterministic,
+    raw_unsupervised_supervised_deterministic]
 
 @testset "normalization, combination and classification" begin
     minmax_test = scores -> last(scale_minmax(scores)) # extract test scores
@@ -69,7 +144,7 @@ sdmach = machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=sdscores)
     @testset "scores" begin
         raw_proba(detector, data) = from_univariate_finite.(predict(detector, data))
         to_scores(data) = [[transform(m, data) for m in machines]..., # transform works for all machines
-                           [raw_proba(m, data) for m in probabilistic_machines]...]
+            [raw_proba(m, data) for m in probabilistic_machines]...]
         test_scoring(scores, data, labels) = @test all((labels,) .== [minmax_test(scores), to_scores(data)...])
 
         # Tests expected results on simple score vectors
@@ -92,7 +167,7 @@ sdmach = machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=sdscores)
     @testset "classification" begin
         raw_class(detector, data) = from_categorical.(predict(detector, data))
         to_classes(data) = [[predict(m, data) for m in deterministic_machines]...,
-                            [raw_class(m, data) for m in deterministic_machines]...]
+            [raw_class(m, data) for m in deterministic_machines]...]
         test_classification(scores, data, labels) = @test all((labels,) .== [classify(scores), to_classes(data)...])
 
         # Test expected classification results with given threshold
@@ -119,8 +194,8 @@ sdmach = machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=sdscores)
     end
 
     @testset "label utilities" begin
-        @test normal_fraction(y) ≈ 2/3
-        @test outlier_fraction(y) ≈ 1/3
+        @test normal_fraction(y) ≈ 2 / 3
+        @test outlier_fraction(y) ≈ 1 / 3
         @test n_normal(y) == 2
         @test n_outlier(y) == 1
     end
@@ -135,7 +210,7 @@ end
     @test ProbabilisticDetector(unsupervised) isa ProbabilisticUnsupervisedDetectorComposite
     @test ProbabilisticDetector(detector=unsupervised) isa ProbabilisticUnsupervisedDetectorComposite
     @test ProbabilisticDetector(uns1=unsupervised, uns2=unsupervised) isa ProbabilisticUnsupervisedDetectorComposite
-    
+
     @test DeterministicDetector(unsupervised) isa DeterministicUnsupervisedDetectorComposite
     @test DeterministicDetector(detector=unsupervised) isa DeterministicUnsupervisedDetectorComposite
     @test DeterministicDetector(uns1=unsupervised, uns2=unsupervised) isa DeterministicUnsupervisedDetectorComposite
@@ -148,7 +223,7 @@ end
     @test ProbabilisticDetector(supervised) isa ProbabilisticSupervisedDetectorComposite
     @test ProbabilisticDetector(detector=supervised) isa ProbabilisticSupervisedDetectorComposite
     @test ProbabilisticDetector(sup1=supervised, sup2=supervised) isa ProbabilisticSupervisedDetectorComposite
-    
+
     @test DeterministicDetector(supervised) isa DeterministicSupervisedDetectorComposite
     @test DeterministicDetector(detector=supervised) isa DeterministicSupervisedDetectorComposite
     @test DeterministicDetector(sup1=supervised, sup2=supervised) isa DeterministicSupervisedDetectorComposite
@@ -177,7 +252,7 @@ end
         initial_normalization_strategy = m.normalize
         initial_combination_strategy = m.combine
         m.normalize = normalization_strategy
-        m.combine =  combination_strategy
+        m.combine = combination_strategy
         @test m.normalize == normalization_strategy
         @test m.combine == combination_strategy
         # reset back to original value
@@ -242,13 +317,15 @@ end
     @test_throws ErrorException augmented_transform(c_not_fitted)
 end
 
-@testset "transformers expected results" begin
+@testset "transformers yield expected results" begin
     Xs = source(X)
     ys = source(y)
 
     # prepare learning network machines
-    um = machine(MinimalUnsupervisedDetector(), Xs)
-    sm = machine(MinimalSupervisedDetector(), Xs, ys)
+    unsupervised_source_machine = machine(MinimalUnsupervisedDetector(), Xs)
+    raw_unsupervised_source_machine = machine(MMIUnsupervisedDetector(), Xs)
+    supervised_source_machine = machine(MinimalSupervisedDetector(), Xs, ys)
+    raw_supervised_source_machine = machine(MMISupervisedDetector(), Xs, ys)
 
     # prepare the transformers
     score_transformer = machine(ScoreTransformer())
@@ -256,28 +333,99 @@ end
     deterministic_transformer = machine(DeterministicTransformer())
 
     # get the augmented scores
-    u_scores = augmented_transform(um, Xs)
-    s_scores = augmented_transform(sm, Xs)
+    unsupservised_scores = augmented_transform(unsupervised_source_machine, Xs)
+    raw_unsupervised_scores = augmented_transform(raw_unsupervised_source_machine, Xs)
+    supervised_scores = augmented_transform(supervised_source_machine, Xs)
+    raw_supervised_scores = augmented_transform(raw_supervised_source_machine, Xs)
 
+    # helper functions
     fit_transform(transformer, scores) = fit!(transform(transformer, scores))()
     fit_predict(transformer, scores) = fit!(predict(transformer, scores))()
 
-    # test the transformed scores
-    @test fit_transform(score_transformer, u_scores) isa OD.Scores
-    @test fit_transform(score_transformer, s_scores) isa OD.Scores
-    @test fit_transform(probabilistic_transformer, u_scores) isa OD.Scores
-    @test fit_transform(probabilistic_transformer, s_scores) isa OD.Scores
-    @test fit_transform(deterministic_transformer, u_scores) isa OD.Scores
-    @test fit_transform(deterministic_transformer, s_scores) isa OD.Scores
+    # raw unsupervised transform
+    @test fit_transform(score_transformer, unsupservised_scores) isa OD.Scores
+    @test fit_transform(score_transformer, raw_unsupervised_scores) isa OD.Scores
 
-    # test the predicted probabilities
-    @test fit_predict(probabilistic_transformer, u_scores) isa UnivariateFiniteVector
-    @test fit_predict(probabilistic_transformer, s_scores) isa UnivariateFiniteVector
+    # raw supervised transform
+    @test fit_transform(score_transformer, supervised_scores) isa OD.Scores
+    @test fit_transform(score_transformer, raw_supervised_scores) isa OD.Scores
 
-    # test the predicted classes
-    @test fit_predict(deterministic_transformer, u_scores) isa OD.Labels
-    @test fit_predict(deterministic_transformer, s_scores) isa OD.Labels
+    # probabilistic unsupervised transform
+    @test fit_transform(probabilistic_transformer, unsupservised_scores) isa OD.Scores
+    @test fit_transform(probabilistic_transformer, raw_unsupervised_scores) isa OD.Scores
+
+    # probabilistic supervised transform
+    @test fit_transform(probabilistic_transformer, supervised_scores) isa OD.Scores
+    @test fit_transform(probabilistic_transformer, raw_supervised_scores) isa OD.Scores
+
+    # deterministic unsupervised transform
+    @test fit_transform(deterministic_transformer, unsupservised_scores) isa OD.Scores
+    @test fit_transform(deterministic_transformer, raw_unsupervised_scores) isa OD.Scores
+
+    # deterministic supervised transform
+    @test fit_transform(deterministic_transformer, supervised_scores) isa OD.Scores
+    @test fit_transform(deterministic_transformer, raw_supervised_scores) isa OD.Scores
+
+    # probabilistic unsupervised predict
+    @test fit_predict(probabilistic_transformer, unsupservised_scores) isa UnivariateFiniteVector
+    @test fit_predict(probabilistic_transformer, raw_unsupervised_scores) isa UnivariateFiniteVector
+
+    # probabilistic supervised predict
+    @test fit_predict(probabilistic_transformer, supervised_scores) isa UnivariateFiniteVector
+    @test fit_predict(probabilistic_transformer, raw_supervised_scores) isa UnivariateFiniteVector
+
+    # deterministic unsupervised predict
+    @test fit_predict(deterministic_transformer, unsupservised_scores) isa OD.Labels
+    @test fit_predict(deterministic_transformer, raw_unsupervised_scores) isa OD.Labels
+
+    # deterministic supervised predict
+    @test fit_predict(deterministic_transformer, supervised_scores) isa OD.Labels
+    @test fit_predict(deterministic_transformer, raw_supervised_scores) isa OD.Labels
 end
+
+# create a simple detector learning network
+Xs = source()
+ys = source()
+
+unsupervised_scores = augmented_transform(machine(unsupervised, Xs), Xs)
+raw_unsupervised_scores = augmented_transform(machine(raw_unsupervised, Xs), Xs)
+
+supervised_scores = augmented_transform(machine(supervised, Xs, ys), Xs)
+raw_supervised_scores = augmented_transform(machine(raw_supervised, Xs, ys), Xs)
+
+unsupervised_probabilistic_scores = predict(machine(ProbabilisticTransformer()), unsupervised_scores)
+raw_unsupervised_probabilistic_scores = predict(machine(ProbabilisticTransformer()), raw_unsupervised_scores)
+
+supervised_probabilistic_scores = predict(machine(ProbabilisticTransformer()), supervised_scores)
+raw_supervised_probabilistic_scores = predict(machine(ProbabilisticTransformer()), raw_supervised_scores)
+
+unsupervised_deterministic_scores = predict(machine(DeterministicTransformer()), unsupervised_scores)
+raw_unsupervised_deterministic_scores = predict(machine(DeterministicTransformer()), raw_unsupervised_scores)
+
+supervised_deterministic_scores = predict(machine(DeterministicTransformer()), supervised_scores)
+raw_supervised_deterministic_scores = predict(machine(DeterministicTransformer()), raw_supervised_scores)
+
+# TODO: The empty source for ys in unsupervised models is currently necessary to enable evaluation, but
+# we could fix this in MLJBase
+unsupervised_probabilistic_machine =
+    machine(OD.ProbabilisticUnsupervisedDetector(), Xs, source(); predict=unsupervised_probabilistic_scores)
+raw_unsupervised_probabilistic_machine =
+    machine(OD.ProbabilisticUnsupervisedDetector(), Xs, source(); predict=raw_unsupervised_probabilistic_scores)
+
+supervised_probabilistic_machine =
+    machine(OD.ProbabilisticSupervisedDetector(), Xs, ys; predict=supervised_probabilistic_scores)
+raw_supervised_probabilistic_machine =
+    machine(OD.ProbabilisticSupervisedDetector(), Xs, ys; predict=raw_supervised_probabilistic_scores)
+
+unsupervised_deterministic_machine =
+    machine(OD.DeterministicUnsupervisedDetector(), Xs, source(); predict=unsupervised_deterministic_scores)
+raw_unsupervised_deterministic_machine =
+    machine(OD.DeterministicUnsupervisedDetector(), Xs, source(); predict=raw_unsupervised_deterministic_scores)
+
+supervised_deterministic_machine =
+    machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=supervised_deterministic_scores)
+raw_supervised_deterministic_machine =
+    machine(OD.DeterministicSupervisedDetector(), Xs, ys; predict=raw_supervised_deterministic_scores)
 
 @testset "evaluation works as expected" begin
     train, test = [1, 2], [3]
@@ -285,19 +433,42 @@ end
         @test evaluate(detector, X, y; measure=misclassification_rate, resampling=[(train, test)]).measurement[1] == 0
 
     # evaluation of wrapped detectors
+    evaluate_detector(ProbabilisticDetector(supervised))
+    evaluate_detector(ProbabilisticDetector(raw_supervised))
+
     evaluate_detector(ProbabilisticDetector(unsupervised))
+    evaluate_detector(ProbabilisticDetector(raw_unsupervised))
+
+    evaluate_detector(DeterministicDetector(supervised))
     evaluate_detector(DeterministicDetector(unsupervised))
 
+    evaluate_detector(DeterministicDetector(raw_supervised))
+    evaluate_detector(DeterministicDetector(raw_unsupervised))
+
     # create the detectors from the network
-    @from_network upmach mutable struct CustomUnsupervisedProbabilisticDetector end
-    @from_network spmach mutable struct CustomSupervisedProbabilisticDetector end
-    @from_network udmach mutable struct CustomUnsupervisedDeterministicDetector end
-    @from_network sdmach mutable struct CustomSupervisedDeterministicDetector end
+    @from_network unsupervised_probabilistic_machine mutable struct CustomUnsupervisedProbabilisticDetector end
+    @from_network raw_unsupervised_probabilistic_machine mutable struct RawCustomUnsupervisedProbabilisticDetector end
+
+    @from_network supervised_probabilistic_machine mutable struct CustomSupervisedProbabilisticDetector end
+    @from_network raw_supervised_probabilistic_machine mutable struct RawCustomSupervisedProbabilisticDetector end
+
+    @from_network unsupervised_deterministic_machine mutable struct CustomUnsupervisedDeterministicDetector end
+    @from_network raw_unsupervised_deterministic_machine mutable struct RawCustomUnsupervisedDeterministicDetector end
+
+    @from_network supervised_deterministic_machine mutable struct CustomSupervisedDeterministicDetector end
+    @from_network raw_supervised_deterministic_machine mutable struct RawCustomSupervisedDeterministicDetector end
 
     evaluate_detector(CustomUnsupervisedProbabilisticDetector())
+    evaluate_detector(RawCustomUnsupervisedProbabilisticDetector())
+
     evaluate_detector(CustomSupervisedProbabilisticDetector())
+    evaluate_detector(RawCustomSupervisedProbabilisticDetector())
+
     evaluate_detector(CustomUnsupervisedDeterministicDetector())
+    evaluate_detector(RawCustomUnsupervisedDeterministicDetector())
+
     evaluate_detector(CustomSupervisedDeterministicDetector())
+    evaluate_detector(RawCustomSupervisedDeterministicDetector())
 
     # TODO: Enable composites with custom detectors after https://github.com/JuliaAI/MLJBase.jl/pull/644 is merged
     # CompositeDetector(CustomUnsupervisedProbabilisticDetector)
