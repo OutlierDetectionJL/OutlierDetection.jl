@@ -386,13 +386,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-formats" class="md-nav__link">
-    Data formats
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#loading-models" class="md-nav__link">
     Loading models
   </a>
@@ -407,22 +400,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#model-optimization" class="md-nav__link">
-    Model optimization
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#model-usage" class="md-nav__link">
     Model usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#model-persistence" class="md-nav__link">
-    Model persistence
   </a>
   
 </li>
@@ -672,13 +651,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-formats" class="md-nav__link">
-    Data formats
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#loading-models" class="md-nav__link">
     Loading models
   </a>
@@ -693,22 +665,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#model-optimization" class="md-nav__link">
-    Model optimization
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#model-usage" class="md-nav__link">
     Model usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#model-persistence" class="md-nav__link">
-    Model persistence
   </a>
   
 </li>
@@ -741,78 +699,54 @@
 <p><a id='Loading-data'></a></p>
 <p><a id='Loading-data-1'></a></p>
 <h2 id="loading-data">Loading data</h2>
-<p>We can list the available datasets in the imported <code>ODDS</code> dataset collection with <a href="../../API/datasets/#OutlierDetectionData.list"><code>list</code></a></p>
+<p>We can list the available datasets in the imported <code>ODDS</code> dataset collection with <a href="@ref"><code>list</code></a></p>
 <div class="highlight"><pre><span></span><code><span class="n">ODDS</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>27-element Vector{String}:
+<div class="highlight"><pre><span></span><code>22-element Vector{String}:
  &quot;annthyroid&quot;
  &quot;arrhythmia&quot;
  &quot;breastw&quot;
  &quot;cardio&quot;
  &quot;cover&quot;
+ &quot;ecoli&quot;
  &quot;glass&quot;
- &quot;http&quot;
  &quot;ionosphere&quot;
  &quot;letter&quot;
  &quot;lympho&quot;
  ⋮
+ &quot;pendigits&quot;
+ &quot;pima&quot;
+ &quot;satellite&quot;
  &quot;satimage-2&quot;
  &quot;shuttle&quot;
- &quot;smtp&quot;
- &quot;speech&quot;
  &quot;thyroid&quot;
  &quot;vertebral&quot;
  &quot;vowels&quot;
  &quot;wbc&quot;
- &quot;wine&quot;
 </code></pre></div>
-<p>We can now <a href="../../API/datasets/#OutlierDetectionData.load"><code>load</code></a> a dataset by specifying its name.</p>
-<div class="highlight"><pre><span></span><code><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ODDS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;annthyroid&quot;</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>(7200×6 DataFrame
-  Row │ x1       x2       x3       x4       x5       x6
-      │ Float64  Float64  Float64  Float64  Float64  Float64
-──────┼──────────────────────────────────────────────────────
-    1 │    0.73  0.0006    0.015   0.12       0.082  0.146
-    2 │    0.24  0.00025   0.03    0.143      0.133  0.108
-    3 │    0.47  0.0019    0.024   0.102      0.131  0.078
-    4 │    0.64  0.0009    0.017   0.077      0.09   0.085
-    5 │    0.23  0.00025   0.026   0.139      0.09   0.153
-    6 │    0.69  0.00025   0.016   0.086      0.07   0.123
-    7 │    0.85  0.00025   0.023   0.128      0.104  0.121
-    8 │    0.48  0.00208   0.02    0.086      0.078  0.11
-  ⋮   │    ⋮        ⋮        ⋮        ⋮        ⋮        ⋮
- 7194 │    0.7   0.0009    0.015   0.104      0.095  0.109
- 7195 │    0.79  0.0049    0.0201  0.077      0.082  0.094
- 7196 │    0.59  0.0025    0.0208  0.079      0.099  0.08
- 7197 │    0.51  0.106     0.006   0.005      0.089  0.0055
- 7198 │    0.51  0.00076   0.0201  0.09       0.067  0.134
- 7199 │    0.35  0.0028    0.0201  0.09       0.089  0.101
- 7200 │    0.73  0.00056   0.0201  0.081      0.09   0.09
-                                            7185 rows omitted, CategoricalArrays.CategoricalValue{String, UInt32}[&quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;  …  &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;outlier&quot;, &quot;normal&quot;, &quot;normal&quot;, &quot;normal&quot;])
-</code></pre></div>
-<p><a id='Data-formats'></a></p>
-<p><a id='Data-formats-1'></a></p>
-<h2 id="data-formats">Data formats</h2>
-<p>Because <code>OutlierDetection.jl</code> is built upon MLJ, there are some things to know regarding the data used in outlier detection tasks. A detector can typically be instantiated with continuous data <code>X</code> satisfying the <a href="https://tables.juliadata.org/stable/"><code>Tables.jl</code></a> interface. Often we use <a href="https://dataframes.juliadata.org/stable/"><code>DataFrames.jl</code></a> to create such tables. An important distinction to know is the difference between <em>machine types</em> and <em>scientific types</em>.</p>
-<ul>
-<li>The <em>machine</em> type refers to the Julia type being used to represent the object (for instance, Float64).</li>
-<li>The <em>scientific</em> type is one of the types defined in <a href="https://juliaai.github.io/ScientificTypes.jl/stable/"><code>ScientificTypes.jl</code></a> reflecting how the object should be interpreted (for instance, <code>Continuous</code> or <code>Multiclass</code>).</li>
-</ul>
-<p>We can examine the machine and scientific types of our loaded dataframe <code>X</code> with <code>ScientificTypes.schema</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">schema</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>┌───────┬────────────┬─────────┐
-│ names │ scitypes   │ types   │
-├───────┼────────────┼─────────┤
-│ x1    │ Continuous │ Float64 │
-│ x2    │ Continuous │ Float64 │
-│ x3    │ Continuous │ Float64 │
-│ x4    │ Continuous │ Float64 │
-│ x5    │ Continuous │ Float64 │
-│ x6    │ Continuous │ Float64 │
-└───────┴────────────┴─────────┘
-</code></pre></div>
+<p>We can now <a href="@ref"><code>load</code></a> a dataset by specifying its name.</p>
+<p>```@example simple
+X, y = ODDS.load("annthyroid")
+<div class="highlight"><pre><span></span><code>&lt;a id=&#39;Data-formats&#39;&gt;&lt;/a&gt;
+
+&lt;a id=&#39;Data-formats-1&#39;&gt;&lt;/a&gt;
+
+## Data formats
+
+
+Because `OutlierDetection.jl` is built upon MLJ, there are some things to know regarding the data used in outlier detection tasks. A detector can typically be instantiated with continuous data `X` satisfying the [`Tables.jl`](https://tables.juliadata.org/stable/) interface. Often we use [`DataFrames.jl`](https://dataframes.juliadata.org/stable/) to create such tables. An important distinction to know is the difference between *machine types* and *scientific types*.
+
+
+  * The *machine* type refers to the Julia type being used to represent the object (for instance, Float64).
+  * The *scientific* type is one of the types defined in [`ScientificTypes.jl`](https://juliaai.github.io/ScientificTypes.jl/stable/) reflecting how the object should be interpreted (for instance, `Continuous` or `Multiclass`).
+
+
+We can examine the machine and scientific types of our loaded dataframe `X` with `ScientificTypes.schema`.
+
+
+```@example simple
+schema(X)
+</code></pre></div></p>
 <p>Fortunately, our table contains only <code>Continuous</code> data as expected. Labels in outlier detection are always encoded as a categorical vectors with classes <code>"normal"</code> and <code>"outlier"</code> and scitype <code>OrderedFactor{2}</code>. Data with type <code>OrderedFactor{2}</code> is considered to have an intrinsic "positive" class, in our case <code>"outlier"</code>. Measures, such as <code>true_positive</code> assume the second class in the ordering is the "positive" class. Using the helper <a href="../../API/score-helpers/#OutlierDetection.to_categorical"><code>to_categorical</code></a>, we can transform a <code>Vector{String}</code> to a categorical vector, which ensures there are only two classes and the positive class is <code>"outlier"</code>. We don't need to coerce <code>y</code> to a categorical array in our example because <code>load</code> already returns categorical vectors.</p>
 <div class="highlight"><pre><span></span><code><span class="n">to_categorical</span><span class="p">([</span><span class="s">&quot;normal&quot;</span><span class="p">,</span> <span class="s">&quot;normal&quot;</span><span class="p">,</span> <span class="s">&quot;outlier&quot;</span><span class="p">])</span>
 </code></pre></div>
@@ -875,28 +809,25 @@
 <p><a id='Model-evaluation-1'></a></p>
 <h2 id="model-evaluation">Model evaluation</h2>
 <p>We can now evaluate how such a model performs. By default, a probabilistic detector is evaluated using <code>area_under_curve</code>, but there are a lot of other evaluation strategies available, see the <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/performance_measures/#List-of-measures">list of measures</a>. We use stratified five-fold cross validation to evaluate our model, but other <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/evaluating_model_performance/#Built-in-resampling-strategies">resampling strategies</a> are possible as well.</p>
-<div class="highlight"><pre><span></span><code><span class="n">cv</span> <span class="o">=</span> <span class="n">StratifiedCV</span><span class="p">(</span><span class="n">nfolds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">evaluate</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span> <span class="n">resampling</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>PerformanceEvaluation object with these fields:
-  measure, measurement, operation, per_fold,
-  per_observation, fitted_params_per_fold,
-  report_per_fold, train_test_pairs
-Extract:
-┌──────────────────┬─────────────┬───────────┬──────────────────────────────────
-│ measure          │ measurement │ operation │ per_fold                        ⋯
-├──────────────────┼─────────────┼───────────┼──────────────────────────────────
-│ AreaUnderCurve() │ 0.747       │ predict   │ [0.767, 0.725, 0.707, 0.753, 0. ⋯
-└──────────────────┴─────────────┴───────────┴──────────────────────────────────
-                                                                1 column omitted
-</code></pre></div>
-<p><a id='Model-optimization'></a></p>
-<p><a id='Model-optimization-1'></a></p>
-<h2 id="model-optimization">Model optimization</h2>
-<p>As previously mentioned, we used the default parameters to create our model. However, we typically don't know an appropriate amount of neighbors (<code>k</code>) beforehand. Using MLJ's built-in model tuning we can identify the best <code>k</code> given some performance measure.</p>
-<p>Let's first define a range of possible parameter values for <code>k</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span> <span class="o">:</span><span class="p">(</span><span class="n">detector</span><span class="o">.</span><span class="n">k</span><span class="p">),</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">:</span><span class="mi">5</span><span class="o">:</span><span class="mi">100</span><span class="o">...</span><span class="p">])</span>
-</code></pre></div>
+<p>```@example simple
+cv = StratifiedCV(nfolds=5, shuffle=true, rng=0)
+evaluate(knn, X, y; resampling=cv)
+<div class="highlight"><pre><span></span><code>&lt;a id=&#39;Model-optimization&#39;&gt;&lt;/a&gt;
+
+&lt;a id=&#39;Model-optimization-1&#39;&gt;&lt;/a&gt;
+
+## Model optimization
+
+
+As previously mentioned, we used the default parameters to create our model. However, we typically don&#39;t know an appropriate amount of neighbors (`k`) beforehand. Using MLJ&#39;s built-in model tuning we can identify the best `k` given some performance measure.
+
+
+Let&#39;s first define a range of possible parameter values for `k`.
+
+
+```julia
+r = range(knn, :(detector.k), values=[1,2,3,4,5:5:100...])
+</code></pre></div></p>
 <div class="highlight"><pre><span></span><code>NominalRange(detector.k = 1, 2, 3, ...)
 </code></pre></div>
 <p>We can then use this range, or multiple ranges, to create a tuned model by additionally specifing a <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/tuning_models/">tuning-strategy</a>, which defines how to efficiently evaluate ranges. In our case we use a simple grid search to evaluate all the given parameter options.</p>
@@ -915,7 +846,7 @@ Extract:
     resampling = StratifiedCV(
             nfolds = 5,
             shuffle = true,
-            rng = Random.MersenneTwister(0, (0, 11022, 10020, 443))),
+            rng = Random.MersenneTwister(0)),
     measure = AreaUnderCurve(),
     weights = nothing,
     operation = nothing,
@@ -930,114 +861,62 @@ Extract:
     cache = true)
 </code></pre></div>
 <p>We can again bind that model to data and fit it. Fitting a tuned model instigates a search for optimal model hyperparameters, within specified <code>range</code>s, and then uses all supplied data to train the best model.</p>
-<div class="highlight"><pre><span></span><code><span class="n">m</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">fit!</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>Machine{ProbabilisticTunedModel{Grid,…},…} trained 1 time; caches data
-  model: MLJTuning.ProbabilisticTunedModel{MLJTuning.Grid, OutlierDetection.ProbabilisticUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}}
-  args: 
-    1:  Source @521 ⏎ `Table{AbstractVector{Continuous}}`
-    2:  Source @374 ⏎ `AbstractVector{OrderedFactor{2}}`
-</code></pre></div>
-<p>Using the machines' report, we can idenity the best evaluation results.</p>
-<div class="highlight"><pre><span></span><code><span class="n">report</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">best_history_entry</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>(model = ProbabilisticUnsupervisedCompositeDetector{,…},
- measure = [AreaUnderCurve()],
- measurement = [0.7674529768473908],
- per_fold = [[0.7635922604735368, 0.7779655194172375, 0.7775027869116812, 0.7748175361597409, 0.743386781274758]],)
-</code></pre></div>
+<p>```@example simple
+m = machine(t, X, y) |&gt; fit!
+<div class="highlight"><pre><span></span><code>Using the machines&#39; report, we can idenity the best evaluation results.
+
+
+```@example simple
+report(m).best_history_entry
+</code></pre></div></p>
 <p>Additionally, we can easily extract the best identified model.</p>
-<div class="highlight"><pre><span></span><code><span class="n">b</span> <span class="o">=</span> <span class="n">report</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">best_model</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>ProbabilisticUnsupervisedCompositeDetector(
-    normalize = OutlierDetection.scale_minmax,
-    combine = OutlierDetection.combine_mean,
-    detector = KNNDetector(
-            k = 1,
-            metric = Distances.Euclidean(0.0),
-            algorithm = :kdtree,
-            static = :auto,
-            leafsize = 10,
-            reorder = true,
-            parallel = false,
-            reduction = :maximum))
-</code></pre></div>
-<p>Let's evaluate the best model again to make sure it achieves the expected performance.</p>
-<div class="highlight"><pre><span></span><code><span class="n">evaluate</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>PerformanceEvaluation object with these fields:
-  measure, measurement, operation, per_fold,
-  per_observation, fitted_params_per_fold,
-  report_per_fold, train_test_pairs
-Extract:
-┌──────────────────┬─────────────┬───────────┬──────────────────────────────────
-│ measure          │ measurement │ operation │ per_fold                        ⋯
-├──────────────────┼─────────────┼───────────┼──────────────────────────────────
-│ AreaUnderCurve() │ 0.767       │ predict   │ [0.764, 0.778, 0.778, 0.775, 0. ⋯
-└──────────────────┴─────────────┴───────────┴──────────────────────────────────
-                                                                1 column omitted
-</code></pre></div>
+<p>```@example simple
+b = report(m).best_model
+<div class="highlight"><pre><span></span><code>Let&#39;s evaluate the best model again to make sure it achieves the expected performance.
+
+
+```@example simple
+evaluate(b, X, y, resampling=cv)
+</code></pre></div></p>
 <p><a id='Model-usage'></a></p>
 <p><a id='Model-usage-1'></a></p>
 <h2 id="model-usage">Model usage</h2>
 <p>Now that we have found the best model, we can use it to determine outliers in the data. Converting scores to classes can be achieved with a <a href="../../API/score-helpers/#OutlierDetection.DeterministicDetector"><code>DeterministicDetector</code></a>. Let's create some fake train/test indices and suppose we want to identify outliers in the test data.</p>
-<div class="highlight"><pre><span></span><code><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">partition</span><span class="p">(</span><span class="n">eachindex</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>([2031, 4888, 6696, 4906, 527, 2594, 303, 1542, 4275, 6202  …  4723, 3464, 1779, 3003, 5096, 3151, 5887, 2305, 3819, 922], [899, 6722, 253, 514, 5683, 4430, 4214, 6985, 2566, 1357  …  214, 3589, 4588, 3590, 2444, 5272, 5401, 276, 4497, 83])
-</code></pre></div>
-<p>Let's determine the <a href="../../API/score-helpers/#OutlierDetection.outlier_fraction"><code>outlier_fraction</code></a> in the training data, which we then use to determine a threshold to convert the outlier scores into classes. Using <a href="../../API/score-helpers/#OutlierDetection.classify_quantile"><code>classify_quantile</code></a>, we can create a classification function based on quantiles of the training data. In the following example we define an outlier's score to lie above the <em>1 - outlier_fraction</em> training scores' quantile.</p>
-<div class="highlight"><pre><span></span><code><span class="n">threshold</span> <span class="o">=</span> <span class="n">classify_quantile</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">outlier_fraction</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">]))</span>
-<span class="n">final</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="n">DeterministicDetector</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">detector</span><span class="p">,</span> <span class="n">classify</span><span class="o">=</span><span class="n">threshold</span><span class="p">),</span> <span class="n">X</span><span class="p">)</span>
-<span class="n">fit!</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
-  model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
-  args: 
-    1:  Source @770 ⏎ `Table{AbstractVector{Continuous}}`
-</code></pre></div>
+<p>```@example simple
+train, test = partition(eachindex(y), 0.5, shuffle=true, stratify=y, rng=0)
+<div class="highlight"><pre><span></span><code>Let&#39;s determine the [`outlier_fraction`](../API/score-helpers.md#OutlierDetection.outlier_fraction) in the training data, which we then use to determine a threshold to convert the outlier scores into classes. Using [`classify_quantile`](../API/score-helpers.md#OutlierDetection.classify_quantile), we can create a classification function based on quantiles of the training data. In the following example we define an outlier&#39;s score to lie above the *1 - outlier_fraction* training scores&#39; quantile.
+
+
+```@example simple
+threshold = classify_quantile(1 - outlier_fraction(y[train]))
+final = machine(DeterministicDetector(b.detector, classify=threshold), X)
+fit!(final, rows=train)
+</code></pre></div></p>
 <p>Using <code>predict</code> allows us to determine the outliers in the test data.</p>
-<div class="highlight"><pre><span></span><code><span class="n">ŷ</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>3600-element CategoricalArrays.CategoricalArray{String,1,UInt32}:
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- ⋮
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;normal&quot;
- &quot;outlier&quot;
-</code></pre></div>
-<p><a id='Model-persistence'></a></p>
-<p><a id='Model-persistence-1'></a></p>
-<h2 id="model-persistence">Model persistence</h2>
-<p>Finally, we can store the model with <code>MLJ.save</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">MLJ</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;final.jlso&quot;</span><span class="p">,</span> <span class="n">final</span><span class="p">)</span>
-</code></pre></div>
+<p>```@example simple
+ŷ = predict(final, rows=test)
+<div class="highlight"><pre><span></span><code>&lt;a id=&#39;Model-persistence&#39;&gt;&lt;/a&gt;
+
+&lt;a id=&#39;Model-persistence-1&#39;&gt;&lt;/a&gt;
+
+## Model persistence
+
+
+Finally, we can store the model with `MLJ.save`.
+
+
+```@example simple
+MLJ.save(&quot;final.jlso&quot;, final)
+</code></pre></div></p>
 <p>Loading the model again, the machine is not bound to data anymore, but we can bind it to data if we supply <code>X</code> again.</p>
-<div class="highlight"><pre><span></span><code><span class="n">final</span> <span class="o">=</span> <span class="n">machine</span><span class="p">(</span><span class="s">&quot;final.jlso&quot;</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
-  model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
-  args: 
-</code></pre></div>
-<p>We can still use the machine to predict, even though its not bound to data.</p>
-<div class="highlight"><pre><span></span><code><span class="n">ŷ</span> <span class="o">==</span> <span class="n">predict</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">,</span> <span class="o">:</span><span class="p">])</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>true
-</code></pre></div>
+<p>```@example simple
+final = machine("final.jlso")
+<div class="highlight"><pre><span></span><code>We can still use the machine to predict, even though its not bound to data.
+
+
+```@example simple
+ŷ == predict(final, X[test, :])
+</code></pre></div></p>
 <p>If you would like to know how you can combine detectors or how to develop your own detectors, continue with the <a href="../advanced-usage">Advanced Usage</a> guide.</p>
                 
               
