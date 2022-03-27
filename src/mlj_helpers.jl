@@ -14,7 +14,7 @@ Returns
 Univariate finite vector of scores.
 """
 function to_univariate_finite(scores::Scores)
-    MLJ.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], scores; augment = true, pool = missing, ordered = true)
+    MLJ.UnivariateFinite([CLASS_NORMAL, CLASS_OUTLIER], scores; augment=true, pool=missing, ordered=true)
 end
 to_univariate_finite(scores::MLJ.AbstractNode) = MLJ.node(to_univariate_finite, scores)
 
@@ -43,7 +43,7 @@ function to_categorical(classes::AbstractVector{String})
     # explicit cast to Vector{Union{String, Missing}} in case only missing values are passed
     c = Vector{Union{String,Missing}}(classes)
     # we cast to string if no missing values are present
-    MLJ.categorical(try Vector{String}(c) catch c end, ordered = true, levels = levels)
+    MLJ.categorical(try Vector{String}(c) catch c end, ordered=true, levels=levels)
 end
 to_categorical(classes::MLJ.AbstractNode) = MLJ.node(to_categorical, classes)
 
@@ -96,6 +96,15 @@ const DetectorComposites = Union{
     MLJ.Machine{<:MLJ.DeterministicSupervisedDetectorComposite}
 }
 
+const DetectorSurrogates = Union{
+    MLJ.Machine{<:MLJ.SupervisedDetectorSurrogate},
+    MLJ.Machine{<:MLJ.UnsupervisedDetectorSurrogate},
+    MLJ.Machine{<:MLJ.ProbabilisticUnsupervisedDetectorSurrogate},
+    MLJ.Machine{<:MLJ.DeterministicUnsupervisedDetectorSurrogate},
+    MLJ.Machine{<:MLJ.ProbabilisticSupervisedDetectorSurrogate},
+    MLJ.Machine{<:MLJ.DeterministicSupervisedDetectorSurrogate}
+}
+
 function check_mach(mach)
     # catch deserialized machine with no data:
     isempty(mach.args) && MLJ._err_serialized(augmented_transform)
@@ -128,15 +137,22 @@ Returns
     augmented_scores::Tuple{AbstractVector{<:Real}, AbstractVector{<:Real}}
 A tuple of raw training and test scores.
 """
-function augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows = :)
+function augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows=:)
     check_mach(mach)
     return _augmented_transform(mach.model, to_fitresult(mach), selectrows(mach.model, rows, mach.data[1])...)
 end
 
-function augmented_transform(mach::DetectorComposites; rows = :)
+function augmented_transform(mach::DetectorComposites; rows=:)
     check_mach(mach)
     scores_train = mach.report.scores
     scores_test = mach.fitresult.transform(selectrows(mach.model, rows, mach.data[1])...)
+    return scores_train, scores_test
+end
+
+function augmented_transform(mach::DetectorSurrogates; rows=:)
+    check_mach(mach)
+    scores_train = mach.report.scores
+    scores_test = mach.fitresult.transform(rows=rows)
     return scores_train, scores_test
 end
 
