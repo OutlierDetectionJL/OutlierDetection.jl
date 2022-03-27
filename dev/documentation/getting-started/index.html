@@ -707,7 +707,7 @@
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 0 times; caches data
   model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
   args: 
-    1:  Source @971 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @402 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Learn models from the training data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
@@ -717,7 +717,7 @@
 <div class="highlight"><pre><span></span><code>Machine{DeterministicUnsupervisedCompositeDetector{,…},…} trained 1 time; caches data
   model: OutlierDetection.DeterministicUnsupervisedCompositeDetector{(:detector,), Union{Table{&lt;:AbstractVector{&lt;:Continuous}}, AbstractMatrix{&lt;:Continuous}}}
   args: 
-    1:  Source @971 ⏎ `Table{AbstractVector{Continuous}}`
+    1:  Source @402 ⏎ `Table{AbstractVector{Continuous}}`
 </code></pre></div>
 <p>Transform the test data into raw outlier scores.</p>
 <div class="highlight"><pre><span></span><code><span class="n">transform</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
