@@ -22,5 +22,6 @@ makedocs(;
         OutlierDetectionNeighbors,
         OutlierDetectionPython
     ],
-    clean=true
+    clean=true,
+    strict=true
 )
