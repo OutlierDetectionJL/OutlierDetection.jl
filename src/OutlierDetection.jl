@@ -21,8 +21,8 @@ module OutlierDetection
     export classify_quantile
 
     # helpers.jl
-    export n_normal,
-           n_outlier,
+    export normal_count,
+           outlier_count,
            normal_fraction,
            outlier_fraction 
 

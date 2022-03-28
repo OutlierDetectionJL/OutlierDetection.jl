@@ -33,7 +33,7 @@ The fraction of outliers.
 outlier_fraction(y::Labels) = sum(y .== OutlierDetection.CLASS_OUTLIER) / length(y)
 
 """
-    n_normal(y)
+    normal_count(y)
 Determine the count of normals in a given vector.
 
 Parameters
@@ -43,13 +43,13 @@ An array containing "normal" and "outlier" classes.
 
 Returns
 ----------
-    n_normal::Int64
+    normal_count::Int64
 The count of normals.
 """
-n_normal(y::Labels) = sum(y .== OutlierDetection.CLASS_NORMAL)
+normal_count(y::Labels) = sum(y .== OutlierDetection.CLASS_NORMAL)
 
 """
-    n_outlier(y)
+    outlier_count(y)
 Determine the count of outliers in a given vector.
 
 Parameters
@@ -59,7 +59,7 @@ An array containing "normal" and "outlier" classes.
 
 Returns
 ----------
-    outliers::Int64
+    outlier_count::Int64
 The count of outliers.
 """
-n_outlier(y::Labels) = sum(y .== OutlierDetection.CLASS_OUTLIER)
+outlier_count(y::Labels) = sum(y .== OutlierDetection.CLASS_OUTLIER)
