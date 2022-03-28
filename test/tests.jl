@@ -227,8 +227,8 @@ all_machines = [raw_machines..., score_machines..., probabilistic_machines..., d
     @testset "label utilities" begin
         @test normal_fraction(y) ≈ 2 / 3
         @test outlier_fraction(y) ≈ 1 / 3
-        @test n_normal(y) == 2
-        @test n_outlier(y) == 1
+        @test normal_count(y) == 2
+        @test outlier_count(y) == 1
     end
 end
 
