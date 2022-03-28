@@ -5,6 +5,6 @@ deploydocs(;
     target = "site",
     push_preview = false,
     # mkdocs-material bundles all other required dependencies
-    deps = Deps.pip("mkdocs-material==7.3.6"),
+    deps = Deps.pip("mkdocs-material"),
     make = () -> run(`mkdocs build`)
 )
