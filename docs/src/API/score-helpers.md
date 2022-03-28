@@ -140,14 +140,14 @@ OutlierDetection.normal_fraction
 OutlierDetection.outlier_fraction
 ```
 
-### `n_normal`
+### `normal_count`
 
 ```@docs
-OutlierDetection.n_normal
+OutlierDetection.normal_count
 ```
 
-### `n_outlier`
+### `outlier_count`
 
 ```@docs
-OutlierDetection.n_outlier
+OutlierDetection.outlier_count
 ```
