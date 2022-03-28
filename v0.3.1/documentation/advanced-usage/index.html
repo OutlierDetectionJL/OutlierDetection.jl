@@ -1,0 +1,882 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Fast, scalable and flexible outlier detection with Julia.">
+      
+      
+        <meta name="author" content="David Muhr <muhrdavid@gmail.com> and contributors">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
+    
+    
+      
+        <title>Advanced Usage - OutlierDetection.jl</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.644de097.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../styles/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#advanced-usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OutlierDetection.jl" class="md-header__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OutlierDetection.jl
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Advanced Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../installation/" class="md-tabs__link md-tabs__link--active">
+        Documentation
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API/detectors/" class="md-tabs__link">
+        API
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OutlierDetection.jl" class="md-nav__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
+
+    </a>
+    OutlierDetection.jl
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Documentation" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simple-usage/" class="md-nav__link">
+        Simple Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Advanced Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Advanced Usage
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-scores" class="md-nav__link">
+    Working with scores
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_5">
+          For Contributors
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="For Contributors" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          For Contributors
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../key-concepts/" class="md-nav__link">
+        Key Concepts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../performance-tips/" class="md-nav__link">
+        Performance Tips
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/detectors/" class="md-nav__link">
+        Detectors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/datasets/" class="md-nav__link">
+        Datasets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/interface/" class="md-nav__link">
+        Interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/score-helpers/" class="md-nav__link">
+        Score Helpers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/neural-networks/" class="md-nav__link">
+        Neural Networks
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-scores" class="md-nav__link">
+    Working with scores
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/edit/master/docs/documentation/advanced-usage.md" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+
+<p><a id='Advanced-Usage'></a></p>
+<p><a id='Advanced-Usage-1'></a></p>
+<h1 id="advanced-usage">Advanced Usage</h1>
+<p>The simple usage guide covered how you can use and optimize an existing outlier detection model, however, sometimes it is necessary to combine the results of multiple models or create entirely new models.</p>
+<p><a id='Working-with-scores'></a></p>
+<p><a id='Working-with-scores-1'></a></p>
+<h2 id="working-with-scores">Working with scores</h2>
+<p>An outlier detection model, whether supervised or unsupervised, typically assigns an <em>outlier score</em> to each datapoint. We further differentiate between outier scores achieved during <em>training</em> or <em>testing</em>. Because both train and test scores are essential for further score processing, e.g. converting the scores to classes, we provide an <a href="../../API/score-helpers/#OutlierDetection.augmented_transform"><code>augmented_transform</code></a> that returns a tuple of train and test scores.</p>
+<p>```@example advanced
+using MLJ, OutlierDetection
+using OutlierDetectionData: ODDS</p>
+<p>X, y = ODDS.load("annthyroid")
+train, test = partition(eachindex(y), 0.5, shuffle=true, stratify=y, rng=0)
+KNN = @iload KNNDetector pkg=OutlierDetectionNeighbors verbosity=0
+knn = KNN()
+<div class="highlight"><pre><span></span><code>Let&#39;s bind the detector to data and perform an `augmented_transform`.
+
+
+```@example advanced
+mach = machine(knn, X, y)
+fit!(mach, rows=train)
+scores = augmented_transform(mach, rows=test)
+scores_train, scores_test = scores
+</code></pre></div></p>
+<p>We split the into 50% train and 50% test data, thus <code>scores_train</code> and <code>scores_test</code> should return an equal amount of scores.</p>
+<p>```@example advanced
+scores_train
+<div class="highlight"><pre><span></span><code>```@example advanced
+scores_test
+</code></pre></div></p>
+<p>OutlierDetection.jl provides many helper functions to work with scores, see <a href="/API/score-helpers">score helpers</a>. The fundamental datatype to work with scores is a tuple of train/test scores and all helper functions work with this datatype. An example for such a helper function is <a href="../../API/score-helpers/#OutlierDetection.scale_minmax"><code>scale_minmax</code></a>, which scales the scores to lie between 0 and 1 using min-max scaling.</p>
+<p>```@example advanced
+last(scores |&gt; scale_minmax)
+<div class="highlight"><pre><span></span><code>Another exemplary helper function is [`classify_quantile`](../API/score-helpers.md#OutlierDetection.classify_quantile), which is used to transform scores to classes. We only display the test scores using the `last` element of the tuple.
+
+
+```@example advanced
+last(scores |&gt; classify_quantile(0.9))
+</code></pre></div></p>
+<p>Sometimes it's also necessary to combine scores from multiple detectors, which can, for example, be achieved with <a href="../../API/score-helpers/#OutlierDetection.combine_mean"><code>combine_mean</code></a>.</p>
+<p>```@example advanced
+combine_mean(scores, scores) == scores
+<div class="highlight"><pre><span></span><code>We can see that `combine_mean` can work with multiple train/test tuples and combines them into one final tuple. In this case the resulting tuple consists of the means of the individual train and test score vectors.
+
+
+&lt;a id=&#39;Combining-models&#39;&gt;&lt;/a&gt;
+
+&lt;a id=&#39;Combining-models-1&#39;&gt;&lt;/a&gt;
+
+## Combining models
+
+
+We typically want to deal with probabilistic or deterministic predictions instead of raw scores. Using a [`ProbabilisticDetector`](../API/score-helpers.md#OutlierDetection.ProbabilisticDetector) or [`DeterministicDetector`](../API/score-helpers.md#OutlierDetection.DeterministicDetector), we can simply wrap a detector to enable such predictions. Both wrappers, however, are designed such that they can work with multiple models and combine them into one probabilistic or deterministic result. When using multiple models, we have to provide them as keyword arguments as follows.
+
+
+```@example advanced
+knn = ProbabilisticDetector(knn1=KNN(k=5), knn2=KNN(k=10),
+                            normalize=scale_minmax,
+                            combine=combine_mean)
+</code></pre></div></p>
+<p>As you can see, we additionally provided explicit arguments to <code>normalize</code> and <code>combine</code>, which take function arguments and are used for score normalization and combination. Those are the default, thus we could have also just left them unspecified and achieved the same result. The scores are always normalized <em>before</em> they are combined. Notice that any function that maps a train/test score tuple to a score tuple with values in the range <code>[0,1]</code> works for <code>normalization</code>. For example, if the scores are already in the range <code>[0,1]</code> we could just pass the <code>identity</code> function. Let's see the predictions of the defined detector.</p>
+<p>```@example advanced
+mach = machine(knn, X, y)
+fit!(mach, rows=train)
+predict(mach, rows=test)
+<div class="highlight"><pre><span></span><code>Pretty simple, huh?
+
+
+&lt;a id=&#39;Learning-networks&#39;&gt;&lt;/a&gt;
+
+&lt;a id=&#39;Learning-networks-1&#39;&gt;&lt;/a&gt;
+
+## Learning networks
+
+
+Sometimes we need more flexibility to define outlier models. Unfortunately MLJ&#39;s [linear pipelines](https://alan-turing-institute.github.io/MLJ.jl/dev/linear_pipelines/#Linear-Pipelines) are not yet usable for outlier detection models, thus we need to define our learning networks manually. Let&#39;s, for example, create a machine that standardizes the input features before applying the detector.
+
+
+```@example advanced
+Xs, ys = source(X), source(y)
+Xstd = transform(machine(Standardizer(), Xs), Xs)
+ŷ = predict(machine(knn, Xstd), Xstd)
+knn_std = machine(ProbabilisticUnsupervisedDetector(), Xs, ys; predict=ŷ)
+</code></pre></div></p>
+<p>We can <code>fit!</code> and <code>predict</code> with the resulting model as usual.</p>
+<p>```@example advanced
+fit!(knn_std, rows=train)
+predict(knn_std, rows=test)
+<div class="highlight"><pre><span></span><code>Note that we supplied labels `ys` to an unsupervised algorithm; this is not necessary if you just want to predict, but it *is necessary if you want to evaluate the resulting learning network*. We can easily export such a learning network as a model with `@from_network`.
+
+
+```@example advanced
+@from_network knn_std mutable struct StandardizedKNN end
+</code></pre></div></p>
+<p>Furthermore, if the goal is to create a standalone model from a network, we could use empty sources (<code>source()</code>) for <code>Xs</code> and <code>ys</code>. The standalone model can be bound to data again like any other model.</p>
+<p>```@example advanced
+knn_std = machine(StandardizedKNN(), X, y)
+fit!(knn_std, rows=train)
+predict(knn_std, rows=test)
+<div class="highlight"><pre><span></span><code>There might be occasions, where our [`ProbabilisticDetector`](../API/score-helpers.md#OutlierDetection.ProbabilisticDetector) or [`DeterministicDetector`](../API/score-helpers.md#OutlierDetection.DeterministicDetector) wrappers are not flexible enough. In such cases we can directly use [`augmented_transform`](../API/score-helpers.md#OutlierDetection.augmented_transform) in our learning networks and use a [`ProbabilisticTransformer`](../API/score-helpers.md#OutlierDetection.ProbabilisticTransformer) or [`DeterministicTransformer`](../API/score-helpers.md#OutlierDetection.DeterministicTransformer), which takes one or more train/test tuples as inputs returning probabilistic or deterministic predictions.
+
+
+&lt;a id=&#39;Implementing-models&#39;&gt;&lt;/a&gt;
+
+&lt;a id=&#39;Implementing-models-1&#39;&gt;&lt;/a&gt;
+
+## Implementing models
+
+
+Learning networks let us flexibly create complex combinations of *existing models*, however, sometimes it&#39;s necessary to develop new outlier detection models for specific tasks. *OutlierDetection.jl* builds on top of [MLJ](https://alan-turing-institute.github.io/MLJ.jl/dev/) and provides a simple interface defining how an outlier detection algorithm can be implemented. Let&#39;s first import the interface and the packages relevant to our new algorithm.
+
+
+```julia
+import OutlierDetectionInterface
+const OD = OutlierDetectionInterface
+
+using Statistics:mean
+using LinearAlgebra:norm
+</code></pre></div></p>
+<p>Our proposed algorithm calculates a central point from the training data and defines an outlier as a point that's far away from that center. The only hyperparameter is <code>p</code> specifying which p-norm to use to calculate the distance. Using <a href="../../API/interface/#OutlierDetectionInterface.@detector"><code>@detector</code></a>, which replicates <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/adding_models_for_general_use/#Macro-shortcut"><code>@mlj_model</code></a>, we can define our detector struct with macro-generated keyword arguments and default values.</p>
+<p>```@example advanced
+OD.@detector mutable struct SimpleDetector &lt;: OD.UnsupervisedDetector
+    p::Float64 = 2
+end
+<div class="highlight"><pre><span></span><code>Our [`DetectorModel`](../API/interface.md#OutlierDetectionInterface.DetectorModel), then, defines the *learned parameters* of our model. In this case the only learned parameter is the center.
+
+
+```julia
+struct SimpleModel &lt;: OD.DetectorModel
+    center::AbstractArray{&lt;:Real}
+end
+</code></pre></div></p>
+<p>Let's further define a helper function to calculate the distance from the center.</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span> <span class="n">distances_from</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">vectors</span><span class="o">::</span><span class="kt">AbstractMatrix</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">deviations</span> <span class="o">=</span> <span class="n">vectors</span> <span class="o">.-</span> <span class="n">center</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">norm</span><span class="p">(</span><span class="n">deviations</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">deviations</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="k">end</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>distances_from (generic function with 1 method)
+</code></pre></div>
+<p>Finally, we can implement the two methods necessary to implement a detector, namely <a href="../../API/interface/#OutlierDetectionInterface.fit"><code>fit</code></a> and <a href="../../API/interface/#OutlierDetectionInterface.transform"><code>transform</code></a>. Please refer to the <a href="../key-concepts">Key Concepts</a> to learn more about the involved methods and types.</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span> <span class="n">OD</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="o">::</span><span class="kt">SimpleDetector</span><span class="p">,</span> <span class="n">X</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Data</span><span class="p">;</span> <span class="n">verbosity</span><span class="p">)</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Fit</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">training_scores</span> <span class="o">=</span> <span class="n">distances_from</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">detector</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SimpleModel</span><span class="p">(</span><span class="n">center</span><span class="p">),</span> <span class="n">training_scores</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">OD</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="o">::</span><span class="kt">SimpleDetector</span><span class="p">,</span> <span class="n">model</span><span class="o">::</span><span class="kt">SimpleModel</span><span class="p">,</span> <span class="n">X</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Scores</span>
+    <span class="n">distances_from</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">detector</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Using a data-frontend, we can make sure that MLJ internally transforms input data to <a href="../../API/interface/#OutlierDetectionInterface.Data"><code>Data</code></a>, which refers to column-major Julia arrays with the last dimension representing an example. Registering that frontend can be achieved with <a href="../../API/interface/#OutlierDetectionInterface.@default_frontend"><code>@default_frontend</code></a>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">OD</span><span class="o">.</span><span class="nd">@default_frontend</span> <span class="n">SimpleDetector</span>
+</code></pre></div>
+<p>Again, we can simply wrap our detector in a <a href="../../API/score-helpers/#OutlierDetection.ProbabilisticDetector"><code>ProbabilisticDetector</code></a> to enable probabilistic predictions.</p>
+<p><code>@example advanced
+sd = machine(ProbabilisticDetector(SimpleDetector()), X, y)
+fit!(sd, rows=train)
+predict(sd, rows=test)</code></p>
+<p>Remember: Your feedback and contributions are extremely welcome, join us on <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl">Github</a> or <a href="https://julialang.slack.com/archives/C02EXTD7WGG">#outlierdetection on Slack</a> and get involved.</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../simple-usage/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Simple Usage" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Simple Usage
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../key-concepts/" class="md-footer__link md-footer__link--next" aria-label="Next: Key Concepts" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Key Concepts
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.instant", "navigation.sections"], "search": "../../assets/javascripts/workers/search.5e67fbfe.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c44cc438.min.js"></script>
+      
+    
+  </body>
+</html>
