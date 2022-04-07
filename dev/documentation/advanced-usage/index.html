@@ -898,8 +898,8 @@
 <div class="highlight"><pre><span></span><code>Machine{ProbabilisticUnsupervisedDetectorSurrogate,…} trained 0 times; does not cache data
   model: MLJBase.ProbabilisticUnsupervisedDetectorSurrogate
   args: 
-    1:  Source @285 ⏎ `Table{AbstractVector{Continuous}}`
-    2:  Source @788 ⏎ `AbstractVector{OrderedFactor{2}}`
+    1:  Source @508 ⏎ `Table{AbstractVector{Continuous}}`
+    2:  Source @359 ⏎ `AbstractVector{OrderedFactor{2}}`
 </code></pre></div>
 <p>We can <code>fit!</code> and <code>predict</code> with the resulting model as usual.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
