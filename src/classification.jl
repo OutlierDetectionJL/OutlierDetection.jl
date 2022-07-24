@@ -3,7 +3,7 @@ using Statistics:quantile
 """
     classify_quantile(threshold)
 
-Create a percentile-based classifiction function that converts `scores_train::Scores` and `scores_test::Scores` to an
+Create a percentile-based classification function that converts `scores_train::Scores` and `scores_test::Scores` to an
 array of classes with `"normal"` indicating normal data and `"outlier"` indicating outliers. The conversion is based on
 percentiles of the training data, i.e. all datapoints above the `threshold` percentile are considered outliers.
 

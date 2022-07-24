@@ -114,7 +114,7 @@ We follow the general design approach chosen by MLJ, which is described in the p
 
 ## Documentation
 
-We use [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl) and [mkdocs](https://github.com/mkdocs/mkdocs/) to build and deploy our online documention.
+We use [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl) and [mkdocs](https://github.com/mkdocs/mkdocs/) to build and deploy our online documentation.
 
 The source files used to generate the online documentation can be found in [docs/src/](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/docs/src). For example, the main configuration file for mkdocs is [mkdocs.yml](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/docs/src/mkdocs.yml) and the main page is [index.md](https://github.com/OutlierDetectionJL/OutlierDetection.jl/tree/master/docs/src/index.md). To add new pages, you need to add a new `.md` file and include it in the `mkdocs.yml` file.
 

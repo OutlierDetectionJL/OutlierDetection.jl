@@ -82,7 +82,7 @@ Let's first define a range of possible parameter values for `k`.
 r = range(knn, :(detector.k), values=[1,2,3,4,5:5:100...])
 ```
 
-We can then use this range, or multiple ranges, to create a tuned model by additionally specifing a [tuning-strategy](https://alan-turing-institute.github.io/MLJ.jl/dev/tuning_models/), which defines how to efficiently evaluate ranges. In our case we use a simple grid search to evaluate all the given parameter options.
+We can then use this range, or multiple ranges, to create a tuned model by additionally specifying a [tuning-strategy](https://alan-turing-institute.github.io/MLJ.jl/dev/tuning_models/), which defines how to efficiently evaluate ranges. In our case we use a simple grid search to evaluate all the given parameter options.
 
 ```@example simple
 t = TunedModel(model=knn, resampling=cv, tuning=Grid(), range=r, acceleration=CPUThreads())
@@ -94,7 +94,7 @@ We can again bind that model to data and fit it. Fitting a tuned model instigate
 m = machine(t, X, y) |> fit!
 ```
 
-Using the machines' report, we can idenity the best evaluation results.
+Using the machines' report, we can identify the best evaluation results.
 
 ```@example simple
 report(m).best_history_entry

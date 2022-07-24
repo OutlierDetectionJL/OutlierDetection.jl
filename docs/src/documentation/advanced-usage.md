@@ -4,7 +4,7 @@ The simple usage guide covered how you can use and optimize an existing outlier 
 
 ## Working with scores
 
-An outlier detection model, whether supervised or unsupervised, typically assigns an *outlier score* to each datapoint. We further differentiate between outier scores achieved during *training* or *testing*. Because both train and test scores are essential for further score processing, e.g. converting the scores to classes, we provide an [`augmented_transform`](@ref) that returns a tuple of train and test scores.
+An outlier detection model, whether supervised or unsupervised, typically assigns an *outlier score* to each datapoint. We further differentiate between outlier scores achieved during *training* or *testing*. Because both train and test scores are essential for further score processing, e.g. converting the scores to classes, we provide an [`augmented_transform`](@ref) that returns a tuple of train and test scores.
 
 ```@example advanced
 using MLJ, OutlierDetection
