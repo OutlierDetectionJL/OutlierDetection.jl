@@ -84,7 +84,7 @@ from_categorical(categorical) = MLJ.unwrap.(categorical)
 from_categorical(categorical::MLJ.Node) = MLJ.node(from_categorical, categorical)
 
 # transform a fitresult (containing only the model) back to a Fit containing the model and training scores
-to_fitresult(mach::MLJ.Machine{<:OD.Detector})::Fit = (mach.fitresult, mach.report.scores)
+to_fitresult(mach::MLJ.Machine{<:OD.Detector})::Fit = (mach.fitresult, MLJ.report(mach).scores)
 
 # this includes all composites defined in mlj_wrappers.jl
 const DetectorComposites = Union{
@@ -105,12 +105,14 @@ const DetectorSurrogates = Union{
     MLJ.Machine{<:MLJ.DeterministicSupervisedDetectorSurrogate}
 }
 
-function check_mach(mach)
-    # catch deserialized machine with no data:
-    isempty(mach.args) && MLJ._err_serialized(augmented_transform)
-    # catch not-yet-trained machine:
-    mach.state > 0 || error("$mach has not been trained.")
-end
+const DetectorNetworkComposites = Union{
+    MLJ.Machine{<:MLJ.SupervisedDetectorNetworkComposite},
+    MLJ.Machine{<:MLJ.UnsupervisedDetectorNetworkComposite},
+    MLJ.Machine{<:MLJ.ProbabilisticUnsupervisedDetectorNetworkComposite},
+    MLJ.Machine{<:MLJ.DeterministicUnsupervisedDetectorNetworkComposite},
+    MLJ.Machine{<:MLJ.ProbabilisticSupervisedDetectorNetworkComposite},
+    MLJ.Machine{<:MLJ.DeterministicSupervisedDetectorNetworkComposite}
+}
 
 function _augmented_transform(detector::Detector, fitresult::Fit, X)
     model, scores_train = fitresult
@@ -138,33 +140,35 @@ Returns
 A tuple of raw training and test scores.
 """
 function augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows=:)
-    check_mach(mach)
     return _augmented_transform(mach.model, to_fitresult(mach), selectrows(mach.model, rows, mach.data[1])...)
 end
 
 function augmented_transform(mach::DetectorComposites; rows=:)
-    check_mach(mach)
-    scores_train = mach.report.scores
+    scores_train = MLJ.report(mach).scores
     scores_test = mach.fitresult.transform(selectrows(mach.model, rows, mach.data[1])...)
     return scores_train, scores_test
 end
 
 function augmented_transform(mach::DetectorSurrogates; rows=:)
-    check_mach(mach)
-    scores_train = mach.report.scores
+    scores_train = MLJ.report(mach).scores
     scores_test = mach.fitresult.transform(rows=rows)
     return scores_train, scores_test
 end
 
 # 1. augmented_transform on machines, given *concrete* data:
 function augmented_transform(mach::MLJ.Machine{<:OD.Detector}, X)
-    check_mach(mach)
     return _augmented_transform(mach.model, to_fitresult(mach), reformat(mach.model, X)...)
 end
 
 function augmented_transform(mach::DetectorComposites, X)
-    check_mach(mach)
-    scores_train = mach.report.scores
+    # TODO: extract the right scores here?
+    scores_train = MLJ.report(mach).scores
+    scores_test = mach.fitresult.transform(X)
+    return scores_train, scores_test
+end
+
+function augmented_transform(mach::DetectorNetworkComposites, X)
+    scores_train = MLJ.report(mach).scores
     scores_test = mach.fitresult.transform(X)
     return scores_train, scores_test
 end
@@ -175,5 +179,9 @@ function augmented_transform(mach::MLJ.Machine{<:OD.Detector}, X::MLJ.AbstractNo
 end
 
 function augmented_transform(mach::DetectorComposites, X::MLJ.AbstractNode)
+    MLJ.node(augmented_transform, mach, X)
+end
+
+function augmented_transform(mach::DetectorNetworkComposites, X::MLJ.AbstractNode)
     MLJ.node(augmented_transform, mach, X)
 end

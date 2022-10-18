@@ -4,6 +4,7 @@ module OutlierDetection
 
     import MLJBase
     const MLJ = MLJBase
+    const MMI = OD.MLJModelInterface
 
     # re-export from OutlierDetectionInterface
     export CLASS_NORMAL, CLASS_OUTLIER, DEFAULT_THRESHOLD

@@ -1,5 +1,14 @@
+function glb(types...)
+    # If a lower bound is in the models then it is greatest
+    # else we just return Unknown for now
+    for type in types
+        all(type <: t_ for t_ in types) && return type
+    end
+    return Unknown
+end
+
 # Determine the input scitype of an array of detectors
-to_input_scitype(detectors) = MLJ.glb(MLJ.input_scitype.(detectors)...)
+to_input_scitype(detectors) = glb(MLJ.input_scitype.(detectors)...)
 
 # Determine the supported composite detector type
 ex_to_eltype(type_symbol) = type_symbol == :Unsupervised ? UnsupervisedDetector :
@@ -7,12 +16,12 @@ ex_to_eltype(type_symbol) = type_symbol == :Unsupervised ? UnsupervisedDetector 
 
 # transform an expression specifying the type (unsupervised or supervised) to the corresponding composite types
 # e.g. type_ex = Unsupervised, target_type = :"" would lead to a struct called :UnsupervisedCompositeDetector
-# that is a subtype of :UnsupervisedDetectorComposite, if you would add target_type = :Probabilistic, the resulting
+# that is a subtype of :UnsupervisedNetworkComposite, if you would add target_type = :Probabilistic, the resulting
 # struct would be called :ProbabilisticUnsupervisedCompositeDetector
 function ex_to_types(type_ex, target_type::Symbol)
     type_symbol = Symbol(type_ex)
     detector_type = ex_to_eltype(type_symbol)
-    composite_type = Symbol(target_type, type_symbol, :Detector, :Composite)
+    composite_type = Symbol(target_type, type_symbol, :DetectorNetwork, :Composite)
     type_composite = Symbol(target_type, type_symbol, :Composite, :Detector)
     detector_type, composite_type, type_composite
 end
@@ -174,63 +183,96 @@ function supervised_transformer(model, Xs, ys)
     return scores
 end
 
-function MLJ.fit(model::ProbabilisticUnsupervisedCompositeDetector, verbosity::Integer, X)
+function MLJ.prefit(model::ProbabilisticUnsupervisedCompositeDetector, verbosity::Integer, X)
     Xs = MLJ.source(X)
     scores = unsupervised_transformer(model, Xs)
     scores_train, scores_test = first(scores), last(scores)
-    network_mach = MLJ.machine(ProbabilisticUnsupervisedDetector(), Xs,
-        predict=to_univariate_finite(scores_test),
-        transform=scores_test)
-    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+    return (
+        predict = to_univariate_finite(scores_test),
+        transform = scores_test,
+        augmented_transform = (scores_train, scores_test),
+        report = (; scores=scores_train,)
+    )
 end
 
-function MLJ.fit(model::DeterministicUnsupervisedCompositeDetector, verbosity::Integer, X)
+function MLJ.prefit(model::DeterministicUnsupervisedCompositeDetector, verbosity::Integer, X)
     Xs = MLJ.source(X)
     scores = unsupervised_transformer(model, Xs)
     scores_train, scores_test = first(scores), last(scores)
     classes = MLJ.node(model.classify, scores) |> last
-    network_mach = MLJ.machine(DeterministicUnsupervisedDetector(), Xs,
-        predict=to_categorical(classes),
-        transform=scores_test)
-    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+    return (
+        predict = to_categorical(classes),
+        transform = scores_test,
+        augmented_transform = (scores_train, scores_test),
+        report = (; scores=scores_train,)
+    )
 end
 
-function MLJ.fit(model::ProbabilisticSupervisedCompositeDetector, verbosity::Integer, X, y)
+function MLJ.prefit(model::ProbabilisticSupervisedCompositeDetector, verbosity::Integer, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
     scores = supervised_transformer(model, Xs, ys)
     scores_train, scores_test = first(scores), last(scores)
-    network_mach = MLJ.machine(ProbabilisticSupervisedDetector(), Xs, ys,
-        predict=to_univariate_finite(scores_test),
-        transform=scores_test)
-    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+    return (
+        predict = to_univariate_finite(scores_test),
+        transform = scores_test,
+        augmented_transform = (scores_train, scores_test),
+        report = (; scores=scores_train,)
+    )
 end
 
-function MLJ.fit(model::DeterministicSupervisedCompositeDetector, verbosity::Integer, X, y)
+function MLJ.prefit(model::DeterministicSupervisedCompositeDetector, verbosity::Integer, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
     scores = supervised_transformer(model, Xs, ys)
     scores_train, scores_test = first(scores), last(scores)
     classes = MLJ.node(model.classify, scores) |> last
-    network_mach = MLJ.machine(DeterministicSupervisedDetector(), Xs, ys,
-        predict=to_categorical(classes),
-        transform=scores_test)
-    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+    return (
+        predict = to_categorical(classes),
+        transform = scores_test,
+        augmented_transform = (scores_train, scores_test),
+        report = (; scores=scores_train,)
+    )
 end
 
-function MLJ.fit(model::UnsupervisedCompositeDetector, verbosity::Integer, X)
+function MLJ.prefit(model::UnsupervisedCompositeDetector{N}, verbosity::Integer, X) where N
     Xs = MLJ.source(X)
     scores = unsupervised_transformer(model, Xs)
     scores_train, scores_test = first(scores), last(scores)
-    network_mach = MLJ.machine(UnsupervisedDetector(), Xs, transform=scores_test)
-    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+    return (
+        transform = scores_test,
+        augmented_transform = (scores_train, scores_test),
+        report = (; scores=scores_train,)
+    )
 end
 
-function MLJ.fit(model::SupervisedCompositeDetector, verbosity::Integer, X, y)
+function MLJ.prefit(model::SupervisedCompositeDetector, verbosity::Integer, X, y)
     Xs, ys = MLJ.source(X), MLJ.source(y)
     scores = supervised_transformer(model, Xs, ys)
     scores_train, scores_test = first(scores), last(scores)
-    network_mach = MLJ.machine(SupervisedDetector(), Xs, ys, transform=scores_test)
-    return_with_scores!(network_mach, model, verbosity, scores_train, X)
+    return (
+        transform = scores_test,
+        augmented_transform = (scores_train, scores_test),
+        report = (; scores=scores_train,)
+    )
 end
+
+# begin TODO: Remove and integrate with MLJ
+# begin temp helpers enabling prefit for unsupervised detectors with labels
+
+UnsupervisedNetworkDetectors = Union{
+    ProbabilisticUnsupervisedCompositeDetector,
+    DeterministicUnsupervisedCompositeDetector,
+    UnsupervisedCompositeDetector
+}
+
+function MLJ.prefit(model::UnsupervisedNetworkDetectors, verbosity::Integer, X, y)
+    return MLJ.prefit(model, verbosity, X)
+end
+
+function MLJ.prefit(model::UnsupervisedNetworkDetectors, verbosity::Integer, X, y, w)
+    return MLJ.prefit(model, verbosity, X)
+end
+
+# end TODO
 
 ProbabilisticDetectorUnion{detector_names} = Union{
     ProbabilisticUnsupervisedCompositeDetector{detector_names},

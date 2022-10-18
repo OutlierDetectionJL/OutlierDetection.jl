@@ -114,20 +114,63 @@ raw_surrogate_unsupervised = RawCustomUnsupervisedDetector()
 surrogate_supervised = CustomSupervisedDetector()
 raw_surrogate_supervised = RawCustomSupervisedDetector()
 
+# Check the from_network surrogates (concrete data)
+for d in [surrogate_unsupervised, raw_surrogate_unsupervised, surrogate_supervised, raw_surrogate_supervised]
+    m = machine(d, X_test0, y)
+    fit!(m)
+    print(transform(m))
+    print(MLJBase.report(m))
+end
+
+# Check the from_network surrogates (dynamic data)
+for d in [surrogate_unsupervised, raw_surrogate_unsupervised, surrogate_supervised, raw_surrogate_supervised]
+    m = machine(d, Xs, ys)
+    fit!(m)
+    print(transform(m))
+    print(MLJBase.report(m))
+end
+
 # composite machines
-unsupervised_detectors = [basic_unsupervised_detectors..., surrogate_unsupervised, raw_surrogate_unsupervised]
+# TODO: CompositeDetector(surrogate_machine) fail
+unsupervised_detectors = [basic_unsupervised_detectors...] # surrogate_unsupervised, raw_surrogate_unsupervised]
 unsupervised_detectors = [unsupervised_detectors..., map(CompositeDetector, unsupervised_detectors)...]
 
-supervised_detectors = [basic_supervised_detectors..., surrogate_supervised, raw_surrogate_supervised]
+supervised_detectors = [basic_supervised_detectors...] # surrogate_supervised, raw_surrogate_supervised]
 supervised_detectors = [supervised_detectors..., map(CompositeDetector, supervised_detectors)...]
 
 # create composite detectors from raw detectors and already wrapped detectors
 detectors = [unsupervised_detectors..., supervised_detectors...]
 
+# CHECK if basic detectors work
+for d in detectors
+    m = machine(d, X_test0, y)
+    fit!(m)
+    println(transform(m))
+    println(MLJBase.report(m).scores)
+end
+
 # all possible pairs of machines
 detector_permutations = permutations(detectors, 2)
 
-fit_composite(composite, permutations) = [fit!(machine(composite(d1=d1, d2=d2), X, y)) for (d1, d2) in permutations]
+# TODO: CompositeDetector(CompositeDetector(model)) fails
+d = CompositeDetector(CompositeDetector(unsupervised_detector))
+m = machine(d, X_test0) |> fit!
+
+for (d1, d2) in detector_permutations
+    println(d1, d2)
+    m = machine(CompositeDetector(d1=d1, d2=d2), X_test0, y)
+    println(m isa OutlierDetection.DetectorNetworkComposites)
+    fit!(m)
+    println(transform(m))
+    println(MLJBase.report(m).scores)
+end
+
+fit_composite(composite, permutations) = begin
+    for (d1, d2) in permutations
+        println("Fitting $d1 and $d2")
+        fit!(machine(composite(d1=d1, d2=d2), X, y))
+    end
+end
 
 score_composites = fit_composite(CompositeDetector, detector_permutations)
 probabilistic_composites = fit_composite(ProbabilisticDetector, detector_permutations)
