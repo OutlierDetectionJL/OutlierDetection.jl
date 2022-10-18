@@ -330,21 +330,22 @@ end
     @test_logs (:warn, r"Wrapping") DeterministicDetector(unsupervised_detector, s=supervised_detector)
 end
 
-# The MLJ report API is a work in progress, we don't test it for now...
-# @testset "correct augmented_transform calls" begin
-#     test_implicit(m) = @test augmented_transform(m) == (m.report.scores, transform(m))
-#     test_concrete(m, X) = @test augmented_transform(m, X) == (m.report.scores, transform(m, X))
-#     test_source(m, Xs) = @test augmented_transform(m, Xs)() == (m.report.scores, transform(m, Xs)())
-#     test_rows(m; rows=:) = @test augmented_transform(m; rows=rows) == (m.report.scores, transform(m; rows=rows))
+@testset "correct augmented_transform calls" begin
+    # TODO: The MLJ report API is a work in progress, we should not need the following function in the future
+    report_scores = OutlierDetection.get_scores_from_composite_report
+    test_implicit(m) = @test augmented_transform(m) == (report_scores(m), transform(m))
+    test_concrete(m, X) = @test augmented_transform(m, X) == (report_scores(m), transform(m, X))
+    test_source(m, Xs) = @test augmented_transform(m, Xs)() == (report_scores(m), transform(m, Xs)())
+    test_rows(m; rows=:) = @test augmented_transform(m; rows=rows) == (report_scores(m), transform(m; rows=rows))
 
-#     # make sure augmented_transform works as expected on all kinds of machines
-#     for m in all_machines
-#         test_implicit(m)
-#         test_concrete(m, X)
-#         test_source(m, Xs)
-#         test_rows(m; rows=1:2)
-#     end
-# end
+    # make sure augmented_transform works as expected on all kinds of machines
+    for m in all_machines
+        test_implicit(m)
+        test_concrete(m, X)
+        test_source(m, Xs)
+        test_rows(m; rows=1:2)
+    end
+end
 
 @testset "erroneous augmented_transform calls" begin
     u_not_fitted = machine(unsupervised_detector, X)
