@@ -13,6 +13,25 @@
 - Provides access to state-of-the-art outlier detection algorithms
 - Seamlessly integrates with Julia's existing machine learning ecosystem
 
+**Citing**
+
+If you use *OutlierDetection.jl* in a scientific publication, we appreciate citations to:
+
+```
+@article{muhr2022outlierdetection,
+  title={OutlierDetection.jl: A modular outlier detection ecosystem for the Julia programming language},
+  author={Muhr, David and Affenzeller, Michael and Blaom, Anthony D},
+  journal={arXiv preprint arXiv:2211.04550},
+  year={2022}
+}
+```
+
+or
+
+```
+Muhr, David, Michael Affenzeller, and Anthony D. Blaom. "OutlierDetection.jl: A modular outlier detection ecosystem for the Julia programming language." arXiv preprint arXiv:2211.04550 (2022).
+```
+
 ## Installation
 
 It is recommended to use [Pkg.jl](https://julialang.github.io/Pkg.jl) for installation. Follow the command below to install the latest official release or use `] add OutlierDetection` in the Julia REPL.
