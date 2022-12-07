@@ -1,5 +1,5 @@
 # Determine the input scitype of an array of detectors
-to_input_scitype(detectors) = MLJ.glb(MLJ.input_scitype.(detectors)...)
+to_input_scitype(detectors) = MLJ._glb(MLJ.input_scitype.(detectors)...)
 
 # Determine the supported composite detector type
 ex_to_eltype(type_symbol) = type_symbol == :Unsupervised ? UnsupervisedDetector :
