@@ -4,7 +4,7 @@
 [![Documentation (dev)](https://img.shields.io/badge/docs-dev-blue.svg)](https://OutlierDetectionJL.github.io/OutlierDetection.jl/dev)
 [![Build Status](https://github.com/OutlierDetectionJL/OutlierDetection.jl/workflows/CI/badge.svg)](https://github.com/OutlierDetectionJL/OutlierDetection.jl/actions)
 [![Coverage](https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/OutlierDetectionJL/OutlierDetection.jl) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 *OutlierDetection.jl* is a Julia toolkit for detecting outlying objects, also known as *anomalies*. This package is an effort to make Julia a first-class citizen in the Outlier- and Anomaly-Detection community. *Why should you use this package?*
@@ -181,12 +181,15 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center"><a href="http://fastpaced.com"><img src="https://avatars.githubusercontent.com/u/1233304?v=4?s=100" width="100px;" alt=""/><br /><sub><b>David Muhr</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Code">💻</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Tests">⚠️</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Documentation">📖</a> <a href="#maintenance-davnn" title="Maintenance">🚧</a></td>
-    <td align="center"><a href="https://github.com/PallHaraldsson"><img src="https://avatars.githubusercontent.com/u/8005416?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Páll Haraldsson</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=PallHaraldsson" title="Documentation">📖</a></td>
-    <td align="center"><a href="http://ablaom.github.io"><img src="https://avatars.githubusercontent.com/u/30517088?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Anthony Blaom, PhD</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=ablaom" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/pitmonticone"><img src="https://avatars.githubusercontent.com/u/38562595?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pietro Monticone</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=pitmonticone" title="Documentation">📖</a></td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://fastpaced.com"><img src="https://avatars.githubusercontent.com/u/1233304?v=4?s=100" width="100px;" alt="David Muhr"/><br /><sub><b>David Muhr</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Code">💻</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Tests">⚠️</a> <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=davnn" title="Documentation">📖</a> <a href="#maintenance-davnn" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/PallHaraldsson"><img src="https://avatars.githubusercontent.com/u/8005416?v=4?s=100" width="100px;" alt="Páll Haraldsson"/><br /><sub><b>Páll Haraldsson</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=PallHaraldsson" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://ablaom.github.io"><img src="https://avatars.githubusercontent.com/u/30517088?v=4?s=100" width="100px;" alt="Anthony Blaom, PhD"/><br /><sub><b>Anthony Blaom, PhD</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=ablaom" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pitmonticone"><img src="https://avatars.githubusercontent.com/u/38562595?v=4?s=100" width="100px;" alt="Pietro Monticone"/><br /><sub><b>Pietro Monticone</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=pitmonticone" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rolling-robot"><img src="https://avatars.githubusercontent.com/u/18036097?v=4?s=100" width="100px;" alt="Petr Mukhachev"/><br /><sub><b>Petr Mukhachev</b></sub></a><br /><a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl/commits?author=rolling-robot" title="Documentation">📖</a></td>
+    </tr>
+  </tbody>
 </table>
 
 <!-- markdownlint-restore -->
