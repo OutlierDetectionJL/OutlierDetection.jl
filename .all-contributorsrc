@@ -52,6 +52,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "tylerjthomas9",
+      "name": "Tyler Thomas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36181311?v=4",
+      "profile": "https://github.com/tylerjthomas9",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
