@@ -942,8 +942,8 @@ Extract:
 <div class="highlight"><pre><span></span><code>trained Machine; does not cache data
   model: ProbabilisticTunedModel(model = ProbabilisticUnsupervisedCompositeDetector(normalize = scale_minmax, …), …)
   args: 
-    1:  Source @817 ⏎ Table{AbstractVector{Continuous}}
-    2:  Source @919 ⏎ AbstractVector{OrderedFactor{2}}
+    1:  Source @934 ⏎ Table{AbstractVector{Continuous}}
+    2:  Source @418 ⏎ AbstractVector{OrderedFactor{2}}
 </code></pre></div>
 <p>Using the machines' report, we can identify the best evaluation results.</p>
 <div class="highlight"><pre><span></span><code><span class="n">report</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">best_history_entry</span>
@@ -1000,7 +1000,7 @@ Extract:
 <div class="highlight"><pre><span></span><code>trained Machine; caches model-specific representations of data
   model: DeterministicUnsupervisedCompositeDetector(normalize = scale_minmax, …)
   args: 
-    1:  Source @661 ⏎ Table{AbstractVector{Continuous}}
+    1:  Source @333 ⏎ Table{AbstractVector{Continuous}}
 </code></pre></div>
 <p>Using <code>predict</code> allows us to determine the outliers in the test data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">ŷ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">predict</span><span class="p">(</span><span class="n">final</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
