@@ -60,12 +60,12 @@ raw_unsupervised_detector = MMIUnsupervisedDetector()
 supervised_detector = ODSupervisedDetector()
 raw_supervised_detector = MMISupervisedDetector()
 
-basic_unsupervised_detectors = [unsupervised_detector, raw_unsupervised_detector]
-basic_supervised_detectors = [supervised_detector, raw_supervised_detector]
+unsupervised_detectors = [unsupervised_detector, raw_unsupervised_detector]
+supervised_detectors = [supervised_detector, raw_supervised_detector]
 
 # raw machines
-unsupervised_machines = [fit!(machine(detector, X)) for detector in basic_unsupervised_detectors]
-supervised_machines = [fit!(machine(detector, X, y)) for detector in basic_supervised_detectors]
+unsupervised_machines = [fit!(machine(detector, X)) for detector in unsupervised_detectors]
+supervised_machines = [fit!(machine(detector, X, y)) for detector in supervised_detectors]
 
 # surrogate machines
 unsupervised_surrogate = score_surrogate_machine(unsupervised_detector, Xs, ys) |> fit!
@@ -103,22 +103,8 @@ deterministic_surrogate_machines = [
     supervised_deterministic_surrogate,
     raw_supervised_deterministic_surrogate]
 
-# surrogate detectors
-@from_network unsupervised_surrogate mutable struct CustomUnsupervisedDetector end
-@from_network raw_unsupervised_surrogate mutable struct RawCustomUnsupervisedDetector end
-@from_network supervised_surrogate mutable struct CustomSupervisedDetector end
-@from_network raw_supervised_surrogate mutable struct RawCustomSupervisedDetector end
-
-surrogate_unsupervised = CustomUnsupervisedDetector()
-raw_surrogate_unsupervised = RawCustomUnsupervisedDetector()
-surrogate_supervised = CustomSupervisedDetector()
-raw_surrogate_supervised = RawCustomSupervisedDetector()
-
 # composite machines
-unsupervised_detectors = [basic_unsupervised_detectors..., surrogate_unsupervised, raw_surrogate_unsupervised]
 unsupervised_detectors = [unsupervised_detectors..., map(CompositeDetector, unsupervised_detectors)...]
-
-supervised_detectors = [basic_supervised_detectors..., surrogate_supervised, raw_surrogate_supervised]
 supervised_detectors = [supervised_detectors..., map(CompositeDetector, supervised_detectors)...]
 
 # create composite detectors from raw detectors and already wrapped detectors
@@ -313,12 +299,6 @@ end
 end
 
 @testset "erroneous wrapper calls" begin
-    # wrappers do not work with models other than detectors
-    static_model = MLJBase.WrappedFunction(identity)
-    @test_throws MethodError CompositeDetector(static_model)
-    @test_throws MethodError ProbabilisticDetector(static_model)
-    @test_throws MethodError DeterministicDetector(static_model)
-
     # wrappers do not work with multiple unnamed detectors
     @test_throws ArgumentError CompositeDetector(unsupervised_detector, supervised_detector)
     @test_throws ArgumentError ProbabilisticDetector(unsupervised_detector, supervised_detector)

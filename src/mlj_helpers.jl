@@ -143,9 +143,7 @@ function augmented_transform(mach::MLJ.Machine{<:OD.Detector}; rows=:)
 end
 
 function get_scores_from_composite_report(mach)
-    # new #banana API
-    # fit_report = MLJ.report_given_method(mach)[:fit]
-    fit_report = mach.report
+    fit_report = MLJ.report_given_method(mach)[:fit]
     if haskey(fit_report, :additions) && haskey(fit_report.additions, :scores)
         return fit_report.additions.scores
     else
