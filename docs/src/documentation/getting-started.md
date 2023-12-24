@@ -45,7 +45,7 @@ fit!(knn_probabilistic, rows=train)
 fit!(knn_deterministic, rows=train)
 ```
 
-Transform the test data into raw outlier scores.
+Transform the data into raw outlier scores.
 
 ```@example ex
 transform(knn_raw, rows=test)

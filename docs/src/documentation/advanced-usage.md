@@ -4,7 +4,7 @@ The simple usage guide covered how you can use and optimize an existing outlier 
 
 ## Working with scores
 
-An outlier detection model, whether supervised or unsupervised, typically assigns an *outlier score* to each datapoint. We further differentiate between outlier scores achieved during *training* or *testing*. Because both train and test scores are essential for further score processing, e.g. converting the scores to classes, we provide an [`augmented_transform`](@ref) that returns a tuple of train and test scores.
+An outlier detection model, whether supervised or unsupervised, typically assigns an *outlier score* to each datapoint. We further differentiate between outlier scores achieved during *training* or *testing*. Because both train and test scores are essential for further score processing, e.g. converting the scores to classes, we provide a [`transform`](@ref) that returns a tuple of train and test scores.
 
 ```@example advanced
 using MLJ, OutlierDetection
@@ -16,12 +16,12 @@ KNN = @iload KNNDetector pkg=OutlierDetectionNeighbors verbosity=0
 knn = KNN()
 ```
 
-Let's bind the detector to data and perform an `augmented_transform`.
+Let's bind the detector to data and perform a [`transform`](@ref).
 
 ```@example advanced
 mach = machine(knn, X, y)
 fit!(mach, rows=train)
-scores = augmented_transform(mach, rows=test)
+scores = transform(mach, rows=test)
 scores_train, scores_test = scores
 ```
 
@@ -83,31 +83,30 @@ Sometimes we need more flexibility to define outlier models. Unfortunately MLJ's
 Xs, ys = source(X), source(y)
 Xstd = transform(machine(Standardizer(), Xs), Xs)
 ŷ = predict(machine(knn, Xstd), Xstd)
-knn_std = machine(ProbabilisticUnsupervisedDetector(), Xs, ys; predict=ŷ)
 ```
 
-We can `fit!` and `predict` with the resulting model as usual.
+We can `fit!` and predict with the resulting model as usual.
 
 ```@example advanced
+fit!(ŷ, rows=train)
+ŷ(rows=test)
+```
+
+Furthermore, if the goal is to create a standalone model from a network, we provide a helper macro called [`@surrogate`](@ref), which directly let's you implement a `prefit` function and implicitly generates the required model struct. The standalone model can be bound to data again like any other model. Have a look at [the original learning networks documentation](https://alan-turing-institute.github.io/MLJ.jl/dev/learning_networks/) if you would like to understand how prefit and composite models work.
+
+```@example advanced
+@surrogate(StandardizedKNN) do Xs
+    Xstd = transform(machine(Standardizer(), Xs), Xs)
+    ŷ = predict(machine(knn, Xstd), Xstd)
+    return (;predict=ŷ)
+end
+
+knn_std = machine(StandardizedKNN(), X)
 fit!(knn_std, rows=train)
 predict(knn_std, rows=test)
 ```
 
-Note that we supplied labels `ys` to an unsupervised algorithm; this is not necessary if you just want to predict, but it *is necessary if you want to evaluate the resulting learning network*. We can easily export such a learning network as a model with `@from_network`.
-
-```@example advanced
-@from_network knn_std mutable struct StandardizedKNN end
-```
-
-Furthermore, if the goal is to create a standalone model from a network, we could use empty sources (`source()`) for `Xs` and `ys`. The standalone model can be bound to data again like any other model.
-
-```@example advanced
-knn_std = machine(StandardizedKNN(), X, y)
-fit!(knn_std, rows=train)
-predict(knn_std, rows=test)
-```
-
-There might be occasions, where our [`ProbabilisticDetector`](@ref) or [`DeterministicDetector`](@ref) wrappers are not flexible enough. In such cases we can directly use [`augmented_transform`](@ref) in our learning networks and use a [`ProbabilisticTransformer`](@ref) or [`DeterministicTransformer`](@ref), which takes one or more train/test tuples as inputs returning probabilistic or deterministic predictions.
+There might be occasions, where our [`ProbabilisticDetector`](@ref) or [`DeterministicDetector`](@ref) wrappers are not flexible enough. In such cases we can directly use [`transform`](@ref) in your learning networks and use a [`ProbabilisticTransformer`](@ref) or [`DeterministicTransformer`](@ref), which takes one or more train/test tuples as inputs returning probabilistic or deterministic predictions.
 
 ## Implementing models
 
@@ -142,7 +141,7 @@ Let's further define a helper function to calculate the distance from the center
 ```@example advanced
 function distances_from(center, vectors::AbstractMatrix, p)
     deviations = vectors .- center
-    return [norm(deviations[:, i], p) for i in 1:size(deviations, 2)]
+    return [norm(deviations[:, i], p) for i in axes(deviations, 2)]
 end
 ```
 

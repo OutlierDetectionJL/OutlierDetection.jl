@@ -54,6 +54,12 @@ OutlierDetectionInterface.Labels
 OutlierDetectionInterface.Fit
 ```
 
+### `FitResult`
+
+```@docs
+OutlierDetectionInterface.FitResult
+```
+
 ## Functions
 
 ### `fit`
@@ -69,12 +75,6 @@ OutlierDetectionInterface.transform
 ```
 
 ## Macros
-
-### `@detector`
-
-```@docs
-OutlierDetectionInterface.@detector
-```
 
 ### `@default_frontend`
 

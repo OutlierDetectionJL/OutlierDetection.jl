@@ -62,8 +62,7 @@ const StaticTransformer = Union{
 
 # returns the augmented train/test scores
 function MLJ.transform(ev::StaticTransformer, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult
-    _, scores_test = to_scores(ev.normalize, ev.combine, scores...)
-    scores_test
+    to_scores(ev.normalize, ev.combine, scores...)
 end
 
 function MLJ.predict(ev::ProbabilisticTransformer, _, scores::Tuple{Scores, Scores}...) # _ because there is no fitresult

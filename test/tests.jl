@@ -1,4 +1,5 @@
 using Combinatorics: permutations
+using StatisticalMeasures: area_under_curve, misclassification_rate
 
 # helper to create fake data from scores such that the detectors return the scores again
 to_table(points) = reshape(repeat(points, length(points)), (length(points), length(points))) |> table
@@ -12,46 +13,33 @@ const test_scores = [base, # train and test equal
 const scores0, scores1, scores2, scores3, scores4, scores5 = map(t -> (base, t), test_scores)
 const X_test0, X_test1, X_test2, X_test3, X_test4, X_test5 = map(to_table, test_scores)
 const X, y = to_table(base), to_categorical(["normal", "normal", "outlier"])
-const Xs, ys = source(X), source(y)
 
-# learning network helpers
-function surrogate_machine(base_detector, surrogate_detector, transformer, Xs, ys)
-    source_machine = base_detector isa UnsupervisedDetector ?
-                     machine(base_detector, Xs) :
-                     machine(base_detector, Xs, ys)
-
-    augmented_scores = augmented_transform(source_machine, Xs)
-
-    # TODO: The source for ys in unsupervised models is currently necessary to enable evaluation, but
-    # we could fix this in MLJBase
-    machine(surrogate_detector, Xs, ys;
-        predict=predict(transformer, augmented_scores),
-        transform=last(augmented_scores),
-        report=(scores=first(augmented_scores),))
-end
-
-function score_surrogate_machine(base_detector, Xs, ys)
-    base_detector isa UnsupervisedDetector ?
-    surrogate_machine(base_detector, OD.UnsupervisedDetector(), score_transformer, Xs, ys) :
-    surrogate_machine(base_detector, OD.SupervisedDetector(), score_transformer, Xs, ys)
-end
-
-function probabilistic_surrogate_machine(base_detector, Xs, ys)
-    base_detector isa UnsupervisedDetector ?
-    surrogate_machine(base_detector, OD.ProbabilisticUnsupervisedDetector(), probabilistic_transformer, Xs, ys) :
-    surrogate_machine(base_detector, OD.ProbabilisticSupervisedDetector(), probabilistic_transformer, Xs, ys)
-end
-
-function deterministic_surrogate_machine(base_detector, Xs, ys)
-    base_detector isa UnsupervisedDetector ?
-    surrogate_machine(base_detector, OD.DeterministicUnsupervisedDetector(), deterministic_transformer, Xs, ys) :
-    surrogate_machine(base_detector, OD.DeterministicSupervisedDetector(), deterministic_transformer, Xs, ys)
+function make_surrogate(detector, transformer, X, y)
+    function fn(Xs, ys)
+        source_machine = detector isa UnsupervisedDetector ?
+        machine(detector, Xs) :
+        machine(detector, Xs, ys)
+        raw_scores = transform(source_machine, Xs)
+        transformer_machine = machine(transformer)
+        transformed_scores = transform(transformer_machine, raw_scores)
+        if transformer isa ScoreTransformer
+            return (; transform=transformed_scores)    
+        else
+            predicted_scores = predict(transformer_machine, raw_scores)
+            return (; transform=transformed_scores, predict=predicted_scores)
+        end
+    end
+    name = Symbol(typeof(detector), typeof(transformer))
+    @eval begin
+        @surrogate($fn, $name)
+        machine(eval($name)(), X, y) |> fit! 
+    end
 end
 
 # prepare the transformers
-score_transformer = machine(ScoreTransformer())
-probabilistic_transformer = machine(ProbabilisticTransformer())
-deterministic_transformer = machine(DeterministicTransformer())
+score_transformer = ScoreTransformer(normalize=identity)
+probabilistic_transformer = ProbabilisticTransformer()
+deterministic_transformer = DeterministicTransformer()
 
 # detectors
 unsupervised_detector = ODUnsupervisedDetector()
@@ -68,22 +56,22 @@ unsupervised_machines = [fit!(machine(detector, X)) for detector in unsupervised
 supervised_machines = [fit!(machine(detector, X, y)) for detector in supervised_detectors]
 
 # surrogate machines
-unsupervised_surrogate = score_surrogate_machine(unsupervised_detector, Xs, ys) |> fit!
-raw_unsupervised_surrogate = score_surrogate_machine(raw_unsupervised_detector, Xs, ys) |> fit!
-supervised_surrogate = score_surrogate_machine(supervised_detector, Xs, ys) |> fit!
-raw_supervised_surrogate = score_surrogate_machine(raw_supervised_detector, Xs, ys) |> fit!
+unsupervised_surrogate = make_surrogate(unsupervised_detector, score_transformer, X, y)
+raw_unsupervised_surrogate = make_surrogate(raw_unsupervised_detector, score_transformer, X, y)
+supervised_surrogate = make_surrogate(supervised_detector, score_transformer, X, y)
+raw_supervised_surrogate = make_surrogate(raw_supervised_detector, score_transformer, X, y)
 
 # probabilistic surrogate machines
-unsupervised_probabilistic_surrogate = probabilistic_surrogate_machine(unsupervised_detector, Xs, ys) |> fit!
-raw_unsupervised_probabilistic_surrogate = probabilistic_surrogate_machine(raw_unsupervised_detector, Xs, ys) |> fit!
-supervised_probabilistic_surrogate = probabilistic_surrogate_machine(supervised_detector, Xs, ys) |> fit!
-raw_supervised_probabilistic_surrogate = probabilistic_surrogate_machine(raw_supervised_detector, Xs, ys) |> fit!
+unsupervised_probabilistic_surrogate = make_surrogate(unsupervised_detector, probabilistic_transformer, X, y)
+raw_unsupervised_probabilistic_surrogate = make_surrogate(raw_unsupervised_detector, probabilistic_transformer, X, y)
+supervised_probabilistic_surrogate = make_surrogate(supervised_detector, probabilistic_transformer, X, y)
+raw_supervised_probabilistic_surrogate = make_surrogate(raw_supervised_detector, probabilistic_transformer, X, y)
 
 # deterministic surrogate machines
-unsupervised_deterministic_surrogate = deterministic_surrogate_machine(unsupervised_detector, Xs, ys) |> fit!
-raw_unsupervised_deterministic_surrogate = deterministic_surrogate_machine(raw_unsupervised_detector, Xs, ys) |> fit!
-supervised_deterministic_surrogate = deterministic_surrogate_machine(supervised_detector, Xs, ys) |> fit!
-raw_supervised_deterministic_surrogate = deterministic_surrogate_machine(raw_supervised_detector, Xs, ys) |> fit!
+unsupervised_deterministic_surrogate = make_surrogate(unsupervised_detector, deterministic_transformer, X, y)
+raw_unsupervised_deterministic_surrogate = make_surrogate(raw_unsupervised_detector, deterministic_transformer, X, y)
+supervised_deterministic_surrogate = make_surrogate(supervised_detector, deterministic_transformer, X, y)
+raw_supervised_deterministic_surrogate = make_surrogate(raw_supervised_detector, deterministic_transformer, X, y)
 
 score_surrogate_machines = [
     unsupervised_surrogate,
@@ -138,8 +126,8 @@ all_machines = [raw_machines..., score_machines..., probabilistic_machines..., d
 
     @testset "raw scores" begin
         test_scoring(scores, data) = begin
-            for pred in [transform(m, data) for m in [raw_machines..., surrogate_machines...]]
-                @test last(scores) == pred
+            for pred in [transform(m, data) for m in [raw_machines..., score_surrogate_machines...]]
+                @test scores == pred
             end
         end
 
@@ -155,7 +143,7 @@ all_machines = [raw_machines..., score_machines..., probabilistic_machines..., d
     @testset "normalized scores" begin
         test_scoring(scores, data, labels) = begin
             for pred in [minmax_test(scores),
-                [transform(m, data) for m in composite_machines]...,
+                [last(transform(m, data)) for m in composite_machines]...,
                 [raw_proba(m, data) for m in probabilistic_machines]...]
                 @test labels == pred
             end
@@ -181,8 +169,8 @@ all_machines = [raw_machines..., score_machines..., probabilistic_machines..., d
     @testset "classification" begin
         test_classification(scores, data, labels) = begin
             for pred in [classify(scores),
-                [predict(m, data) for m in deterministic_composites]...,
-                [raw_class(m, data) for m in deterministic_composites]...]
+                [predict(m, data) for m in deterministic_machines]...,
+                [raw_class(m, data) for m in deterministic_machines]...]
                 @test labels == pred
             end
         end
@@ -225,15 +213,15 @@ end
     deterministic_unsupervised_detectors = map(DeterministicDetector, unsupervised_detectors)
 
     for detector in composite_unsupervised_detectors
-        @test detector isa UnsupervisedDetectorComposite
+        @test detector isa UnsupervisedDetectorNetworkComposite
     end
 
     for detector in probabilistic_unsupervised_detectors
-        @test detector isa ProbabilisticUnsupervisedDetectorComposite
+        @test detector isa ProbabilisticUnsupervisedDetectorNetworkComposite
     end
 
     for detector in deterministic_unsupervised_detectors
-        @test detector isa DeterministicUnsupervisedDetectorComposite
+        @test detector isa DeterministicUnsupervisedDetectorNetworkComposite
     end
 
     # supervised only
@@ -242,26 +230,26 @@ end
     deterministic_supervised_detectors = map(DeterministicDetector, supervised_detectors)
 
     for detector in composite_supervised_detectors
-        @test detector isa SupervisedDetectorComposite
+        @test detector isa SupervisedDetectorNetworkComposite
     end
 
     for detector in probabilistic_supervised_detectors
-        @test detector isa ProbabilisticSupervisedDetectorComposite
+        @test detector isa ProbabilisticSupervisedDetectorNetworkComposite
     end
 
     for detector in deterministic_supervised_detectors
-        @test detector isa DeterministicSupervisedDetectorComposite
+        @test detector isa DeterministicSupervisedDetectorNetworkComposite
     end
 
     # mixed supervised/unsupervised
     for unsupervised_detector in [supervised_detectors..., composite_supervised_detectors...]
         for supervised_detector in [unsupervised_detectors..., composite_unsupervised_detectors...]
             @test (CompositeDetector(sup=supervised_detector, uns=unsupervised_detector) isa
-                   SupervisedDetectorComposite)
+                   SupervisedDetectorNetworkComposite)
             @test (ProbabilisticDetector(sup=supervised_detector, uns=unsupervised_detector) isa
-                   ProbabilisticSupervisedDetectorComposite)
+                   ProbabilisticSupervisedDetectorNetworkComposite)
             @test (DeterministicDetector(sup=supervised_detector, uns=unsupervised_detector) isa
-                   DeterministicSupervisedDetectorComposite)
+                   DeterministicSupervisedDetectorNetworkComposite)
         end
     end
 end
@@ -310,40 +298,31 @@ end
     @test_logs (:warn, r"Wrapping") DeterministicDetector(unsupervised_detector, s=supervised_detector)
 end
 
-@testset "correct augmented_transform calls" begin
-    # TODO: The MLJ report API is a work in progress, we should not need the following function in the future
-    report_scores = OutlierDetection.get_scores_from_composite_report
-    test_implicit(m) = @test augmented_transform(m) == (report_scores(m), transform(m))
-    test_concrete(m, X) = @test augmented_transform(m, X) == (report_scores(m), transform(m, X))
-    test_source(m, Xs) = @test augmented_transform(m, Xs)() == (report_scores(m), transform(m, Xs)())
-    test_rows(m; rows=:) = @test augmented_transform(m; rows=rows) == (report_scores(m), transform(m; rows=rows))
-
-    # make sure augmented_transform works as expected on all kinds of machines
-    for m in all_machines
-        test_implicit(m)
-        test_concrete(m, X)
-        test_source(m, Xs)
-        test_rows(m; rows=1:2)
-    end
-end
-
-@testset "erroneous augmented_transform calls" begin
-    u_not_fitted = machine(unsupervised_detector, X)
-    s_not_fitted = machine(supervised_detector, X, y)
-    c_not_fitted = machine(CompositeDetector(unsupervised_detector), X)
-
-    # not-yet-fitted machines
-    @test_throws ErrorException augmented_transform(u_not_fitted)
-    @test_throws ErrorException augmented_transform(s_not_fitted)
-    @test_throws ErrorException augmented_transform(c_not_fitted)
-end
-
 @testset "evaluation works as expected" begin
-    train, test = [1, 2], [3]
-    evaluate_machine(detector) =
-        @test evaluate!(detector; measure=misclassification_rate, resampling=[(train, test)]).measurement[1] == 0
+    train, test = [1, 2, 1, 2, 1, 2], [2, 3, 2, 3, 2, 3]
+    evaluate_deterministic(machine) =
+        @test evaluate!(
+            machine;
+            measure=misclassification_rate,
+            resampling=[(train, test)],
+            operation=predict,
+            per_observation=true
+            ).measurement[1] == 0.5
 
-    for mach in [probabilistic_machines..., deterministic_machines...]
-        evaluate_machine(mach)
+    evaluate_probabilistic(machine) =
+        @test evaluate!(
+            machine;
+            measure=area_under_curve,
+            resampling=[(train, test)],
+            operation=predict,
+            per_observation=true
+        ).measurement[1] == 0.5
+
+    for mach in deterministic_machines
+        evaluate_deterministic(mach)
+    end
+
+    for mach in probabilistic_machines
+        evaluate_probabilistic(mach)
     end
 end

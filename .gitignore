@@ -11,3 +11,4 @@
 .history/
 notebooks/
 *.jld
+.CondaPkg/

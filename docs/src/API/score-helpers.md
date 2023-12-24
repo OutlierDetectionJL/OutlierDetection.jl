@@ -4,13 +4,7 @@
 
 ## Transformers
 
-In order to normalize scores or classify them, both the training and testing scores are necessary. We thus provide a helper function called [`augmented_transform`](@ref) that returns a tuple of training and test scores. Transformers can make use of one or more such train/test tuples to convert them into normalized scores, probabilities or classes.
-
-### `augmented_transform`
-
-```@docs
-OutlierDetection.augmented_transform
-```
+In order to normalize scores or classify them, both the training and testing scores are necessary. We thus return a tuple of training and test scores in all [`transform`](@ref) calls. Transformers can make use of one or more such train/test tuples to convert them into normalized scores, probabilities or classes.
 
 ### `ScoreTransformer`
 

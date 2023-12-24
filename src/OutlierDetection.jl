@@ -27,8 +27,7 @@ module OutlierDetection
            outlier_fraction 
 
     # mlj_helpers.jl
-    export augmented_transform,
-           to_categorical,
+    export to_categorical,
            to_univariate_finite,
            from_categorical,
            from_univariate_finite
@@ -43,6 +42,9 @@ module OutlierDetection
            DeterministicDetector,
            CompositeDetector
 
+    # mlj_surrogate.jl
+    export @surrogate
+
     # utilities
     include("normalization.jl")
     include("classification.jl")
@@ -53,4 +55,5 @@ module OutlierDetection
     include("mlj_helpers.jl")
     include("mlj_transformers.jl")
     include("mlj_wrappers.jl")
+    include("mlj_surrogate.jl")
 end

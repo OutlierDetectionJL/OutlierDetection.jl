@@ -1,7 +1,7 @@
 name = "OutlierDetection"
 uuid = "262411bb-c475-4342-ba9e-03b8c0183ca6"
 authors = ["David Muhr <muhrdavid+github@gmail.com> and contributors"]
-version = "0.3.4"
+version = "0.4.0"
 
 [deps]
 MLJBase = "a7f614a8-145f-11e9-1d2a-a57a1082229d"
@@ -10,14 +10,15 @@ SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-MLJBase = "0.21"
-OutlierDetectionInterface = "~0.1.8"
+MLJBase = "1.0"
+OutlierDetectionInterface = "0.2.0"
 SpecialFunctions = "1, 2"
-julia = "^1.6"
+julia = "1.6 - 1"
 
 [extras]
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+StatisticalMeasures = "a19d573c-0a75-4610-95b3-7071388c7541"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "Combinatorics"]
+test = ["Test", "Combinatorics", "StatisticalMeasures"]
