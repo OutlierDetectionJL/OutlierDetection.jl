@@ -1,0 +1,1263 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Fast, scalable and flexible outlier detection with Julia.">
+      
+      
+        <meta name="author" content="David Muhr <muhrdavid@gmail.com> and contributors">
+      
+      
+      
+        <link rel="prev" href="../simple-usage/">
+      
+      
+        <link rel="next" href="../key-concepts/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>Advanced Usage - OutlierDetection.jl</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../styles/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#advanced-usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OutlierDetection.jl" class="md-header__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OutlierDetection.jl
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Advanced Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../API/detectors/" class="md-tabs__link">
+          
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OutlierDetection.jl" class="md-nav__button md-logo" aria-label="OutlierDetection.jl" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 8.5a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 14 8.5m0 4a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 17a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-8.5A1.5 1.5 0 0 0 8.5 10a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 10 8.5m4 12a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m0-3.5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m7-3.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M18 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m-8-.5A1.5 1.5 0 0 0 8.5 14a1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5M10 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m0-3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5m0 17a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m-7-7a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5m11-10a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M14 7a1 1 0 0 0 1-1 1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1m7 3.5a.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5M6 5a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M3 9.5a.5.5 0 0 0-.5.5.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5.5.5 0 0 0-.5-.5M6 9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 8a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0-4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1Z"/></svg>
+
+    </a>
+    OutlierDetection.jl
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simple-usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simple Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Advanced Usage
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Advanced Usage
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with scores
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combining-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Combining models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning networks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementing models
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    For Contributors
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            For Contributors
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../key-concepts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Key Concepts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../performance-tips/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Performance Tips
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/detectors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Detectors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/interface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interface
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/score-helpers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Score Helpers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/neural-networks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Neural Networks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with scores
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combining-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Combining models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning networks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementing models
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<p><a id='Advanced-Usage'></a></p>
+<p><a id='Advanced-Usage-1'></a></p>
+<h1 id="advanced-usage">Advanced Usage</h1>
+<p>The simple usage guide covered how you can use and optimize an existing outlier detection model, however, sometimes it is necessary to combine the results of multiple models or create entirely new models.</p>
+<p><a id='Working-with-scores'></a></p>
+<p><a id='Working-with-scores-1'></a></p>
+<h2 id="working-with-scores">Working with scores</h2>
+<p>An outlier detection model, whether supervised or unsupervised, typically assigns an <em>outlier score</em> to each datapoint. We further differentiate between outlier scores achieved during <em>training</em> or <em>testing</em>. Because both train and test scores are essential for further score processing, e.g. converting the scores to classes, we provide a <a href="../../API/interface/#OutlierDetectionInterface.transform"><code>transform</code></a> that returns a tuple of train and test scores.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">MLJ</span><span class="p">,</span><span class="w"> </span><span class="n">OutlierDetection</span>
+<span class="k">using</span><span class="w"> </span><span class="n">OutlierDetectionData</span><span class="o">:</span><span class="w"> </span><span class="n">ODDS</span>
+
+<span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODDS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;annthyroid&quot;</span><span class="p">)</span>
+<span class="n">train</span><span class="p">,</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="n">eachindex</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">shuffle</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">rng</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">KNN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@iload</span><span class="w"> </span><span class="n">KNNDetector</span><span class="w"> </span><span class="n">pkg</span><span class="o">=</span><span class="n">OutlierDetectionNeighbors</span><span class="w"> </span><span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">knn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KNN</span><span class="p">()</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>KNNDetector(
+  k = 5, 
+  metric = Distances.Euclidean(0.0), 
+  algorithm = :kdtree, 
+  static = :auto, 
+  leafsize = 10, 
+  reorder = true, 
+  parallel = false, 
+  reduction = :maximum)
+</code></pre></div>
+<p>Let's bind the detector to data and perform a <a href="../../API/interface/#OutlierDetectionInterface.transform"><code>transform</code></a>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">mach</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">machine</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="n">fit!</span><span class="p">(</span><span class="n">mach</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
+<span class="n">scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="n">mach</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+<span class="n">scores_train</span><span class="p">,</span><span class="w"> </span><span class="n">scores_test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scores</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>([0.015809329524050033, 0.01227884359375915, 0.0459156835950419, 0.020099952736262826, 0.013580868897091973, 0.021063000735887565, 0.014748030376968972, 0.012825447360618655, 0.03674629232997528, 0.0058999999999999955  …  0.01025134137564445, 0.01916101249934356, 0.01497412434835507, 0.015076140089558737, 0.01764709607839205, 0.06715745751590066, 0.01403980412968785, 0.010630785483678995, 0.02923597783553682, 0.02754246902512554], [0.007383319036855991, 0.012256920494153502, 0.017696609844826204, 0.024054440338532098, 0.015375304875026054, 0.023503616742961086, 0.01673977598416418, 0.010000000000000009, 0.028750652166516153, 0.008564864272129474  …  0.012658597868642494, 0.010416544532617329, 0.017795867497820923, 0.04766550115125195, 0.012879689437249651, 0.021236292049225534, 0.013329906226226798, 0.03016661068134767, 0.006801698317332226, 0.10986355173577815])
+</code></pre></div>
+<p>We split the into 50% train and 50% test data, thus <code>scores_train</code> and <code>scores_test</code> should return an equal amount of scores.</p>
+<div class="highlight"><pre><span></span><code><span class="n">scores_train</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element Vector{Float64}:
+ 0.015809329524050033
+ 0.01227884359375915
+ 0.0459156835950419
+ 0.020099952736262826
+ 0.013580868897091973
+ 0.021063000735887565
+ 0.014748030376968972
+ 0.012825447360618655
+ 0.03674629232997528
+ 0.0058999999999999955
+ ⋮
+ 0.01916101249934356
+ 0.01497412434835507
+ 0.015076140089558737
+ 0.01764709607839205
+ 0.06715745751590066
+ 0.01403980412968785
+ 0.010630785483678995
+ 0.02923597783553682
+ 0.02754246902512554
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">scores_test</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element Vector{Float64}:
+ 0.007383319036855991
+ 0.012256920494153502
+ 0.017696609844826204
+ 0.024054440338532098
+ 0.015375304875026054
+ 0.023503616742961086
+ 0.01673977598416418
+ 0.010000000000000009
+ 0.028750652166516153
+ 0.008564864272129474
+ ⋮
+ 0.010416544532617329
+ 0.017795867497820923
+ 0.04766550115125195
+ 0.012879689437249651
+ 0.021236292049225534
+ 0.013329906226226798
+ 0.03016661068134767
+ 0.006801698317332226
+ 0.10986355173577815
+</code></pre></div>
+<p>OutlierDetection.jl provides many helper functions to work with scores, see <a href="/API/score-helpers">score helpers</a>. The fundamental datatype to work with scores is a tuple of train/test scores and all helper functions work with this datatype. An example for such a helper function is <a href="../../API/score-helpers/#OutlierDetection.scale_minmax"><code>scale_minmax</code></a>, which scales the scores to lie between 0 and 1 using min-max scaling.</p>
+<div class="highlight"><pre><span></span><code><span class="n">last</span><span class="p">(</span><span class="n">scores</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">scale_minmax</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element Vector{Float64}:
+ 0.009915879968108363
+ 0.02187720506179054
+ 0.03522788490341164
+ 0.05083196703693757
+ 0.029530684664811027
+ 0.04948007559615709
+ 0.032879518717070275
+ 0.01633802423674759
+ 0.062357923124135045
+ 0.0128157573577204
+ ⋮
+ 0.01736035333244564
+ 0.0354714938783983
+ 0.10878081177982465
+ 0.02340567263385019
+ 0.0439153596479345
+ 0.02451064385949808
+ 0.0658331231919836
+ 0.008488402861413877
+ 0.2614340621027081
+</code></pre></div>
+<p>Another exemplary helper function is <a href="../../API/score-helpers/#OutlierDetection.classify_quantile"><code>classify_quantile</code></a>, which is used to transform scores to classes. We only display the test scores using the <code>last</code> element of the tuple.</p>
+<div class="highlight"><pre><span></span><code><span class="n">last</span><span class="p">(</span><span class="n">scores</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">classify_quantile</span><span class="p">(</span><span class="mf">0.9</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element Vector{String}:
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ ⋮
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;normal&quot;
+ &quot;outlier&quot;
+</code></pre></div>
+<p>Sometimes it's also necessary to combine scores from multiple detectors, which can, for example, be achieved with <a href="../../API/score-helpers/#OutlierDetection.combine_mean"><code>combine_mean</code></a>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">combine_mean</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span><span class="w"> </span><span class="n">scores</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">scores</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>true
+</code></pre></div>
+<p>We can see that <code>combine_mean</code> can work with multiple train/test tuples and combines them into one final tuple. In this case the resulting tuple consists of the means of the individual train and test score vectors.</p>
+<p><a id='Combining-models'></a></p>
+<p><a id='Combining-models-1'></a></p>
+<h2 id="combining-models">Combining models</h2>
+<p>We typically want to deal with probabilistic or deterministic predictions instead of raw scores. Using a <a href="../../API/score-helpers/#OutlierDetection.ProbabilisticDetector"><code>ProbabilisticDetector</code></a> or <a href="../../API/score-helpers/#OutlierDetection.DeterministicDetector"><code>DeterministicDetector</code></a>, we can simply wrap a detector to enable such predictions. Both wrappers, however, are designed such that they can work with multiple models and combine them into one probabilistic or deterministic result. When using multiple models, we have to provide them as keyword arguments as follows.</p>
+<div class="highlight"><pre><span></span><code><span class="n">knn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProbabilisticDetector</span><span class="p">(</span><span class="n">knn1</span><span class="o">=</span><span class="n">KNN</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="n">knn2</span><span class="o">=</span><span class="n">KNN</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<span class="w">                            </span><span class="n">normalize</span><span class="o">=</span><span class="n">scale_minmax</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">combine</span><span class="o">=</span><span class="n">combine_mean</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>ProbabilisticUnsupervisedCompositeDetector(
+  normalize = OutlierDetection.scale_minmax, 
+  combine = OutlierDetection.combine_mean, 
+  knn1 = KNNDetector(
+        k = 5, 
+        metric = Distances.Euclidean(0.0), 
+        algorithm = :kdtree, 
+        static = :auto, 
+        leafsize = 10, 
+        reorder = true, 
+        parallel = false, 
+        reduction = :maximum), 
+  knn2 = KNNDetector(
+        k = 10, 
+        metric = Distances.Euclidean(0.0), 
+        algorithm = :kdtree, 
+        static = :auto, 
+        leafsize = 10, 
+        reorder = true, 
+        parallel = false, 
+        reduction = :maximum))
+</code></pre></div>
+<p>As you can see, we additionally provided explicit arguments to <code>normalize</code> and <code>combine</code>, which take function arguments and are used for score normalization and combination. Those are the default, thus we could have also just left them unspecified and achieved the same result. The scores are always normalized <em>before</em> they are combined. Notice that any function that maps a train/test score tuple to a score tuple with values in the range <code>[0,1]</code> works for <code>normalization</code>. For example, if the scores are already in the range <code>[0,1]</code> we could just pass the <code>identity</code> function. Let's see the predictions of the defined detector.</p>
+<div class="highlight"><pre><span></span><code><span class="n">mach</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">machine</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="n">fit!</span><span class="p">(</span><span class="n">mach</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
+<span class="n">predict</span><span class="p">(</span><span class="n">mach</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.991, outlier=&gt;0.00914)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.978, outlier=&gt;0.0224)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.963, outlier=&gt;0.0365)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.953, outlier=&gt;0.0465)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.975, outlier=&gt;0.0247)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.951, outlier=&gt;0.0485)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.966, outlier=&gt;0.0344)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.989, outlier=&gt;0.0114)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.942, outlier=&gt;0.0578)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.989, outlier=&gt;0.0115)
+ ⋮
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.985, outlier=&gt;0.0151)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.97, outlier=&gt;0.03)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.894, outlier=&gt;0.106)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.98, outlier=&gt;0.0201)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.956, outlier=&gt;0.0444)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.974, outlier=&gt;0.0262)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.939, outlier=&gt;0.0606)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.991, outlier=&gt;0.00866)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.748, outlier=&gt;0.252)
+</code></pre></div>
+<p>Pretty simple, huh?</p>
+<p><a id='Learning-networks'></a></p>
+<p><a id='Learning-networks-1'></a></p>
+<h2 id="learning-networks">Learning networks</h2>
+<p>Sometimes we need more flexibility to define outlier models. Unfortunately MLJ's <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/linear_pipelines/#Linear-Pipelines">linear pipelines</a> are not yet usable for outlier detection models, thus we need to define our learning networks manually. Let's, for example, create a machine that standardizes the input features before applying the detector.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Xs</span><span class="p">,</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="w"> </span><span class="n">source</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">Xstd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="n">machine</span><span class="p">(</span><span class="n">Standardizer</span><span class="p">(),</span><span class="w"> </span><span class="n">Xs</span><span class="p">),</span><span class="w"> </span><span class="n">Xs</span><span class="p">)</span>
+<span class="n">ŷ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">predict</span><span class="p">(</span><span class="n">machine</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span><span class="w"> </span><span class="n">Xstd</span><span class="p">),</span><span class="w"> </span><span class="n">Xstd</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Node @311 → ProbabilisticUnsupervisedCompositeDetector(…)
+  args:
+    1:  Node @031 → Standardizer(…)
+  formula:
+    predict(
+      machine(ProbabilisticUnsupervisedCompositeDetector(normalize = scale_minmax, …), …), 
+      transform(
+        machine(Standardizer(features = Symbol[], …), …), 
+        Source @515))
+</code></pre></div>
+<p>We can <code>fit!</code> and predict with the resulting model as usual.</p>
+<div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">ŷ</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
+<span class="n">ŷ</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.988, outlier=&gt;0.0116)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.977, outlier=&gt;0.0229)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.964, outlier=&gt;0.0359)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.958, outlier=&gt;0.0417)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.971, outlier=&gt;0.029)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.945, outlier=&gt;0.0551)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.964, outlier=&gt;0.0362)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.997, outlier=&gt;0.00341)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.937, outlier=&gt;0.0629)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.975, outlier=&gt;0.0247)
+ ⋮
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.986, outlier=&gt;0.0142)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.955, outlier=&gt;0.0451)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.888, outlier=&gt;0.112)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.961, outlier=&gt;0.0386)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.962, outlier=&gt;0.0376)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.97, outlier=&gt;0.0301)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.953, outlier=&gt;0.0471)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.987, outlier=&gt;0.0129)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.786, outlier=&gt;0.214)
+</code></pre></div>
+<p>Furthermore, if the goal is to create a standalone model from a network, we provide a helper macro called <a href="../../API/score-helpers/#OutlierDetection.@surrogate"><code>@surrogate</code></a>, which directly let's you implement a <code>prefit</code> function and implicitly generates the required model struct. The standalone model can be bound to data again like any other model. Have a look at <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/learning_networks/">the original learning networks documentation</a> if you would like to understand how prefit and composite models work.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@surrogate</span><span class="p">(</span><span class="n">StandardizedKNN</span><span class="p">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="n">Xs</span>
+<span class="w">    </span><span class="n">Xstd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="n">machine</span><span class="p">(</span><span class="n">Standardizer</span><span class="p">(),</span><span class="w"> </span><span class="n">Xs</span><span class="p">),</span><span class="w"> </span><span class="n">Xs</span><span class="p">)</span>
+<span class="w">    </span><span class="n">ŷ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">predict</span><span class="p">(</span><span class="n">machine</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span><span class="w"> </span><span class="n">Xstd</span><span class="p">),</span><span class="w"> </span><span class="n">Xstd</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(;</span><span class="n">predict</span><span class="o">=</span><span class="n">ŷ</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">knn_std</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">machine</span><span class="p">(</span><span class="n">StandardizedKNN</span><span class="p">(),</span><span class="w"> </span><span class="n">X</span><span class="p">)</span>
+<span class="n">fit!</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
+<span class="n">predict</span><span class="p">(</span><span class="n">knn_std</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.988, outlier=&gt;0.0116)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.977, outlier=&gt;0.0229)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.964, outlier=&gt;0.0359)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.958, outlier=&gt;0.0417)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.971, outlier=&gt;0.029)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.945, outlier=&gt;0.0551)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.964, outlier=&gt;0.0362)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.997, outlier=&gt;0.00341)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.937, outlier=&gt;0.0629)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.975, outlier=&gt;0.0247)
+ ⋮
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.986, outlier=&gt;0.0142)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.955, outlier=&gt;0.0451)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.888, outlier=&gt;0.112)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.961, outlier=&gt;0.0386)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.962, outlier=&gt;0.0376)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.97, outlier=&gt;0.0301)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.953, outlier=&gt;0.0471)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.987, outlier=&gt;0.0129)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.786, outlier=&gt;0.214)
+</code></pre></div>
+<p>There might be occasions, where our <a href="../../API/score-helpers/#OutlierDetection.ProbabilisticDetector"><code>ProbabilisticDetector</code></a> or <a href="../../API/score-helpers/#OutlierDetection.DeterministicDetector"><code>DeterministicDetector</code></a> wrappers are not flexible enough. In such cases we can directly use <a href="../../API/interface/#OutlierDetectionInterface.transform"><code>transform</code></a> in your learning networks and use a <a href="../../API/score-helpers/#OutlierDetection.ProbabilisticTransformer"><code>ProbabilisticTransformer</code></a> or <a href="../../API/score-helpers/#OutlierDetection.DeterministicTransformer"><code>DeterministicTransformer</code></a>, which takes one or more train/test tuples as inputs returning probabilistic or deterministic predictions.</p>
+<p><a id='Implementing-models'></a></p>
+<p><a id='Implementing-models-1'></a></p>
+<h2 id="implementing-models">Implementing models</h2>
+<p>Learning networks let us flexibly create complex combinations of <em>existing models</em>, however, sometimes it's necessary to develop new outlier detection models for specific tasks. <em>OutlierDetection.jl</em> builds on top of <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/">MLJ</a> and provides a simple interface defining how an outlier detection algorithm can be implemented. Let's first import the interface and the packages relevant to our new algorithm.</p>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="n">OutlierDetectionInterface</span>
+<span class="k">const</span><span class="w"> </span><span class="n">OD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OutlierDetectionInterface</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">Statistics</span><span class="o">:</span><span class="n">mean</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="o">:</span><span class="n">norm</span>
+</code></pre></div>
+<p>Our proposed algorithm calculates a central point from the training data and defines an outlier as a point that's far away from that center. The only hyperparameter is <code>p</code> specifying which p-norm to use to calculate the distance. Using <a href="../../API/interface/#OutlierDetectionInterface.@detector"><code>@detector</code></a>, which replicates <a href="https://alan-turing-institute.github.io/MLJ.jl/dev/adding_models_for_general_use/#Macro-shortcut"><code>@mlj_model</code></a>, we can define our detector struct with macro-generated keyword arguments and default values.</p>
+<div class="highlight"><pre><span></span><code><span class="n">OD</span><span class="o">.</span><span class="nd">@detector</span><span class="w"> </span><span class="k">mutable</span><span class="w"> </span><span class="k">struct</span> <span class="kt">SimpleDetector</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">OD</span><span class="o">.</span><span class="n">UnsupervisedDetector</span>
+<span class="w">    </span><span class="n">p</span><span class="o">::</span><span class="kt">Float64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Our <a href="../../API/interface/#OutlierDetectionInterface.DetectorModel"><code>DetectorModel</code></a>, then, defines the <em>learned parameters</em> of our model. In this case the only learned parameter is the center.</p>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span> <span class="kt">SimpleModel</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">OD</span><span class="o">.</span><span class="n">DetectorModel</span>
+<span class="w">    </span><span class="n">center</span><span class="o">::</span><span class="kt">AbstractArray</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">Real</span><span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Let's further define a helper function to calculate the distance from the center.</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span><span class="w"> </span><span class="n">distances_from</span><span class="p">(</span><span class="n">center</span><span class="p">,</span><span class="w"> </span><span class="n">vectors</span><span class="o">::</span><span class="kt">AbstractMatrix</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+<span class="w">    </span><span class="n">deviations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vectors</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">center</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="n">norm</span><span class="p">(</span><span class="n">deviations</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">axes</span><span class="p">(</span><span class="n">deviations</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)]</span>
+<span class="k">end</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>distances_from (generic function with 1 method)
+</code></pre></div>
+<p>Finally, we can implement the two methods necessary to implement a detector, namely <a href="../../API/interface/#OutlierDetectionInterface.fit"><code>fit</code></a> and <a href="../../API/interface/#OutlierDetectionInterface.transform"><code>transform</code></a>. Please refer to the <a href="../key-concepts">Key Concepts</a> to learn more about the involved methods and types.</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span><span class="w"> </span><span class="n">OD</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">detector</span><span class="o">::</span><span class="kt">SimpleDetector</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Data</span><span class="p">;</span><span class="w"> </span><span class="n">verbosity</span><span class="p">)</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Fit</span>
+<span class="w">    </span><span class="n">center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">training_scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distances_from</span><span class="p">(</span><span class="n">center</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">detector</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">SimpleModel</span><span class="p">(</span><span class="n">center</span><span class="p">),</span><span class="w"> </span><span class="n">training_scores</span>
+<span class="k">end</span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">OD</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">detector</span><span class="o">::</span><span class="kt">SimpleDetector</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="o">::</span><span class="kt">SimpleModel</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">::</span><span class="kt">OD</span><span class="o">.</span><span class="n">Scores</span>
+<span class="w">    </span><span class="n">distances_from</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">center</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">detector</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Using a data-frontend, we can make sure that MLJ internally transforms input data to <a href="../../API/interface/#OutlierDetectionInterface.Data"><code>Data</code></a>, which refers to column-major Julia arrays with the last dimension representing an example. Registering that frontend can be achieved with <a href="../../API/interface/#OutlierDetectionInterface.@default_frontend"><code>@default_frontend</code></a>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">OD</span><span class="o">.</span><span class="nd">@default_frontend</span><span class="w"> </span><span class="n">SimpleDetector</span>
+</code></pre></div>
+<p>Again, we can simply wrap our detector in a <a href="../../API/score-helpers/#OutlierDetection.ProbabilisticDetector"><code>ProbabilisticDetector</code></a> to enable probabilistic predictions.</p>
+<div class="highlight"><pre><span></span><code><span class="n">sd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">machine</span><span class="p">(</span><span class="n">ProbabilisticDetector</span><span class="p">(</span><span class="n">SimpleDetector</span><span class="p">()),</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="n">fit!</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
+<span class="n">predict</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>3600-element CategoricalDistributions.UnivariateFiniteVector{OrderedFactor{2}, String, UInt8, Float64}:
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.903, outlier=&gt;0.0972)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.874, outlier=&gt;0.126)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.917, outlier=&gt;0.0826)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.564, outlier=&gt;0.436)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.67, outlier=&gt;0.33)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.531, outlier=&gt;0.469)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.832, outlier=&gt;0.168)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.729, outlier=&gt;0.271)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.677, outlier=&gt;0.323)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.688, outlier=&gt;0.312)
+ ⋮
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.874, outlier=&gt;0.126)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.742, outlier=&gt;0.258)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.816, outlier=&gt;0.184)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.713, outlier=&gt;0.287)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.564, outlier=&gt;0.436)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.932, outlier=&gt;0.0679)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.631, outlier=&gt;0.369)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.526, outlier=&gt;0.474)
+ UnivariateFinite{OrderedFactor{2}}(normal=&gt;0.408, outlier=&gt;0.592)
+</code></pre></div>
+<p>Remember: Your feedback and contributions are extremely welcome, join us on <a href="https://github.com/OutlierDetectionJL/OutlierDetection.jl">Github</a> or <a href="https://julialang.slack.com/archives/C02EXTD7WGG">#outlierdetection on Slack</a> and get involved.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.instant", "navigation.sections"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>
