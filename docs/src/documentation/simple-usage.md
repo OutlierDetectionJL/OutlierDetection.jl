@@ -6,6 +6,7 @@ Let's import the necessary packages first.
 using MLJ
 using OutlierDetection
 using OutlierDetectionData: ODDS
+using StatisticalMeasures: area_under_curve
 ```
 
 ## Loading data
@@ -69,7 +70,7 @@ We can now evaluate how such a model performs. By default, a probabilistic detec
 
 ```@example simple
 cv = StratifiedCV(nfolds=5, shuffle=true, rng=0)
-evaluate(knn, X, y; resampling=cv)
+evaluate(knn, X, y; resampling=cv, measure=area_under_curve)
 ```
 
 ## Model optimization
@@ -85,7 +86,7 @@ r = range(knn, :(detector.k), values=[1,2,3,4,5:5:100...])
 We can then use this range, or multiple ranges, to create a tuned model by additionally specifying a [tuning-strategy](https://alan-turing-institute.github.io/MLJ.jl/dev/tuning_models/), which defines how to efficiently evaluate ranges. In our case we use a simple grid search to evaluate all the given parameter options.
 
 ```@example simple
-t = TunedModel(model=knn, resampling=cv, tuning=Grid(), range=r, acceleration=CPUThreads())
+t = TunedModel(model=knn, resampling=cv, tuning=Grid(), range=r, acceleration=CPUThreads(), measure=area_under_curve)
 ```
 
 We can again bind that model to data and fit it. Fitting a tuned model instigates a search for optimal model hyperparameters, within specified `range`s, and then uses all supplied data to train the best model.
@@ -109,7 +110,7 @@ b = report(m).best_model
 Let's evaluate the best model again to make sure it achieves the expected performance.
 
 ```@example simple
-evaluate(b, X, y, resampling=cv)
+evaluate(b, X, y, resampling=cv, measure=area_under_curve)
 ```
 
 ## Model usage
