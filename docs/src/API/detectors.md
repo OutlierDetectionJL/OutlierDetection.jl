@@ -73,6 +73,12 @@ OutlierDetectionPython.ABODDetector
 OutlierDetectionPython.CBLOFDetector
 ```
 
+### `CDDetector`
+
+```@docs
+OutlierDetectionPython.CDDetector
+```
+
 ### `COFDetector`
 
 ```@docs
@@ -85,6 +91,18 @@ OutlierDetectionPython.COFDetector
 OutlierDetectionPython.COPODDetector
 ```
 
+### `ECODDetector`
+
+```@docs
+OutlierDetectionPython.ECODDetector
+```
+
+### `GMMDetector`
+
+```@docs
+OutlierDetectionPython.GMMDetector
+```
+
 ### `HBOSDetector`
 
 ```@docs
@@ -95,6 +113,18 @@ OutlierDetectionPython.HBOSDetector
 
 ```@docs
 OutlierDetectionPython.IForestDetector
+```
+
+### `INNEDetector`
+
+```@docs
+OutlierDetectionPython.INNEDetector
+```
+
+### `KDEDetector`
+
+```@docs
+OutlierDetectionPython.KDEDetector
 ```
 
 ### `KNNDetector`

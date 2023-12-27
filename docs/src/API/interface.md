@@ -76,6 +76,12 @@ OutlierDetectionInterface.transform
 
 ## Macros
 
+### `@detector`
+
+```@docs
+OutlierDetectionInterface.@detector
+```
+
 ### `@default_frontend`
 
 ```@docs

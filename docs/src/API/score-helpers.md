@@ -24,6 +24,14 @@ OutlierDetection.ProbabilisticTransformer
 OutlierDetection.DeterministicTransformer
 ```
 
+Surrogate models can be used to transform learning networks into MLJ-models.
+
+### `@surrogate`
+
+```@docs
+OutlierDetection.@surrogate
+```
+
 ## Wrappers
 
 Wrappers take one or more detectors and transform the (combined) raw scores to probabilities ([`ProbabilisticDetector`](@ref)) or classes ([`DeterministicDetector`](@ref)). Using wrappers, you can easily evaluate outlier detection models with MLJ.
