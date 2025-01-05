@@ -1,0 +1,45 @@
+version: "3"
+
+tasks:
+  test:
+    cmds:
+      - cmd: julia --project test/runtests.jl
+    desc: Run the tests with Julia
+
+  docs_make:
+    cmds:
+      - cmd: julia --project=docs/ docs/make.jl
+    desc: Generate the documentation using Julia
+
+  docs_deploy:
+    cmds:
+      - cmd: julia --project=docs/ docs/deploy.jl
+    desc: Deploy the documentation using Julia
+
+  docs_html:
+    cmds:
+      - cmd: mkdocs build --clean --config-file=docs/mkdocs.yml
+    desc: Build the HTML documentation using MkDocs
+
+  docs_serve:
+    cmds:
+      - cmd: mkdocs serve --config-file=docs/mkdocs.yml
+    desc: Serve the documentation locally using MkDocs
+
+  docs_build:
+    desc: Build both Julia and HTML documentation
+    cmds:
+      - task: docs_make
+      - task: docs_html
+
+  docs:
+    desc: Generate, build, and serve the documentation
+    cmds:
+      - task: docs_make
+      - task: docs_html
+      - task: docs_serve
+
+  benchmark:
+    cmds:
+      - cmd: julia --project=benchmark/ benchmark/runbenchmarks.jl
+    desc: Run the benchmarks with Julia
