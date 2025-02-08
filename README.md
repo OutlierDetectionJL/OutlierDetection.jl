@@ -119,6 +119,7 @@ Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '�
 
 | Name    | Description                                  | Year  | Status | Authors                |
 | ------- | -------------------------------------------- | :---: | :----: | ---------------------- |
+| CD      | Cook's distance                              | 1977  | ✓ (py) | Dennis R. Cook         |
 | LMDD    | Linear deviation-based outlier detection     | 1996  | ✓ (py) | Arning et al.          |
 | KNN     | Distance-based outliers                      | 1997  |   ✓    | Knorr and Ng           |
 | MCD     | Minimum covariance determinant               | 1999  | ✓ (py) | Rousseeuw and Driessen |
@@ -130,6 +131,7 @@ Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '�
 | LOCI    | Local correlation integral                   | 2003  | ✓ (py) | Papadimitirou et al.   |
 | CBLOF   | Cluster-based local outliers                 | 2003  | ✓ (py) | He et al.              |
 | PCA     | Principal component analysis                 | 2003  | ✓ (py) | Shyu et al.            |
+| KDE     | Kernel Density Estimation                    | 2007  | ✓ (py) | Latecki et al.         |
 | IForest | Isolation forest                             | 2008  | ✓ (py) | Liu et al.             |
 | ABOD    | Angle-based outlier detection                | 2009  |   ✓    | Kriegel et al.         |
 | SOD     | Subspace outlier detection                   | 2009  | ✓ (py) | Kriegel et al.         |
@@ -137,11 +139,14 @@ Algorithms marked with '✓' are implemented in Julia. Algorithms marked with '�
 | SOS     | Stochastic outlier selection                 | 2012  | ✓ (py) | Janssens et al.        |
 | AE      | Auto-encoder reconstruction loss outliers    | 2015  |   ✓    | Aggarwal               |
 | ABOD    | Stable angle-based outlier detection         | 2015  |   ✓    | Li et al.              |
+| GMM     | Gaussian Mixture Model                       | 2015  | ✓ (py) | Aggarwal and Sathe     |
 | LODA    | Lightweight on-line detector of anomalies    | 2016  | ✓ (py) | Pevný                  |
+| INNE    | Isolation-based nearest neighbors            | 2018  | ✓ (py) | Bandaragoda et al.     |
 | DeepSAD | Deep semi-supervised anomaly detection       | 2019  |   ✓    | Ruff et al.            |
 | COPOD   | Copula-based outlier detection               | 2020  | ✓ (py) | Li et al.              |
 | ROD     | Rotation-based outlier detection             | 2020  | ✓ (py) | Almardeny et al.       |
 | ESAD    | End-to-end semi-supervised anomaly detection | 2020  |   ✓    | Huang et al.           |
+| ECOD    | Empirical Cumulative Distribution Functions  | 2022  | ✓ (py) | Li et al.              |
 
 If there are already so many algorithms available in Python - *why Julia, you might ask?* Let's have some fun!
 
