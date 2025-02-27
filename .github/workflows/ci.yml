@@ -41,6 +41,11 @@ jobs:
         with:
           file: lcov.info
   docs:
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: read
+      statuses: write
     name: Documentation
     runs-on: ubuntu-latest
     steps:
@@ -64,7 +69,6 @@ jobs:
       - run: julia --project=docs docs/deploy.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
   versionize:
     needs: docs
     runs-on: ubuntu-latest
