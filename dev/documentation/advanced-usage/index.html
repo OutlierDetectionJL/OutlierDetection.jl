@@ -1091,15 +1091,15 @@
 <span class="n">Xstd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="n">machine</span><span class="p">(</span><span class="n">Standardizer</span><span class="p">(),</span><span class="w"> </span><span class="n">Xs</span><span class="p">),</span><span class="w"> </span><span class="n">Xs</span><span class="p">)</span>
 <span class="n">ŷ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">predict</span><span class="p">(</span><span class="n">machine</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span><span class="w"> </span><span class="n">Xstd</span><span class="p">),</span><span class="w"> </span><span class="n">Xstd</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Node @372 → ProbabilisticUnsupervisedCompositeDetector(…)
+<div class="highlight"><pre><span></span><code>Node @119 → ProbabilisticUnsupervisedCompositeDetector(…)
   args:
-    1:  Node @968 → Standardizer(…)
+    1:  Node @878 → Standardizer(…)
   formula:
     predict(
       machine(ProbabilisticUnsupervisedCompositeDetector(normalize = scale_minmax, …), …), 
       transform(
         machine(Standardizer(features = Symbol[], …), …), 
-        Source @630))
+        Source @441))
 </code></pre></div>
 <p>We can <code>fit!</code> and predict with the resulting model as usual.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">ŷ</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>

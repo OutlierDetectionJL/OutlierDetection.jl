@@ -893,7 +893,7 @@
 <div class="highlight"><pre><span></span><code>untrained Machine; does not cache data
   model: DeterministicUnsupervisedCompositeDetector(normalize = scale_minmax, …)
   args: 
-    1:  Source @775 ⏎ Table{AbstractVector{Continuous}}
+    1:  Source @876 ⏎ Table{AbstractVector{Continuous}}
 </code></pre></div>
 <p>Learn models from the training data.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fit!</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
@@ -903,7 +903,7 @@
 <div class="highlight"><pre><span></span><code>trained Machine; does not cache data
   model: DeterministicUnsupervisedCompositeDetector(normalize = scale_minmax, …)
   args: 
-    1:  Source @775 ⏎ Table{AbstractVector{Continuous}}
+    1:  Source @876 ⏎ Table{AbstractVector{Continuous}}
 </code></pre></div>
 <p>Transform the data into raw outlier scores.</p>
 <div class="highlight"><pre><span></span><code><span class="n">transform</span><span class="p">(</span><span class="n">knn_raw</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
